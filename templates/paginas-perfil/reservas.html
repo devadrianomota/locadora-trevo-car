@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Reservas - TrevoCar</title>
+    <link rel="stylesheet" href="../../css/reservas.css">
+</head>
+<body>
+    <!-- Header igual ao index.html -->
+    <header>
+        <div class="top-bar">
+            <div class="logo-container">
+                <div class="clover"></div>
+                <div class="logo-text">TREVOCAR</div>
+            </div>
+            <div class="quick-access">
+                <a href="../index.html">Início</a>
+                <a href="../agencias.html">Agências</a>
+                <button class="login-btn" id="openLogin">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo da página de reservas -->
+    <div class="reservas-container">
+        <div class="page-header">
+            <h1>📅 Minhas Reservas</h1>
+            <p>Acompanhe e gerencie suas locações</p>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros-section">
+            <div class="filtros-grid">
+                <select class="filtro-select">
+                    <option value="todas">Todas as reservas</option>
+                    <option value="ativas">Reservas ativas</option>
+                    <option value="concluidas">Reservas concluídas</option>
+                    <option value="canceladas">Reservas canceladas</option>
+                </select>
+                
+                <select class="filtro-select">
+                    <option value="30">Últimos 30 dias</option>
+                    <option value="90">Últimos 3 meses</option>
+                    <option value="365">Último ano</option>
+                    <option value="tudo">Todo o período</option>
+                </select>
+                
+                <input type="text" class="search-input" placeholder="Buscar por código...">
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="estatisticas">
+            <div class="stat-card">
+                <span class="stat-number">12</span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="stat-card active">
+                <span class="stat-number">1</span>
+                <span class="stat-label">Ativas</span>
+            </div>
+            <div class="stat-card completed">
+                <span class="stat-number">10</span>
+                <span class="stat-label">Concluídas</span>
+            </div>
+            <div class="stat-card cancelled">
+                <span class="stat-number">1</span>
+                <span class="stat-label">Canceladas</span>
+            </div>
+        </div>
+
+        <!-- Lista de Reservas -->
+        <div class="reservas-list">
+            <!-- Reserva Ativa -->
+            <div class="reserva-card active">
+                <div class="reserva-status">🟢 ATIVA</div>
+                <div class="reserva-content">
+                    <div class="reserva-info">
+                        <h3>Hyundai HB20 - Essencial</h3>
+                        <p class="reserva-codigo">Código: #TRV12345</p>
+                        <p class="reserva-periodo">📅 27/10/2024 - 30/10/2024 (3 dias)</p>
+                        <p class="reserva-local">🏢 Agência: Aeroporto Guarulhos</p>
+                        <p class="reserva-valor">💵 Valor total: R$ 267,00</p>
+                    </div>
+                    <div class="reserva-actions">
+                        <button class="btn-detalhes">Ver detalhes</button>
+                        <button class="btn-cancelar">Cancelar reserva</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reserva Concluída -->
+            <div class="reserva-card completed">
+                <div class="reserva-status">✅ CONCLUÍDA</div>
+                <div class="reserva-content">
+                    <div class="reserva-info">
+                        <h3>Toyota Corolla - Intermediário</h3>
+                        <p class="reserva-codigo">Código: #TRV12344</p>
+                        <p class="reserva-periodo">📅 15/10/2024 - 18/10/2024 (Concluído)</p>
+                        <p class="reserva-avaliacao">⭐ ⭐ ⭐ ⭐ ☆ (4/5)</p>
+                        <p class="reserva-valor">💵 Valor pago: R$ 387,00</p>
+                    </div>
+                    <div class="reserva-actions">
+                        <button class="btn-detalhes">Ver detalhes</button>
+                        <button class="btn-repetir">Alugar novamente</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reserva Cancelada -->
+            <div class="reserva-card cancelled">
+                <div class="reserva-status">❌ CANCELADA</div>
+                <div class="reserva-content">
+                    <div class="reserva-info">
+                        <h3>Jeep Compass - Supremo</h3>
+                        <p class="reserva-codigo">Código: #TRV12343</p>
+                        <p class="reserva-periodo">📅 10/10/2024 - 13/10/2024 (Cancelada)</p>
+                        <p class="reserva-motivo">📝 Motivo: Mudança de planos</p>
+                        <p class="reserva-valor">💵 Valor: R$ 567,00 (reembolsado)</p>
+                    </div>
+                    <div class="reserva-actions">
+                        <button class="btn-detalhes">Ver detalhes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer igual ao index.html -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="footer-clover"></div>
+                <div class="footer-logo-text">TREVOCAR</div>
+            </div>
+            <div class="footer-links">
+                <a href="#">Sobre nós</a>
+                <a href="#">Termos de uso</a>
+                <a href="#">Política de privacidade</a>
+                <a href="#">Trabalhe conosco</a>
+                <a href="#">Contato</a>
+            </div>
+            <p>&copy; 2024 TrevoCar Locadora Sustentável. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../../js/reservas.js"></script>
+</body>
+</html>

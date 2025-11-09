@@ -91,6 +91,7 @@
         .quick-access {
             display: flex;
             gap: 20px;
+            align-items: center;
         }
         
         .quick-access a {
@@ -102,6 +103,22 @@
         
         .quick-access a:hover {
             color: var(--primary-green);
+        }
+
+        /* Botão de Login */
+        .login-btn {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: var(--dark-green);
         }
         
         /* Barra de busca rápida */
@@ -368,41 +385,6 @@
             text-decoration: underline;
         }
         
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .quick-access {
-                display: none;
-            }
-            
-            .search-form {
-                grid-template-columns: 1fr;
-            }
-            
-            .carousel {
-                height: 300px;
-            }
-            
-            .steps {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-         /* Botão de Login */
-        .login-btn {
-            background-color: var(--primary-green);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        
-        .login-btn:hover {
-            background-color: var(--dark-green);
-        }
-        
         /* Overlay e Modal de Login */
         .login-overlay {
             display: none;
@@ -585,6 +567,106 @@
             color: white;
             font-size: 24px;
         }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .quick-access {
+                display: none;
+            }
+            
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .carousel {
+                height: 300px;
+            }
+            
+            .steps {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        /* Menu do usuário logado */
+.user-menu {
+    position: relative;
+}
+
+.user-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.user-btn:hover {
+    background: var(--dark-green);
+}
+
+.user-avatar-small {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.dropdown-arrow {
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+/* Menu dropdown (opcional - para acesso rápido) */
+.user-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 1000;
+    margin-top: 5px;
+}
+
+.user-dropdown.active {
+    display: block;
+}
+
+.user-dropdown a {
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-dark);
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.3s;
+}
+
+.user-dropdown a:hover {
+    background: var(--light-green);
+    color: var(--primary-green);
+}
+
+.user-dropdown a:last-child {
+    border-bottom: none;
+    color: #e74c3c;
+}
+
+.user-dropdown a:last-child:hover {
+    background: #ffeaea;
+}
     </style>
 </head>
 <body>
@@ -595,13 +677,24 @@
                 <div class="clover"></div>
                 <div class="logo-text">TREVOCAR</div>
             </div>
-            <div class="quick-access">
-                <button class="login-btn" id="openLogin">Login</button>
-                <a href="agencias.html">Agências</a>
-                <a href="duvidas.html">Dúvidas</a>
-                <a href="suporte.html">Suporte</a>
-                <a href="login-funcionarios.html">Funcionários</a>
-            </div>
+           <div class="quick-access">
+    <a href="agencias.html">Agências</a>
+    <a href="duvidas.html">Dúvidas</a>
+    <a href="suporte.html">Suporte</a>
+    <a href="login-funcionarios.html">Funcionários</a>
+    
+    <!-- Botão de usuário logado (inicialmente escondido) -->
+    <div class="user-menu" id="userMenu" style="display: none;">
+        <button class="user-btn" id="openUserMenu">
+            <span class="user-avatar-small" id="userAvatarSmall">U</span>
+            <span id="userNameShort">Usuário</span>
+            <span class="dropdown-arrow">▼</span>
+        </button>
+    </div>
+    
+    <!-- Botão de login (mostrado quando não logado) -->
+    <button class="login-btn" id="openLogin">Login</button>
+</div>
         </div>
     </header>
 
@@ -740,7 +833,8 @@
         </div>
     </footer>
 
-     <div class="login-overlay" id="loginOverlay">
+    <!-- Modal de Login -->
+    <div class="login-overlay" id="loginOverlay">
         <div class="login-modal">
             <span class="close-login" id="closeLogin">&times;</span>
             
@@ -790,38 +884,38 @@
         </div>
         
         <div class="user-info">
-            <div class="user-avatar">U</div>
+            <div class="user-avatar" id="userAvatar">U</div>
             <h4 id="userName">Usuário</h4>
             <p id="userEmail">usuario@email.com</p>
         </div>
         
         <ul class="sidebar-menu">
             <li>
-                <a href="perfil.html">
+                <a href="#" onclick="abrirPagina('perfil')">
                     <span class="sidebar-icon">👤</span>
                     <span>Meu Perfil</span>
                 </a>
             </li>
             <li>
-                <a href="reservas.html">
+                <a href="#" onclick="abrirPagina('reservas')">
                     <span class="sidebar-icon">📅</span>
                     <span>Minhas Reservas</span>
                 </a>
             </li>
             <li>
-                <a href="veiculos.html">
+                <a href="#" onclick="abrirPagina('veiculos')">
                     <span class="sidebar-icon">🚗</span>
                     <span>Meus Veículos</span>
                 </a>
             </li>
             <li>
-                <a href="pagamentos.html">
+                <a href="#" onclick="abrirPagina('pagamentos')">
                     <span class="sidebar-icon">💳</span>
                     <span>Pagamentos</span>
                 </a>
             </li>
             <li>
-                <a href="favoritos.html">
+                <a href="#" onclick="abrirPagina('favoritos')">
                     <span class="sidebar-icon">⭐</span>
                     <span>Favoritos</span>
                 </a>
@@ -835,8 +929,443 @@
         </ul>
     </div>
 
-    <script>
-        // Carrossel automático
+    CREATE TABLE IF NOT EXISTS usuarios (
+  <script>
+    // =============================================
+    // SISTEMA COMPLETO TREVOCAR - CORRIGIDO E EFICAZ
+    // =============================================
+
+    // Elementos do menu do usuário
+const userMenu = document.getElementById('userMenu');
+const openUserMenu = document.getElementById('openUserMenu');
+const userAvatarSmall = document.getElementById('userAvatarSmall');
+const userNameShort = document.getElementById('userNameShort');
+
+    // Elementos do DOM
+    const openLoginBtn = document.getElementById('openLogin');
+    const closeLoginBtn = document.getElementById('closeLogin');
+    const loginOverlay = document.getElementById('loginOverlay');
+    const loginTabs = document.querySelectorAll('.login-tab');
+    const loginForms = document.querySelectorAll('.login-form');
+    const forgotPasswordLink = document.getElementById('forgotPassword');
+    const backToLoginLink = document.getElementById('backToLogin');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebarBtn = document.getElementById('closeSidebar');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+
+    // ========== CONFIGURAÇÃO INICIAL ==========
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Inicializando sistema TrevoCar...');
+        
+        // Configurar datas padrão
+        configurarDatasPadrao();
+        
+        // Verificar se usuário já está logado
+        verificarUsuarioLogado();
+        
+        // Inicializar carrossel
+        iniciarCarrossel();
+        
+        // Configurar event listeners
+        configurarEventListeners();
+        
+        console.log('✅ Sistema TrevoCar inicializado com sucesso!');
+    });
+
+    // ========== CONFIGURAÇÃO DE DATAS ==========
+    function configurarDatasPadrao() {
+        const today = new Date();
+        const pickupDate = document.getElementById('pickup-date');
+        const returnDate = document.getElementById('return-date');
+        
+        const formatDate = (date) => {
+            return date.toISOString().split('T')[0];
+        };
+        
+        if (pickupDate) {
+            pickupDate.value = formatDate(today);
+            pickupDate.min = formatDate(today);
+        }
+        
+        const returnDay = new Date(today);
+        returnDay.setDate(today.getDate() + 3);
+        if (returnDate) {
+            returnDate.value = formatDate(returnDay);
+            returnDate.min = formatDate(today);
+        }
+        
+        const pickupTime = document.getElementById('pickup-time');
+        const returnTime = document.getElementById('return-time');
+        if (pickupTime) pickupTime.value = '10:00';
+        if (returnTime) returnTime.value = '10:00';
+    }
+
+    // ========== VERIFICAÇÃO DE USUÁRIO LOGADO ==========
+   function verificarUsuarioLogado() {
+    const usuarioSalvo = localStorage.getItem('trevocar_usuario');
+    if (usuarioSalvo) {
+        try {
+            const usuario = JSON.parse(usuarioSalvo);
+            atualizarInterfaceUsuario(usuario);
+            console.log('✅ Usuário logado detectado:', usuario.nome);
+        } catch (e) {
+            console.error('❌ Erro ao parsear usuário:', e);
+            localStorage.removeItem('trevocar_usuario');
+            resetarInterfaceUsuario();
+        }
+    } else {
+        resetarInterfaceUsuario();
+    }
+}
+
+function resetarInterfaceUsuario() {
+    // Mostrar botão de login e esconder menu do usuário
+    if (openLoginBtn) openLoginBtn.style.display = 'block';
+    if (userMenu) userMenu.style.display = 'none';
+    
+    // Resetar sidebar
+    if (userName) userName.textContent = 'Usuário';
+    if (userEmail) userEmail.textContent = 'usuario@email.com';
+    if (userAvatar) userAvatar.textContent = 'U';
+}
+
+   function atualizarInterfaceUsuario(usuario) {
+    if (usuario) {
+        // Esconder botão de login e mostrar menu do usuário
+        if (openLoginBtn) openLoginBtn.style.display = 'none';
+        if (userMenu) userMenu.style.display = 'block';
+        
+        // Atualizar informações do usuário
+        if (openUserMenu) {
+            const firstName = usuario.nome.split(' ')[0];
+            userNameShort.textContent = firstName;
+        }
+        
+        if (userAvatarSmall) {
+            userAvatarSmall.textContent = usuario.nome.split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+        }
+        
+        // Atualizar sidebar também
+        if (userName) userName.textContent = usuario.nome;
+        if (userEmail) userEmail.textContent = usuario.email;
+        if (userAvatar) {
+            userAvatar.textContent = usuario.nome.split(' ')
+                .map(n => n[0])
+                .join('')
+                .toUpperCase()
+                .substring(0, 2);
+        }
+        
+        console.log('✅ Interface atualizada para usuário:', usuario.nome);
+    }
+}
+
+    // ========== CONFIGURAÇÃO DE EVENT LISTENERS ==========
+    function configurarEventListeners() {
+        // Login Modal
+        if (openLoginBtn) {
+            openLoginBtn.addEventListener('click', abrirModalLogin);
+        }
+        // Menu do usuário
+        if (openUserMenu) {
+            openUserMenu.addEventListener('click', () => {
+                if (sidebar) sidebar.classList.add('active');
+            });
+        }
+        if (closeLoginBtn) {
+            closeLoginBtn.addEventListener('click', fecharModalLogin);
+        }
+        
+        if (loginOverlay) {
+            loginOverlay.addEventListener('click', (e) => {
+                if (e.target === loginOverlay) fecharModalLogin();
+            });
+        }
+
+        // Sidebar
+        if (closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', fecharSidebar);
+        }
+
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', fazerLogout);
+        }
+
+        // Sistema de abas
+        loginTabs.forEach(tab => {
+            tab.addEventListener('click', () => alternarAba(tab.dataset.tab));
+        });
+
+        // Links do formulário
+        if (forgotPasswordLink) {
+            forgotPasswordLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                mostrarFormulario('forgot');
+            });
+        }
+
+        if (backToLoginLink) {
+            backToLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                mostrarFormulario('login');
+                document.querySelector('[data-tab="login"]').classList.add('active');
+                document.querySelector('[data-tab="register"]').classList.remove('active');
+            });
+        }
+
+        // Formulários
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
+        document.getElementById('registerForm').addEventListener('submit', handleCadastro);
+        document.getElementById('forgotForm').addEventListener('submit', handleEsqueciSenha);
+    }
+
+    // ========== FUNÇÕES DE INTERFACE ==========
+    function abrirModalLogin() {
+        if (loginOverlay) {
+            loginOverlay.style.display = 'block';
+            // Resetar para aba de login
+            mostrarFormulario('login');
+            loginTabs.forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="login"]').classList.add('active');
+        }
+    }
+
+    function fecharModalLogin() {
+        if (loginOverlay) {
+            loginOverlay.style.display = 'none';
+            // Limpar formulários
+            document.querySelectorAll('.login-form').forEach(form => {
+                form.reset();
+            });
+        }
+    }
+
+    function fecharSidebar() {
+        if (sidebar) sidebar.classList.remove('active');
+    }
+
+    function alternarAba(aba) {
+        loginTabs.forEach(t => t.classList.remove('active'));
+        loginForms.forEach(f => f.classList.remove('active'));
+        
+        document.querySelector(`[data-tab="${aba}"]`).classList.add('active');
+        document.getElementById(`${aba}Form`).classList.add('active');
+    }
+
+    function mostrarFormulario(formId) {
+        loginForms.forEach(f => f.classList.remove('active'));
+        document.getElementById(`${formId}Form`).classList.add('active');
+    }
+
+    // ========== SISTEMA DE AUTENTICAÇÃO ==========
+    async function fazerLogin(email, senha) {
+        try {
+            console.log('🔐 Tentando login para:', email);
+            
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, senha })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data;
+            
+        } catch (error) {
+            console.error('❌ Erro no login:', error);
+            throw new Error('Erro de conexão com o servidor');
+        }
+    }
+
+    async function fazerCadastro(dados) {
+        try {
+            console.log('📝 Tentando cadastro para:', dados.email);
+            
+            const response = await fetch('/api/cadastro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dados)
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data;
+            
+        } catch (error) {
+            console.error('❌ Erro no cadastro:', error);
+            throw new Error('Erro de conexão com o servidor');
+        }
+    }
+
+    // ========== HANDLERS DE FORMULÁRIOS ==========
+    async function handleLogin(e) {
+        e.preventDefault();
+        
+        const email = e.target.querySelector('input[type="email"]').value.trim();
+        const senha = e.target.querySelector('input[type="password"]').value;
+        
+        if (!email || !senha) {
+            alert('Por favor, preencha todos os campos');
+            return;
+        }
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        try {
+            submitBtn.textContent = 'Entrando...';
+            submitBtn.disabled = true;
+
+            const resultado = await fazerLogin(email, senha);
+            
+            if (resultado.success) {
+                // Salvar usuário no localStorage
+                localStorage.setItem('trevocar_usuario', JSON.stringify(resultado.usuario));
+                
+                // Atualizar interface
+                atualizarInterfaceUsuario(resultado.usuario);
+                
+                // Fechar modal e abrir sidebar
+                fecharModalLogin();
+                if (sidebar) sidebar.classList.add('active');
+                
+                console.log('✅ Login realizado com sucesso!');
+                
+            } else {
+                throw new Error(resultado.message || 'Erro no login');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro no login:', error);
+            alert('Erro no login: ' + error.message);
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    async function handleCadastro(e) {
+        e.preventDefault();
+        
+        const inputs = e.target.querySelectorAll('input');
+        const dados = {
+            nome: inputs[0].value.trim(),
+            email: inputs[1].value.trim(),
+            telefone: inputs[2].value.trim(),
+            senha: inputs[3].value
+        };
+        
+        // Validações
+        if (!dados.nome || !dados.email || !dados.senha) {
+            alert('Por favor, preencha todos os campos obrigatórios');
+            return;
+        }
+        
+        if (dados.senha.length < 6) {
+            alert('A senha deve ter pelo menos 6 caracteres');
+            return;
+        }
+        
+        if (dados.senha !== inputs[4].value) {
+            alert('As senhas não coincidem');
+            return;
+        }
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        
+        try {
+            submitBtn.textContent = 'Cadastrando...';
+            submitBtn.disabled = true;
+
+            const resultado = await fazerCadastro(dados);
+            
+            if (resultado.success) {
+                alert('✅ Cadastro realizado com sucesso! Faça login para continuar.');
+                
+                // Mudar para aba de login
+                alternarAba('login');
+                
+                // Preencher email automaticamente
+                document.querySelector('#loginForm input[type="email"]').value = dados.email;
+                document.querySelector('#loginForm input[type="password"]').focus();
+                
+            } else {
+                throw new Error(resultado.message || 'Erro no cadastro');
+            }
+            
+        } catch (error) {
+            console.error('❌ Erro no cadastro:', error);
+            alert('Erro no cadastro: ' + error.message);
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    }
+
+    function handleEsqueciSenha(e) {
+        e.preventDefault();
+        const email = e.target.querySelector('input[type="email"]').value.trim();
+        
+        if (!email) {
+            alert('Por favor, informe seu email');
+            return;
+        }
+        
+        // Simulação - em produção integrar com backend
+        alert(`Instruções de recuperação enviadas para: ${email}\n\n(Esta funcionalidade será implementada em breve)`);
+        mostrarFormulario('login');
+    }
+
+   function fazerLogout(e) {
+    e.preventDefault();
+    
+    if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('trevocar_usuario');
+        resetarInterfaceUsuario();
+        fecharSidebar();
+        alert('Sessão encerrada com sucesso!');
+        console.log('✅ Logout realizado');
+    }
+}
+
+    // ========== SISTEMA DE NAVEGAÇÃO ==========
+    function abrirPagina(pagina) {
+        const paginas = {
+            'perfil': '/templates/paginas-perfil/perfil.html',
+            'reservas': '/templates/paginas-perfil/reservas.html',
+            'veiculos': '/templates/paginas-perfil/veiculos.html',
+            'pagamentos': '/templates/paginas-perfil/pagamentos.html',
+            'favoritos': '/templates/paginas-perfil/favoritos.html'
+        };
+        
+        if (paginas[pagina]) {
+            fecharSidebar();
+            window.location.href = paginas[pagina];
+        }
+        return false;
+    }
+
+    // ========== CARROSSEL ==========
+    function iniciarCarrossel() {
         let currentSlide = 0;
         const slides = document.querySelectorAll('.carousel-slide');
         
@@ -850,161 +1379,15 @@
             showSlide(currentSlide + 1);
         }
         
-        // Muda o slide a cada 5 segundos
-        setInterval(nextSlide, 5000);
-        
-        // Configuração inicial das datas
-        window.addEventListener('DOMContentLoaded', (event) => {
-            const today = new Date();
-            const pickupDate = document.getElementById('pickup-date');
-            const returnDate = document.getElementById('return-date');
-            
-            // Formatar data para o formato YYYY-MM-DD
-            const formatDate = (date) => {
-                return date.toISOString().split('T')[0];
-            };
-            
-            // Definir data de retirada como hoje
-            pickupDate.value = formatDate(today);
-            
-            // Definir data de devolução como daqui a 3 dias
-            const returnDay = new Date(today);
-            returnDay.setDate(today.getDate() + 3);
-            returnDate.value = formatDate(returnDay);
-            
-            // Definir horário padrão
-            document.getElementById('pickup-time').value = '10:00';
-            document.getElementById('return-time').value = '10:00';
-        });
-          // Elementos do DOM
-        const openLoginBtn = document.getElementById('openLogin');
-        const closeLoginBtn = document.getElementById('closeLogin');
-        const loginOverlay = document.getElementById('loginOverlay');
-        const loginTabs = document.querySelectorAll('.login-tab');
-        const loginForms = document.querySelectorAll('.login-form');
-        const forgotPasswordLink = document.getElementById('forgotPassword');
-        const backToLoginLink = document.getElementById('backToLogin');
-        const sidebar = document.getElementById('sidebar');
-        const closeSidebarBtn = document.getElementById('closeSidebar');
-        const logoutBtn = document.getElementById('logoutBtn');
+        if (slides.length > 0) {
+            setInterval(nextSlide, 5000);
+        }
+    }
 
-        // Abrir modal de login
-        openLoginBtn.addEventListener('click', () => {
-            loginOverlay.style.display = 'block';
-        });
-
-        // Fechar modal de login
-        closeLoginBtn.addEventListener('click', () => {
-            loginOverlay.style.display = 'none';
-        });
-
-        // Fechar modal clicando fora
-        loginOverlay.addEventListener('click', (e) => {
-            if (e.target === loginOverlay) {
-                loginOverlay.style.display = 'none';
-            }
-        });
-
-        // Trocar entre abas (Login/Cadastro)
-        loginTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabId = tab.getAttribute('data-tab');
-                
-                // Ativar aba clicada
-                loginTabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Mostrar formulário correspondente
-                loginForms.forEach(form => {
-                    form.classList.remove('active');
-                    if (form.id === `${tabId}Form`) {
-                        form.classList.add('active');
-                    }
-                });
-            });
-        });
-
-        // Mostrar formulário de recuperação de senha
-        forgotPasswordLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForms.forEach(form => form.classList.remove('active'));
-            document.getElementById('forgotForm').classList.add('active');
-        });
-
-        // Voltar ao login da recuperação de senha
-        backToLoginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            loginForms.forEach(form => form.classList.remove('active'));
-            document.getElementById('loginForm').classList.add('active');
-            loginTabs.forEach(t => t.classList.remove('active'));
-            document.querySelector('[data-tab="login"]').classList.add('active');
-        });
-
-        // Fechar menu lateral
-        closeSidebarBtn.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-        });
-
-        // Logout
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            sidebar.classList.remove('active');
-            // Aqui você adicionaria a lógica de logout
-            alert('Sessão encerrada com sucesso!');
-        });
-
-        // Simular login bem-sucedido
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = e.target.querySelector('input[type="email"]').value;
-            const password = e.target.querySelector('input[type="password"]').value;
-            
-            // Simulação de autenticação
-            if (email && password) {
-                // Fechar modal de login
-                loginOverlay.style.display = 'none';
-                
-                // Abrir menu lateral
-                sidebar.classList.add('active');
-                
-                // Atualizar informações do usuário
-                document.getElementById('userName').textContent = email.split('@')[0];
-                document.getElementById('userEmail').textContent = email;
-                
-                // Mudar botão de login para o nome do usuário
-                openLoginBtn.textContent = email.split('@')[0];
-                openLoginBtn.style.backgroundColor = 'var(--dark-green)';
-            }
-        });
-
-        // Simular cadastro bem-sucedido
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = e.target.querySelector('input[type="text"]').value;
-            const email = e.target.querySelector('input[type="email"]').value;
-            
-            // Simulação de cadastro
-            if (name && email) {
-                // Fechar modal de login
-                loginOverlay.style.display = 'none';
-                
-                // Abrir menu lateral
-                sidebar.classList.add('active');
-                
-                // Atualizar informações do usuário
-                document.getElementById('userName').textContent = name;
-                document.getElementById('userEmail').textContent = email;
-                
-                // Mudar botão de login para o nome do usuário
-                openLoginBtn.textContent = name;
-                openLoginBtn.style.backgroundColor = 'var(--dark-green)';
-                
-                alert('Cadastro realizado com sucesso!');
-            }
-        });
-
-        // Configurações iniciais (mantenha as anteriores)
-        // ... (código do carrossel e datas)
-    </script>
+    // ========== MANIPULAÇÃO DE ERROS ==========
+    window.addEventListener('error', function(e) {
+        console.error('❌ Erro global capturado:', e.error);
+    });
+</script>
 </body>
 </html>

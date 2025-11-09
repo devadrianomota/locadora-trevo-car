@@ -1,0 +1,40 @@
+Para integrar com sua página de pagamentos, você só precisa:
+1.window.adicionarNovaReserva({
+    codigo: "TRV12345",  // Gere um código único
+    veiculo: "Nome do Carro - Categoria",
+    periodo: "Data Início - Data Fim (X dias)", 
+    agencia: "Local de Retirada",
+    valor: 289.90,       // Valor total
+    status: "active"
+});
+2.Exemplo prático no botão de pagar:
+<button onclick="finalizarPagamento()">Pagar</button>
+
+<script>
+function finalizarPagamento() {
+    // Seu código de pagamento...
+    
+    // Quando aprovar:
+    window.adicionarNovaReserva(dadosReserva);
+    alert("Reserva confirmada! 🍀");
+}
+</script>
+
+Os dados que preciso:
+codigo: Código único (ex: "TRV" + números)
+veiculo: Nome + categoria (ex: "Hyundai HB20 - Essencial")
+periodo: Datas formatadas (ex: "27/10 - 30/10 (3 dias)")
+agencia: Local de retirada
+valor: Valor total (número)
+status: Sempre "active"
+
+Teste simples:
+window.adicionarNovaReserva({
+    codigo: "TRV-TESTE",
+    veiculo: "Carro Teste - Intermediário", 
+    periodo: "01/11 - 03/11 (2 dias)",
+    agencia: "Agência Teste",
+    valor: 199.90,
+    status: "active"
+});
+A reserva deve aparecer instantaneamente! 

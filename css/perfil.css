@@ -1,0 +1,486 @@
+/* perfil.css - Estilos para a página de perfil */
+/* perfil.css - Estilos para a página de perfil */
+:root {
+    --primary-green: #27ae60;
+    --dark-green: #219653;
+    --light-green: #e8f5e9;
+    --accent-green: #2ecc71;
+    --trevo-green: #1e8449;
+    --pastel-green: #d5efdf;
+    --pastel-light: #f0f9f4;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --text-dark: #2c3e50;
+}
+
+/* ========== HEADER (igual ao das outras páginas) ========== */
+header {
+    background: var(--white);
+    box-shadow: 0 2px 20px rgba(39, 174, 96, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    border-bottom: 2px solid var(--pastel-green);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
+.clover {
+    width: 40px;
+    height: 40px;
+    background: var(--trevo-green);
+    position: relative;
+    border-radius: 50%;
+    transform: rotate(45deg);
+    box-shadow: 0 4px 15px rgba(30, 132, 73, 0.3);
+}
+
+.clover:before, .clover:after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: var(--trevo-green);
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(30, 132, 73, 0.3);
+}
+
+.clover:before {
+    top: -20px;
+    left: 0;
+}
+
+.clover:after {
+    left: -20px;
+    top: 0;
+}
+
+.logo-text {
+    font-size: 28px;
+    font-weight: bold;
+    background: linear-gradient(135deg, var(--primary-green), var(--trevo-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.quick-access {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.quick-access a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+    transition: color 0.3s;
+    padding: 8px 16px;
+    border-radius: 6px;
+}
+
+.quick-access a:hover {
+    color: var(--primary-green);
+    background: var(--pastel-green);
+}
+
+.login-btn {
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.login-btn:hover {
+    background: var(--dark-green);
+    transform: translateY(-2px);
+}
+
+/* ========== FOOTER (igual ao das outras páginas) ========== */
+footer {
+    background: linear-gradient(135deg, var(--dark-green), var(--trevo-green));
+    color: white;
+    padding: 40px 5%;
+    text-align: center;
+    margin-top: 60px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.footer-clover {
+    width: 25px;
+    height: 25px;
+    background: white;
+    position: relative;
+    border-radius: 50%;
+    transform: rotate(45deg);
+}
+
+.footer-clover:before, .footer-clover:after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: white;
+    border-radius: 50%;
+}
+
+.footer-clover:before {
+    top: -12px;
+    left: 0;
+}
+
+.footer-clover:after {
+    left: -12px;
+    top: 0;
+}
+
+.footer-logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.footer-links a:hover {
+    opacity: 0.8;
+}
+
+/* ========== ESTILOS ESPECÍFICOS DO PERFIL ========== */
+.perfil-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 80vh;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(39, 174, 96, 0.1);
+    border-left: 5px solid var(--trevo-green);
+}
+
+.page-header h1 {
+    background: linear-gradient(135deg, var(--primary-green), var(--trevo-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+}
+
+.page-header p {
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* ... continue com o resto dos estilos do perfil que você já tem ... */
+:root {
+    --primary-green: #27ae60;
+    --dark-green: #219653;
+    --light-green: #e8f5e9;
+    --accent-green: #2ecc71;
+    --trevo-green: #1e8449;
+    --pastel-green: #d5efdf;
+    --pastel-light: #f0f9f4;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --text-dark: #2c3e50;
+}
+
+.perfil-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 80vh;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(39, 174, 96, 0.1);
+    border-left: 5px solid var(--trevo-green);
+}
+
+.page-header h1 {
+    background: linear-gradient(135deg, var(--primary-green), var(--trevo-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+}
+
+.page-header p {
+    color: var(--text-dark);
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Foto de Perfil */
+.foto-section {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(39, 174, 96, 0.1);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.foto-perfil {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-green), var(--trevo-green));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 3rem;
+    font-weight: bold;
+    box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+}
+
+.btn-alterar-foto {
+    background: var(--pastel-green);
+    color: var(--dark-green);
+    border: 2px solid var(--primary-green);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-alterar-foto:hover {
+    background: var(--primary-green);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Seções do Formulário */
+.form-section {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(39, 174, 96, 0.1);
+    margin-bottom: 30px;
+}
+
+.form-section h2 {
+    color: var(--dark-green);
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--pastel-green);
+    padding-bottom: 10px;
+}
+
+/* Grid do Formulário */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px 15px;
+    border: 2px solid var(--pastel-green);
+    border-radius: 8px;
+    font-size: 16px;
+    background: var(--pastel-light);
+    transition: all 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+}
+
+/* Preferências */
+.preferencias-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.preferencia-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--pastel-light);
+    border-radius: 8px;
+    border: 1px solid var(--pastel-green);
+}
+
+.preferencia-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary-green);
+}
+
+.preferencia-item label {
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.preferencia-item select {
+    padding: 8px 12px;
+    border: 2px solid var(--pastel-green);
+    border-radius: 6px;
+    background: var(--white);
+}
+
+/* Botões de Ação */
+.acoes-section {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.btn-salvar, .btn-cancelar, .btn-alterar-senha {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 16px;
+}
+
+.btn-salvar {
+    background: linear-gradient(135deg, var(--primary-green), var(--trevo-green));
+    color: white;
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn-salvar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(39, 174, 96, 0.4);
+}
+
+.btn-cancelar {
+    background: #e74c3c;
+    color: white;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-cancelar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.btn-alterar-senha {
+    background: #3498db;
+    color: white;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-alterar-senha:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .perfil-container {
+        padding: 20px 15px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .acoes-section {
+        flex-direction: column;
+    }
+    
+    .page-header h1 {
+        font-size: 2.2rem;
+    }
+    
+    .avatar {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+}
+
+/* Mantenha os estilos do header e footer iguais aos das outras páginas */
