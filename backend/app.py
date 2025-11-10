@@ -189,20 +189,45 @@ def login():
     
     return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
 
-# ROTA PARA BUSCAR USUÁRIO
+# ROTA PARA BUSCAR USUÁRIO (COMPLETO) - NOME ALTERADO PARA EVITAR CONFLITO
 @app.route('/api/usuario/<email>', methods=['GET'])
-def get_usuario(email):
-    print(f"📥 Buscando usuário: {email}")
+def get_usuario_completo(email):
+    print(f"📥 Buscando usuário COMPLETO: {email}")
     
     conn = db.get_connection()
     if conn:
         try:
             cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT id, nome, email, telefone, tipo FROM usuarios WHERE email = %s", (email,))
+            cursor.execute("""
+                SELECT id, nome, email, telefone, cpf, data_nascimento,
+                       cep, rua, numero, complemento, bairro, cidade, estado,
+                       notificacao_email, notificacao_sms, categoria_preferida,
+                       tipo, data_criacao
+                FROM usuarios WHERE email = %s
+            """, (email,))
             usuario = cursor.fetchone()
             
             if usuario:
                 print(f"✅ Usuário encontrado: {usuario['nome']}")
+                
+                # DEBUG DETALHADO - Verificar cada campo
+                print("🔍 DEBUG DOS CAMPOS:")
+                print(f"  Nome: {usuario['nome']} (tipo: {type(usuario['nome'])})")
+                print(f"  Email: {usuario['email']} (tipo: {type(usuario['email'])})")
+                print(f"  Telefone: {usuario['telefone']} (tipo: {type(usuario['telefone'])})")
+                print(f"  CPF: {usuario['cpf']} (tipo: {type(usuario['cpf'])})")
+                print(f"  Data Nascimento: {usuario['data_nascimento']} (tipo: {type(usuario['data_nascimento'])})")
+                print(f"  CEP: {usuario['cep']} (tipo: {type(usuario['cep'])})")
+                print(f"  Rua: {usuario['rua']} (tipo: {type(usuario['rua'])})")
+                print(f"  Número: {usuario['numero']} (tipo: {type(usuario['numero'])})")
+                print(f"  Complemento: {usuario['complemento']} (tipo: {type(usuario['complemento'])})")
+                print(f"  Bairro: {usuario['bairro']} (tipo: {type(usuario['bairro'])})")
+                print(f"  Cidade: {usuario['cidade']} (tipo: {type(usuario['cidade'])})")
+                print(f"  Estado: {usuario['estado']} (tipo: {type(usuario['estado'])})")
+                print(f"  Notificação Email: {usuario['notificacao_email']} (tipo: {type(usuario['notificacao_email'])})")
+                print(f"  Notificação SMS: {usuario['notificacao_sms']} (tipo: {type(usuario['notificacao_sms'])})")
+                print(f"  Categoria Preferida: {usuario['categoria_preferida']} (tipo: {type(usuario['categoria_preferida'])})")
+                
                 return jsonify({'success': True, 'usuario': usuario})
             else:
                 print(f"❌ Usuário não encontrado: {email}")
@@ -217,6 +242,8 @@ def get_usuario(email):
     return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
 
 # ROTA PARA ATUALIZAR USUÁRIO
+# ROTA PARA ATUALIZAR USUÁRIO (CORRIGIDA)
+# ROTA PARA ATUALIZAR USUÁRIO (CORRIGIDA - TRATAMENTO ESPECIAL PARA DATA)
 @app.route('/api/usuario/<email>', methods=['PUT'])
 def update_usuario(email):
     print(f"🔄 Recebendo atualização para: {email}")
@@ -228,6 +255,38 @@ def update_usuario(email):
     if conn:
         try:
             cursor = conn.cursor()
+            
+            # Função para converter strings vazias em None
+            def clean_value(value):
+                if value == '' or value is None:
+                    return None
+                return value
+            
+            # Função ESPECIAL para data - trata datas vazias
+            def clean_date(value):
+                if value == '' or value is None:
+                    return None
+                # Se for uma data válida no formato YYYY-MM-DD
+                if isinstance(value, str) and re.match(r'^\d{4}-\d{2}-\d{2}$', value):
+                    return value
+                return None
+            
+            # Limpar os valores antes de enviar para o MySQL
+            nome = clean_value(data.get('nome'))
+            telefone = clean_value(data.get('telefone'))
+            cpf = clean_value(data.get('cpf'))
+            nascimento = clean_date(data.get('nascimento'))  # Usar a função especial para data
+            cep = clean_value(data.get('cep'))
+            rua = clean_value(data.get('rua'))
+            numero = clean_value(data.get('numero'))
+            complemento = clean_value(data.get('complemento'))
+            bairro = clean_value(data.get('bairro'))
+            cidade = clean_value(data.get('cidade'))
+            estado = clean_value(data.get('estado'))
+            notificacao_email = 1 if data.get('notificacaoEmail') else 0
+            notificacao_sms = 1 if data.get('notificacaoSMS') else 0
+            categoria_preferida = clean_value(data.get('categoriaPreferida'))
+            
             query = """
                 UPDATE usuarios SET 
                 nome = %s, telefone = %s, cpf = %s, data_nascimento = %s,
@@ -237,14 +296,15 @@ def update_usuario(email):
                 WHERE email = %s
             """
             values = (
-                data.get('nome'), data.get('telefone'), data.get('cpf'), data.get('nascimento'),
-                data.get('cep'), data.get('rua'), data.get('numero'), data.get('complemento'),
-                data.get('bairro'), data.get('cidade'), data.get('estado'),
-                data.get('notificacaoEmail'), data.get('notificacaoSMS'), data.get('categoriaPreferida'),
+                nome, telefone, cpf, nascimento,
+                cep, rua, numero, complemento,
+                bairro, cidade, estado,
+                notificacao_email, notificacao_sms, categoria_preferida,
                 email
             )
             
             print(f"🎯 Executando query com valores: {values}")
+            print(f"📅 Data de nascimento processada: '{nascimento}' (tipo: {type(nascimento)})")
             
             cursor.execute(query, values)
             conn.commit()
@@ -259,7 +319,6 @@ def update_usuario(email):
             cursor.close()
             conn.close()
     return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
-
 # ========== INICIAR SERVIDOR ==========
 if __name__ == '__main__':
     print("🎓 TREVOCAR - SISTEMA DE LOCADORA")

@@ -5,18 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Reservas - TrevoCar</title>
     <link rel="stylesheet" href="../../css/reservas.css">
+    <style>
+        /* Adicione estes estilos para o header */
+        :root {
+            --primary-green: #27ae60;
+            --dark-green: #219653;
+            --light-green: #e8f5e9;
+            --accent-green: #2ecc71;
+            --trevo-green: #1e8449;
+            --white: #ffffff;
+            --light-gray: #f5f5f5;
+            --text-dark: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .clover {
+            width: 35px;
+            height: 35px;
+            background-color: var(--trevo-green);
+            position: relative;
+            border-radius: 50%;
+            transform: rotate(45deg);
+        }
+        
+        .clover:before, .clover:after {
+            content: '';
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            background-color: var(--trevo-green);
+            border-radius: 50%;
+        }
+        
+        .clover:before {
+            top: -17px;
+            left: 0;
+        }
+        
+        .clover:after {
+            left: -17px;
+            top: 0;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+        
+        .quick-access {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .quick-access a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .quick-access a:hover {
+            color: var(--primary-green);
+        }
+
+        .login-btn {
+            background-color: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: var(--dark-green);
+        }
+
+        /* Menu do usuário logado */
+        .user-menu {
+            display: none;
+            position: relative;
+        }
+
+        .user-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .user-btn:hover {
+            background: var(--dark-green);
+        }
+
+        .user-avatar-small {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .dropdown-arrow {
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .quick-access {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header igual ao index.html -->
+    <!-- Header atualizado -->
     <header>
         <div class="top-bar">
-            <div class="logo-container">
+            <div class="logo-container" onclick="window.location.href='../index.html'">
                 <div class="clover"></div>
                 <div class="logo-text">TREVOCAR</div>
             </div>
             <div class="quick-access">
-                <a href="../index.html">Início</a>
-                <a href="../agencias.html">Agências</a>
+                <a href="../../index.html">Início</a>
+                
+                <!-- Botão de usuário logado (inicialmente escondido) -->
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <button class="user-btn" id="openUserMenu">
+                        <span class="user-avatar-small" id="userAvatarSmall">U</span>
+                        <span id="userNameShort">Usuário</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                </div>
+                
+                <!-- Botão de login (mostrado quando não logado) -->
                 <button class="login-btn" id="openLogin">Login</button>
             </div>
         </div>
@@ -145,6 +310,288 @@
         </div>
     </footer>
 
+    <!-- Menu Lateral -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 style="color: var(--primary-green);">Minha Conta</h3>
+            <span class="sidebar-close" id="closeSidebar">&times;</span>
+        </div>
+        
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <h4 id="userName">Usuário</h4>
+            <p id="userEmail">usuario@email.com</p>
+        </div>
+        
+        <ul class="sidebar-menu">
+    <li>
+        <a href="#" onclick="abrirPagina('perfil')">
+            <span class="sidebar-icon">👤</span>
+            <span>Meu Perfil</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" onclick="abrirPagina('reservas')">
+            <span class="sidebar-icon">📅</span>
+            <span>Minhas Reservas</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="logout-btn" id="logoutBtn">
+            <span class="sidebar-icon">🚪</span>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
+    </div>
+
+    <style>
+        /* Estilos do Menu Lateral */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--white);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 999;
+            padding: 20px;
+        }
+        
+        .sidebar.active {
+            right: 0;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .sidebar-close {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+        
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            padding: 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-menu a:hover {
+            background-color: var(--light-green);
+            color: var(--primary-green);
+        }
+        
+        .sidebar-icon {
+            font-size: 20px;
+        }
+        
+        .logout-btn {
+            color: #e74c3c !important;
+            margin-top: 20px;
+        }
+        
+        .user-info {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--light-green);
+            border-radius: 8px;
+        }
+        
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary-green);
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+    </style>
+
     <script src="../../js/reservas.js"></script>
+    <script>
+        // =============================================
+        // SISTEMA DE HEADER PARA PÁGINAS DO PERFIL
+        // =============================================
+
+        // Elementos do DOM
+        const openLoginBtn = document.getElementById('openLogin');
+        const userMenu = document.getElementById('userMenu');
+        const openUserMenu = document.getElementById('openUserMenu');
+        const userAvatarSmall = document.getElementById('userAvatarSmall');
+        const userNameShort = document.getElementById('userNameShort');
+        const sidebar = document.getElementById('sidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+
+        // ========== CONFIGURAÇÃO INICIAL ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Inicializando página de reservas...');
+            verificarUsuarioLogado();
+            configurarEventListeners();
+        });
+
+        // ========== VERIFICAÇÃO DE USUÁRIO LOGADO ==========
+        function verificarUsuarioLogado() {
+            const usuarioSalvo = localStorage.getItem('trevocar_usuario');
+            if (usuarioSalvo) {
+                try {
+                    const usuario = JSON.parse(usuarioSalvo);
+                    atualizarInterfaceUsuario(usuario);
+                    console.log('✅ Usuário logado detectado:', usuario.nome);
+                } catch (e) {
+                    console.error('❌ Erro ao parsear usuário:', e);
+                    localStorage.removeItem('trevocar_usuario');
+                    resetarInterfaceUsuario();
+                }
+            } else {
+                resetarInterfaceUsuario();
+            }
+        }
+
+        function atualizarInterfaceUsuario(usuario) {
+            if (usuario) {
+                // Esconder botão de login e mostrar menu do usuário
+                if (openLoginBtn) openLoginBtn.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'block';
+                
+                // Atualizar informações do usuário
+                if (openUserMenu) {
+                    const firstName = usuario.nome.split(' ')[0];
+                    userNameShort.textContent = firstName;
+                }
+                
+                if (userAvatarSmall) {
+                    userAvatarSmall.textContent = usuario.nome.split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .substring(0, 2);
+                }
+                
+                // Atualizar sidebar também
+                if (userName) userName.textContent = usuario.nome;
+                if (userEmail) userEmail.textContent = usuario.email;
+                if (userAvatar) {
+                    userAvatar.textContent = usuario.nome.split(' ')
+                        .map(n => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .substring(0, 2);
+                }
+            }
+        }
+
+        function resetarInterfaceUsuario() {
+            // Mostrar botão de login e esconder menu do usuário
+            if (openLoginBtn) openLoginBtn.style.display = 'block';
+            if (userMenu) userMenu.style.display = 'none';
+            
+            // Resetar sidebar
+            if (userName) userName.textContent = 'Usuário';
+            if (userEmail) userEmail.textContent = 'usuario@email.com';
+            if (userAvatar) userAvatar.textContent = 'U';
+            if (userAvatarSmall) userAvatarSmall.textContent = 'U';
+            if (userNameShort) userNameShort.textContent = 'Usuário';
+        }
+
+        // ========== CONFIGURAÇÃO DE EVENT LISTENERS ==========
+        function configurarEventListeners() {
+            // Login Modal
+            if (openLoginBtn) {
+                openLoginBtn.addEventListener('click', abrirModalLogin);
+            }
+
+            // Sidebar
+            if (closeSidebarBtn) {
+                closeSidebarBtn.addEventListener('click', fecharSidebar);
+            }
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', fazerLogout);
+            }
+
+            // Menu do usuário
+            if (openUserMenu) {
+                openUserMenu.addEventListener('click', () => {
+                    if (sidebar) sidebar.classList.add('active');
+                });
+            }
+        }
+
+        // ========== FUNÇÕES DE INTERFACE ==========
+        function abrirModalLogin() {
+            window.location.href = '../index.html';
+        }
+
+        function fecharSidebar() {
+            if (sidebar) sidebar.classList.remove('active');
+        }
+
+        function fazerLogout(e) {
+            e.preventDefault();
+            
+            if (confirm('Tem certeza que deseja sair?')) {
+                localStorage.removeItem('trevocar_usuario');
+                resetarInterfaceUsuario();
+                fecharSidebar();
+                alert('Sessão encerrada com sucesso!');
+                console.log('✅ Logout realizado');
+            }
+        }
+
+        // ========== SISTEMA DE NAVEGAÇÃO ==========
+       function abrirPagina(pagina) {
+    console.log('📍 Tentando abrir página:', pagina);
+    
+    // URLs absolutas que funcionam de qualquer lugar
+    const paginas = {
+        'perfil': '/templates/paginas-perfil/perfil.html',
+        'reservas': '/templates/paginas-perfil/reservas.html'
+    };
+    
+    if (paginas[pagina]) {
+        console.log('✅ Redirecionando para:', paginas[pagina]);
+        fecharSidebar();
+        window.location.href = paginas[pagina];
+    } else {
+        console.log('❌ Página não encontrada no mapa:', pagina);
+    }
+    return false;
+}
+        // ========== MANIPULAÇÃO DE ERROS ==========
+        window.addEventListener('error', function(e) {
+            console.error('❌ Erro global capturado:', e.error);
+        });
+    </script>
 </body>
 </html>

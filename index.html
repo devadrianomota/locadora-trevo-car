@@ -890,43 +890,25 @@
         </div>
         
         <ul class="sidebar-menu">
-            <li>
-                <a href="#" onclick="abrirPagina('perfil')">
-                    <span class="sidebar-icon">👤</span>
-                    <span>Meu Perfil</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="abrirPagina('reservas')">
-                    <span class="sidebar-icon">📅</span>
-                    <span>Minhas Reservas</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="abrirPagina('veiculos')">
-                    <span class="sidebar-icon">🚗</span>
-                    <span>Meus Veículos</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="abrirPagina('pagamentos')">
-                    <span class="sidebar-icon">💳</span>
-                    <span>Pagamentos</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" onclick="abrirPagina('favoritos')">
-                    <span class="sidebar-icon">⭐</span>
-                    <span>Favoritos</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="logout-btn" id="logoutBtn">
-                    <span class="sidebar-icon">🚪</span>
-                    <span>Sair</span>
-                </a>
-            </li>
-        </ul>
+    <li>
+        <a href="#" onclick="abrirPagina('perfil')">
+            <span class="sidebar-icon">👤</span>
+            <span>Meu Perfil</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" onclick="abrirPagina('reservas')">
+            <span class="sidebar-icon">📅</span>
+            <span>Minhas Reservas</span>
+        </a>
+    </li>
+    <li>
+        <a href="#" class="logout-btn" id="logoutBtn">
+            <span class="sidebar-icon">🚪</span>
+            <span>Sair</span>
+        </a>
+    </li>
+</ul>
     </div>
 
     CREATE TABLE IF NOT EXISTS usuarios (
@@ -1349,20 +1331,22 @@ function resetarInterfaceUsuario() {
 
     // ========== SISTEMA DE NAVEGAÇÃO ==========
     function abrirPagina(pagina) {
-        const paginas = {
-            'perfil': '/templates/paginas-perfil/perfil.html',
-            'reservas': '/templates/paginas-perfil/reservas.html',
-            'veiculos': '/templates/paginas-perfil/veiculos.html',
-            'pagamentos': '/templates/paginas-perfil/pagamentos.html',
-            'favoritos': '/templates/paginas-perfil/favoritos.html'
-        };
-        
-        if (paginas[pagina]) {
-            fecharSidebar();
-            window.location.href = paginas[pagina];
-        }
-        return false;
+    console.log('📍 Tentando abrir página:', pagina);
+    
+    const paginas = {
+        'perfil': '../templates/paginas-perfil/perfil.html',
+        'reservas': '../templates/paginas-perfil/reservas.html'
+    };
+    
+    if (paginas[pagina]) {
+        console.log('✅ Encontrou página, redirecionando para:', paginas[pagina]);
+        fecharSidebar();
+        window.location.href = paginas[pagina];
+    } else {
+        console.log('❌ Página não encontrada:', pagina);
     }
+    return false;
+}
 
     // ========== CARROSSEL ==========
     function iniciarCarrossel() {
