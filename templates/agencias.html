@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agências - Trevocar</title>
+    <style>
+        /* Reset e estilos gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8fdf9;
+            color: #2d4a3e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(45, 74, 62, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .clover {
+            width: 30px;
+            height: 30px;
+            background-color: #4caf7d;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2d4a3e;
+        }
+        
+        .quick-access {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .quick-access a {
+            text-decoration: none;
+            color: #2d4a3e;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .quick-access a:hover {
+            color: #4caf7d;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #2d4a3e;
+            font-weight: 500;
+        }
+        
+        .user-avatar-small {
+            width: 30px;
+            height: 30px;
+            background-color: #4caf7d;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 8px;
+        }
+        
+        .dropdown-arrow {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+        
+        .login-btn {
+            background-color: #4caf7d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .login-btn:hover {
+            background-color: #3d8c63;
+        }
+        
+        /* Conteúdo principal */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        .page-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #2d4a3e;
+        }
+        
+        /* Filtros */
+        .filter-section {
+            margin-bottom: 30px;
+        }
+        
+        .filter-toggle {
+            background-color: #4caf7d;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-toggle span {
+            font-size: 18px;
+        }
+        
+        .filter-options {
+            display: none;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(45, 74, 62, 0.1);
+            margin-top: 10px;
+            padding: 15px;
+        }
+        
+        .filter-options.active {
+            display: block;
+        }
+        
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        
+        .filter-group h3 {
+            margin-bottom: 10px;
+            color: #2d4a3e;
+        }
+        
+        .filter-list {
+            list-style: none;
+        }
+        
+        .filter-item {
+            padding: 8px 0;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .filter-item:hover {
+            color: #4caf7d;
+        }
+        
+        .filter-item.active {
+            color: #4caf7d;
+            font-weight: bold;
+        }
+        
+        /* Lista de agências */
+        .agencies-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        
+        .agencies-list {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(45, 74, 62, 0.1);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .agency-item {
+            padding: 15px;
+            border-bottom: 1px solid #e8f5e9;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .agency-item:hover {
+            background-color: #f1f8e9;
+        }
+        
+        .agency-item.active {
+            background-color: #e8f5e9;
+            border-left: 3px solid #4caf7d;
+        }
+        
+        .agency-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2d4a3e;
+        }
+        
+        .agency-city {
+            color: #5a7c6c;
+            font-size: 14px;
+        }
+        
+        /* Detalhes da agência */
+        .agency-details {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(45, 74, 62, 0.1);
+            padding: 20px;
+        }
+        
+        .agency-details h2 {
+            margin-bottom: 15px;
+            color: #2d4a3e;
+        }
+        
+        .detail-section {
+            margin-bottom: 20px;
+        }
+        
+        .detail-section h3 {
+            margin-bottom: 10px;
+            color: #2d4a3e;
+            font-size: 18px;
+        }
+        
+        .detail-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #5a7c6c;
+        }
+        
+        .feature-badge {
+            display: inline-block;
+            background-color: #4caf7d;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2d4a3e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .footer-copyright {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .agencies-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .agencies-list {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <div class="logo-container" onclick="irParaInicio()">
+                <div class="clover"></div>
+                <div class="logo-text">TREVOCAR</div>
+            </div>
+            <div class="quick-access">
+                <a href="../index.html">Início</a>
+                
+                <!-- Botão de usuário logado (inicialmente escondido) -->
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <button class="user-btn" id="openUserMenu">
+                        <span class="user-avatar-small" id="userAvatarSmall">U</span>
+                        <span id="userNameShort">Usuário</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                </div>
+                
+                <!-- Botão de login (mostrado quando não logado) -->
+                <button class="login-btn" id="openLogin">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <h1 class="page-title">Encontre uma agência</h1>
+        
+        <div class="filter-section">
+            <button class="filter-toggle" id="filterToggle">
+                <span>Filtrar por estado</span>
+                <span>▼</span>
+            </button>
+            <div class="filter-options" id="filterOptions">
+                <div class="filter-group">
+                    <h3>Estados</h3>
+                    <ul class="filter-list">
+                        <li class="filter-item active" data-state="all">Todos os estados</li>
+                        <li class="filter-item" data-state="sao-paulo">São Paulo</li>
+                        <li class="filter-item" data-state="rio-de-janeiro">Rio de Janeiro</li>
+                        <li class="filter-item" data-state="minas-gerais">Minas Gerais</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="agencies-container">
+            <div class="agencies-list" id="agenciesList">
+                <!-- Lista de agências será preenchida via JavaScript -->
+            </div>
+            
+            <div class="agency-details" id="agencyDetails">
+                <p>Selecione uma agência para ver os detalhes</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-title">TREVOCAR</div>
+            <div class="footer-copyright">© 2025 TrevoCar Locadora Sustentável. Todos os direitos reservados.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Dados das agências (você pode adicionar mais facilmente aqui)
+        const agenciesData = [
+            {
+                id: 1,
+                name: "Agência Aeroporto Aracatuba",
+                city: "Aracatuba",
+                state: "sao-paulo",
+                address: "Rodovia Hello Smidt, S/N, Jardim Cumbica",
+                phone: "0800 979 2020",
+                whatsapp: "0800 979 2020",
+                hours: {
+                    weekdays: "Segunda a Domingo: 24 horas",
+                    holidays: "Feriados: 24 horas"
+                },
+                exceptions: "Não existem exceções cadastradas para esta agência",
+                features: ["Fast - Retirada digital"]
+            },
+            {
+                id: 2,
+                name: "Agência Aeroporto Campinas",
+                city: "Campinas",
+                state: "sao-paulo",
+                address: "Av. Dr. João Ribeiro, 123, Aeroporto",
+                phone: "0800 979 2021",
+                whatsapp: "0800 979 2021",
+                hours: {
+                    weekdays: "Segunda a Domingo: 06:00 - 22:00",
+                    holidays: "Feriados: 08:00 - 18:00"
+                },
+                exceptions: "Fechado no Natal e Ano Novo",
+                features: ["Fast - Retirada digital", "Lava-rápido"]
+            },
+            {
+                id: 3,
+                name: "Agência Aeroporto Guarulhos",
+                city: "Guarulhos",
+                state: "sao-paulo",
+                address: "Rod. Hélio Smidt, S/N, Jardim Cumbica",
+                phone: "0800 979 2022",
+                whatsapp: "0800 979 2022",
+                hours: {
+                    weekdays: "Segunda a Domingo: 24 horas",
+                    holidays: "Feriados: 24 horas"
+                },
+                exceptions: "Não existem exceções cadastradas para esta agência",
+                features: ["Fast - Retirada digital", "Estacionamento coberto"]
+            },
+            {
+                id: 4,
+                name: "Agência Aeroporto Congonhas",
+                city: "São Paulo",
+                state: "sao-paulo",
+                address: "Av. Washington Luís, 123, Vila Congonhas",
+                phone: "0800 979 2023",
+                whatsapp: "0800 979 2023",
+                hours: {
+                    weekdays: "Segunda a Domingo: 05:00 - 23:00",
+                    holidays: "Feriados: 06:00 - 20:00"
+                },
+                exceptions: "Funcionamento reduzido em feriados prolongados",
+                features: ["Fast - Retirada digital", "Assistência 24h"]
+            },
+            {
+                id: 5,
+                name: "Agência Centro Rio de Janeiro",
+                city: "Rio de Janeiro",
+                state: "rio-de-janeiro",
+                address: "Av. Rio Branco, 123, Centro",
+                phone: "0800 979 2024",
+                whatsapp: "0800 979 2024",
+                hours: {
+                    weekdays: "Segunda a Sexta: 08:00 - 20:00, Sábado: 09:00 - 16:00",
+                    holidays: "Feriados: Fechado"
+                },
+                exceptions: "Fechado aos domingos e feriados",
+                features: ["Fast - Retirada digital"]
+            },
+            {
+                id: 6,
+                name: "Agência Aeroporto Santos Dumont",
+                city: "Rio de Janeiro",
+                state: "rio-de-janeiro",
+                address: "Praça Sen. Salgado Filho, S/N, Centro",
+                phone: "0800 979 2025",
+                whatsapp: "0800 979 2025",
+                hours: {
+                    weekdays: "Segunda a Domingo: 06:00 - 23:00",
+                    holidays: "Feriados: 08:00 - 18:00"
+                },
+                exceptions: "Funcionamento reduzido em feriados",
+                features: ["Fast - Retirada digital", "Entrega no hotel"]
+            },
+            {
+                id: 7,
+                name: "Agência Centro Belo Horizonte",
+                city: "Belo Horizonte",
+                state: "minas-gerais",
+                address: "Av. Afonso Pena, 123, Centro",
+                phone: "0800 979 2026",
+                whatsapp: "0800 979 2026",
+                hours: {
+                    weekdays: "Segunda a Sexta: 08:00 - 19:00, Sábado: 09:00 - 15:00",
+                    holidays: "Feriados: Fechado"
+                },
+                exceptions: "Fechado aos domingos e feriados",
+                features: ["Fast - Retirada digital"]
+            },
+            {
+                id: 8,
+                name: "Agência Aeroporto Confins",
+                city: "Belo Horizonte",
+                state: "minas-gerais",
+                address: "Rod. MG-10, KM 40, S/N, Confins",
+                phone: "0800 979 2027",
+                whatsapp: "0800 979 2027",
+                hours: {
+                    weekdays: "Segunda a Domingo: 06:00 - 23:00",
+                    holidays: "Feriados: 08:00 - 18:00"
+                },
+                exceptions: "Funcionamento reduzido em feriados",
+                features: ["Fast - Retirada digital", "Veículos premium"]
+            }
+        ];
+
+        // Elementos do DOM
+        const filterToggle = document.getElementById('filterToggle');
+        const filterOptions = document.getElementById('filterOptions');
+        const agenciesList = document.getElementById('agenciesList');
+        const agencyDetails = document.getElementById('agencyDetails');
+        const filterItems = document.querySelectorAll('.filter-item');
+
+        // Estado atual do filtro
+        let currentFilter = 'all';
+        let selectedAgencyId = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAgenciesList();
+            
+            // Adiciona eventos aos filtros
+            filterItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Remove a classe active de todos os itens
+                    filterItems.forEach(i => i.classList.remove('active'));
+                    // Adiciona a classe active ao item clicado
+                    this.classList.add('active');
+                    
+                    // Atualiza o filtro atual
+                    currentFilter = this.getAttribute('data-state');
+                    
+                    // Re-renderiza a lista de agências
+                    renderAgenciesList();
+                });
+            });
+            
+            // Evento para mostrar/ocultar opções de filtro
+            filterToggle.addEventListener('click', function() {
+                filterOptions.classList.toggle('active');
+            });
+        });
+
+        // Função para renderizar a lista de agências
+        function renderAgenciesList() {
+            // Limpa a lista
+            agenciesList.innerHTML = '';
+            
+            // Filtra as agências com base no estado selecionado
+            const filteredAgencies = currentFilter === 'all' 
+                ? agenciesData 
+                : agenciesData.filter(agency => agency.state === currentFilter);
+            
+            // Se não houver agências, mostra uma mensagem
+            if (filteredAgencies.length === 0) {
+                agenciesList.innerHTML = '<p class="agency-item">Nenhuma agência encontrada</p>';
+                return;
+            }
+            
+            // Adiciona cada agência à lista
+            filteredAgencies.forEach(agency => {
+                const agencyItem = document.createElement('div');
+                agencyItem.className = `agency-item ${selectedAgencyId === agency.id ? 'active' : ''}`;
+                agencyItem.setAttribute('data-id', agency.id);
+                
+                agencyItem.innerHTML = `
+                    <div class="agency-name">${agency.name}</div>
+                    <div class="agency-city">${agency.city}</div>
+                `;
+                
+                agencyItem.addEventListener('click', function() {
+                    // Remove a classe active de todos os itens
+                    document.querySelectorAll('.agency-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    
+                    // Adiciona a classe active ao item clicado
+                    this.classList.add('active');
+                    
+                    // Atualiza a agência selecionada
+                    selectedAgencyId = agency.id;
+                    
+                    // Renderiza os detalhes da agência
+                    renderAgencyDetails(agency);
+                });
+                
+                agenciesList.appendChild(agencyItem);
+            });
+            
+            // Se houver uma agência selecionada, renderiza seus detalhes
+            if (selectedAgencyId) {
+                const selectedAgency = agenciesData.find(agency => agency.id === selectedAgencyId);
+                if (selectedAgency) {
+                    renderAgencyDetails(selectedAgency);
+                }
+            }
+        }
+
+        // Função para renderizar os detalhes da agência
+        function renderAgencyDetails(agency) {
+            agencyDetails.innerHTML = `
+                <h2>${agency.name}</h2>
+                
+                <div class="detail-section">
+                    <h3>Endereço</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Endereço:</span>
+                        <span>${agency.address}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>Contato</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Telefone:</span>
+                        <span>${agency.phone}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">WhatsApp:</span>
+                        <span>${agency.whatsapp}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>Horário de funcionamento</h3>
+                    <div class="detail-item">
+                        <span class="detail-label">Segunda a Domingo:</span>
+                        <span>${agency.hours.weekdays}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Feriados:</span>
+                        <span>${agency.hours.holidays}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>Exceções</h3>
+                    <p>${agency.exceptions}</p>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>Serviços</h3>
+                    <div>
+                        ${agency.features.map(feature => `<span class="feature-badge">${feature}</span>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Função para ir para a página inicial
+        function irParaInicio() {
+            window.location.href = '../index.html';
+        }
+    </script>
+</body>
+</html>

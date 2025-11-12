@@ -38,3 +38,21 @@ window.adicionarNovaReserva({
     status: "active"
 });
 A reserva deve aparecer instantaneamente! 
+
+//para adicionar mais agencias no agencias.html
+
+{
+    id: 9, // ID único
+    name: "Nome da Agência",
+    city: "Cidade",
+    state: "estado", // sao-paulo, rio-de-janeiro ou minas-gerais
+    address: "Endereço completo",
+    phone: "Telefone",
+    whatsapp: "WhatsApp",
+    hours: {
+        weekdays: "Horários de segunda a domingo",
+        holidays: "Horários em feriados"
+    },
+    exceptions: "Exceções de funcionamento",
+    features: ["Serviço 1", "Serviço 2"] // Lista de serviços
+}
