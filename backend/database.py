@@ -4,11 +4,11 @@ import os
 
 class Database:
     def __init__(self):
-        # ⚠️ ALTERE ESTAS CONFIGURAÇÕES conforme seu MySQL!
+      
         self.host = 'localhost'
         self.database = 'trevocar'
         self.user = 'root'
-        self.password = 'mota1413@'  # ⬅️ COLOQUE SUA SENHA AQUI!
+        self.password = 'mota1413@'  
         
     def get_connection(self):
         try:

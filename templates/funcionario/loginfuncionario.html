@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trevocar - Login Funcionários</title>
+    <style>
+        :root {
+            --verde-principal: #2E8B57;
+            --verde-escuro: #1E6B47;
+            --verde-claro: #4CAF50;
+            --cinza-claro: #f5f5f5;
+            --cinza-escuro: #333;
+            --branco: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cinza-claro);
+            color: var(--cinza-escuro);
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background-color: var(--verde-principal);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .logo {
+            color: var(--branco);
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: var(--branco);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .login-container {
+            background-color: var(--branco);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .login-title {
+            color: var(--verde-principal);
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--cinza-escuro);
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--verde-principal);
+            outline: none;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--verde-principal);
+            color: var(--branco);
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--verde-escuro);
+        }
+        
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .login-links a {
+            color: var(--verde-principal);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        .login-links a:hover {
+            color: var(--verde-escuro);
+            text-decoration: underline;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: var(--branco);
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .close-btn:hover {
+            color: var(--cinza-escuro);
+        }
+        
+        .modal-title {
+            color: var(--verde-principal);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .radio-option input {
+            margin-right: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                gap: 20px;
+            }
+            
+            .login-container {
+                padding: 20px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .radio-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegação -->
+    <nav class="navbar">
+        <a href="/index.html" class="logo">Trevocar</a>
+        <div class="nav-links">
+            <a href="/index.html">Início</a>
+        </div>
+    </nav>
+
+    <!-- Container principal -->
+    <div class="container">
+        <div class="login-container">
+            <h2 class="login-title">Login de Funcionários</h2>
+            
+            <!-- Mensagens -->
+            <div id="message" class="message"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="id">ID do Funcionário</label>
+                    <input type="text" id="id" name="id" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <div class="login-links">
+                    <a href="#" id="redefinirLink">Redefinir Senha</a>
+                    <a href="#" id="cadastrarLink">Cadastrar Funcionário</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de cadastro -->
+    <div id="cadastroModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2 class="modal-title">Cadastro de Funcionário</h2>
+            
+            <!-- Mensagem do cadastro -->
+            <div id="cadastroMessage" class="message"></div>
+            
+            <form id="cadastroForm">
+                <div class="form-group">
+                    <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input type="text" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" name="telefone" required>
+                </div>
+                <div class="form-group">
+                    <label for="cpf">CPF</label>
+                    <input type="text" id="cpf" name="cpf" required>
+                </div>
+                <div class="form-group">
+                    <label for="endereco">Endereço</label>
+                    <input type="text" id="endereco" name="endereco" required>
+                </div>
+                <div class="form-group">
+                    <label for="cargo">Cargo</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="administrador" name="cargo" value="administrador" required>
+                            <label for="administrador">Administrador</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="manutencionista" name="cargo" value="manutencionista">
+                            <label for="manutencionista">Manutencionista</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="motorista" name="cargo" value="motorista">
+                            <label for="motorista">Motorista</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="agenciador" name="cargo" value="agenciador">
+                            <label for="agenciador">Agenciador</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="novaSenha">Senha</label>
+                    <input type="password" id="novaSenha" name="senha" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmarSenha">Confirmar Senha</label>
+                    <input type="password" id="confirmarSenha" name="confirmar_senha" required>
+                </div>
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Elementos DOM
+        const loginForm = document.getElementById('loginForm');
+        const cadastroForm = document.getElementById('cadastroForm');
+        const cadastroModal = document.getElementById('cadastroModal');
+        const cadastrarLink = document.getElementById('cadastrarLink');
+        const closeModal = document.getElementById('closeModal');
+        const redefinirLink = document.getElementById('redefinirLink');
+        const messageDiv = document.getElementById('message');
+        const cadastroMessageDiv = document.getElementById('cadastroMessage');
+
+        // Função para mostrar mensagens
+        function showMessage(element, text, type) {
+            element.textContent = text;
+            element.className = `message ${type}`;
+            element.style.display = 'block';
+            
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+
+        // Abrir modal de cadastro
+        cadastrarLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            cadastroModal.style.display = 'block';
+        });
+        
+        // Fechar modal de cadastro
+        closeModal.addEventListener('click', function() {
+            cadastroModal.style.display = 'none';
+            cadastroMessageDiv.style.display = 'none';
+        });
+        
+        // Fechar modal ao clicar fora dele
+        window.addEventListener('click', function(e) {
+            if (e.target === cadastroModal) {
+                cadastroModal.style.display = 'none';
+                cadastroMessageDiv.style.display = 'none';
+            }
+        });
+        
+        // Processar formulário de login
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('id').value;
+            const senha = document.getElementById('senha').value;
+            
+            try {
+                const response = await fetch('/api/login-funcionarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id, senha })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage(messageDiv, 'Login realizado com sucesso!', 'success');
+                    // Redirecionar para dashboard após login
+                    setTimeout(() => {
+                        window.location.href = '/dashboard-funcionarios';
+                    }, 1000);
+                } else {
+                    showMessage(messageDiv, data.error, 'error');
+                }
+                
+            } catch (error) {
+                showMessage(messageDiv, 'Erro de conexão', 'error');
+            }
+        });
+        
+        // Processar formulário de cadastro
+        cadastroForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('nome').value;
+            const email = document.getElementById('email').value;
+            const telefone = document.getElementById('telefone').value;
+            const cpf = document.getElementById('cpf').value;
+            const endereco = document.getElementById('endereco').value;
+            const cargo = document.querySelector('input[name="cargo"]:checked').value;
+            const senha = document.getElementById('novaSenha').value;
+            const confirmarSenha = document.getElementById('confirmarSenha').value;
+            
+            // Validação básica
+            if (senha !== confirmarSenha) {
+                showMessage(cadastroMessageDiv, 'As senhas não coincidem!', 'error');
+                return;
+            }
+            
+            if (senha.length < 6) {
+                showMessage(cadastroMessageDiv, 'A senha deve ter pelo menos 6 caracteres!', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/funcionarios', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    // Aqui você precisará adicionar o token JWT quando implementar
+                    // 'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ 
+                        nome, email, telefone, cpf, endereco, cargo, senha 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showMessage(cadastroMessageDiv, data.message, 'success');
+                    cadastroForm.reset();
+                    setTimeout(() => {
+                        cadastroModal.style.display = 'none';
+                        cadastroMessageDiv.style.display = 'none';
+                    }, 2000);
+                } else {
+                    showMessage(cadastroMessageDiv, data.error, 'error');
+                }
+                
+            } catch (error) {
+                showMessage(cadastroMessageDiv, 'Erro de conexão', 'error');
+            }
+        });
+        
+        // Redefinir senha
+        redefinirLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showMessage(messageDiv, 'Entre em contato com o administrador para redefinir sua senha.', 'success');
+        });
+    </script>
+</body>
+</html>

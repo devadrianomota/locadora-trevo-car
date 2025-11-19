@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_from_directory, render_template, session, redirect, url_for
+from flask import Flask, jsonify, request, send_from_directory, render_template, session, redirect, url_for, Blueprint
 from flask_cors import CORS
 import mysql.connector
 from mysql.connector import Error
@@ -475,6 +475,33 @@ def login_funcionario():
             'success': False, 
             'error': 'Erro interno do servidor'
         }), 500
+    
+            # Verificar senha (usando bcrypt)
+        senha_valida = bcrypt.checkpw(
+                senha.encode('utf-8'), 
+                funcionario['senha_hash'].encode('utf-8')
+            )
+
+        if not senha_valida:
+                return jsonify({'success': False, 'error': 'Credenciais inválidas'}), 401
+
+            # Criar sessão
+        session['funcionario_id'] = funcionario['id']
+        session['funcionario_nome'] = funcionario['nome']
+        session['cargo'] = funcionario['cargo']
+
+        return jsonify({
+                'success': True,
+                'funcionario': {
+                    'id': funcionario['id'],
+                    'nome': funcionario['nome'],
+                    'cargo': funcionario['cargo']
+                }
+            })
+
+    except Exception as e:
+        print(f"❌ Erro no login de funcionário: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
 
 @app.route('/api/funcionarios', methods=['POST'])
 def cadastrar_funcionario():
@@ -530,6 +557,50 @@ def cadastrar_funcionario():
             'message': 'Funcionário cadastrado com sucesso',
             'id': novo_id
         }), 201
+
+    except Exception as e:
+        print(f"❌ Erro no cadastro de funcionário: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+        # Validar dados
+        campos_obrigatorios = ['nome', 'email', 'telefone', 'cpf', 'endereco', 'cargo', 'senha']
+        for campo in campos_obrigatorios:
+            if not data.get(campo):
+                return jsonify({'success': False, 'error': f'Campo {campo} é obrigatório'}), 400
+
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor(dictionary=True)
+            
+            # Verificar se email ou CPF já existem
+            cursor.execute("SELECT id FROM funcionarios WHERE email = %s OR cpf = %s", 
+                        (data['email'], data['cpf']))
+            
+            if cursor.fetchone():
+                cursor.close()
+                conn.close()
+                return jsonify({'success': False, 'error': 'Email ou CPF já cadastrado'}), 400
+
+            # Hash da senha
+            senha_hash = bcrypt.hashpw(data['senha'].encode('utf-8'), bcrypt.gensalt())
+
+            # Inserir no banco
+            cursor.execute("""
+                INSERT INTO funcionarios 
+                (nome, email, telefone, cpf, endereco, cargo, senha_hash) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (data['nome'], data['email'], data['telefone'], data['cpf'], 
+                data['endereco'], data['cargo'], senha_hash.decode('utf-8')))
+
+            conn.commit()
+            novo_id = cursor.lastrowid
+            cursor.close()
+            conn.close()
+
+            return jsonify({
+                'success': True,
+                'message': 'Funcionário cadastrado com sucesso',
+                'id': novo_id
+            }), 201
 
     except Exception as e:
         print(f"❌ Erro no cadastro de funcionário: {e}")
@@ -846,7 +917,7 @@ def criar_veiculo():
     
     return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
 
-# API para criar nova filial
+    # API para criar nova filial
 @app.route('/api/filiais', methods=['POST'])
 def criar_filial():
     try:
@@ -1215,19 +1286,22 @@ def get_veiculo(veiculo_id):
     
     return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
 
-# ========== ROTAS DE MANUTENÇÃO ==========
+ 
+@app.route('/funcionario/manutencao')
+def dashboard_manutencao():
+    return render_template('templates/funcionario/dashboard_manutencionista')
 
-@app.route('/api/manutencao/veiculos', methods=['GET'])
-def get_veiculos_manutencao():
-    """Buscar veículos para manutenção"""
+# Buscar veículos
+@manutencao_bp.route('/veiculos', methods=['GET'])
+def get_veiculos():
     try:
-        conn = db.get_connection()
+        conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
         cursor.execute("""
             SELECT v.*, c.nome as categoria_nome 
             FROM veiculo v 
-            LEFT JOIN categoria_veiculo c ON v.id_categoria = c.id_categoria
+            LEFT JOIN categoria c ON v.id_categoria = c.id_categoria
             ORDER BY v.placa
         """)
         veiculos = cursor.fetchall()
@@ -1239,17 +1313,17 @@ def get_veiculos_manutencao():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/manutencao/veiculos-em-manutencao', methods=['GET'])
-def get_veiculos_em_manutencao():
-    """Buscar veículos em manutenção"""
+# Buscar veículos em manutenção
+@manutencao_bp.route('/veiculos/manutencao', methods=['GET'])
+def get_veiculos_manutencao():
     try:
-        conn = db.get_connection()
+        conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
         cursor.execute("""
             SELECT v.*, c.nome as categoria_nome 
             FROM veiculo v 
-            LEFT JOIN categoria_veiculo c ON v.id_categoria = c.id_categoria
+            LEFT JOIN categoria c ON v.id_categoria = c.id_categoria
             WHERE v.status = 'em manutenção'
             ORDER BY v.placa
         """)
@@ -1262,12 +1336,12 @@ def get_veiculos_em_manutencao():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/manutencao/registrar', methods=['POST'])
+# Registrar manutenção
+@manutencao_bp.route('/manutencao/registrar', methods=['POST'])
 def registrar_manutencao():
-    """Registrar nova manutenção"""
     try:
         data = request.json
-        conn = db.get_connection()
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         # Atualizar status do veículo
@@ -1276,7 +1350,7 @@ def registrar_manutencao():
             (data['id_veiculo'],)
         )
         
-        # Criar tabela de manutenções se não existir
+        # Registrar na tabela de manutenções (crie esta tabela se não existir)
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS manutencao (
                 id_manutencao INT AUTO_INCREMENT PRIMARY KEY,
@@ -1289,7 +1363,6 @@ def registrar_manutencao():
             )
         """)
         
-        # Registrar manutenção
         cursor.execute("""
             INSERT INTO manutencao (id_veiculo, motivo, data_inicio, status)
             VALUES (%s, %s, %s, 'em_andamento')
@@ -1303,12 +1376,12 @@ def registrar_manutencao():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/manutencao/concluir', methods=['POST'])
-def concluir_manutencao():
-    """Concluir manutenção"""
+# Concluir manutenção
+@manutencao_bp.route('/manutencao/concluir', methods=['POST'])
+def concluir_manutenção():
     try:
         data = request.json
-        conn = db.get_connection()
+        conn = get_db_connection()
         cursor = conn.cursor()
         
         # Atualizar status do veículo para disponível
@@ -1332,11 +1405,11 @@ def concluir_manutencao():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/manutencao/historico', methods=['GET'])
+# Histórico de manutenções
+@manutencao_bp.route('/manutencao/historico', methods=['GET'])
 def get_historico_manutencao():
-    """Buscar histórico de manutenções"""
     try:
-        conn = db.get_connection()
+        conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
         
         cursor.execute("""
@@ -1354,243 +1427,8 @@ def get_historico_manutencao():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-# ========== SUBSTITUA O CONTEÚDO DESTAS APIS ==========
 
-@app.route('/api/motorista/perfil', methods=['GET'])
-def get_motorista_perfil():
-    print("🎯 API /api/motorista/perfil ACESSADA!")
-    return jsonify({
-        'success': True,
-        'motorista': {
-            'id_motorista': 1,
-            'nome': 'Manuel Batista',
-            'cnh': '12345678901', 
-            'disponibilidade': 'sim',
-            'id_usuario': 1,
-            'funcionario_nome': 'Manuel Batista'
-        }
-    })
 
-@app.route('/api/motorista/disponibilidade', methods=['PUT'])
-def atualizar_disponibilidade_motorista():
-    print("🎯 API /api/motorista/disponibilidade ACESSADA!")
-    data = request.json
-    return jsonify({
-        'success': True,
-        'message': f'Disponibilidade {data.get("disponibilidade")} atualizada!'
-    })
-
-@app.route('/api/motorista/estatisticas', methods=['GET'])
-def get_estatisticas_motorista():
-    print("🎯 API /api/motorista/estatisticas ACESSADA!")
-    return jsonify({
-        'success': True,
-        'estatisticas': {
-            'total_viagens': 15,
-            'viagens_pendentes': 2,
-            'viagens_agendadas': 3, 
-            'viagens_concluidas': 10
-        }
-    })
-
-@app.route('/api/motorista/viagens/pendentes', methods=['GET'])
-def get_viagens_pendentes():
-    print("🎯 API /api/motorista/viagens/pendentes ACESSADA!")
-    return jsonify({
-        'success': True,
-        'viagens': [
-            {
-                'id_viagem': 1,
-                'cliente_nome': 'Maria Silva',
-                'origem': 'Aeroporto Internacional',
-                'destino': 'Hotel Central', 
-                'data_viagem': '2024-01-20T14:30:00',
-                'veiculo_solicitado': 'Toyota Corolla',
-                'valor': 45.00,
-                'passageiros': 2,
-                'observacoes': 'Voo atrasado'
-            }
-        ]
-    })
-
-@app.route('/api/motorista/viagens/agendadas', methods=['GET'])
-def get_viagens_agendadas():
-    print("🎯 API /api/motorista/viagens/agendadas ACESSADA!")
-    return jsonify({
-        'success': True,
-        'viagens': [
-            {
-                'id_viagem': 2,
-                'cliente_nome': 'Carlos Santos',
-                'origem': 'Shopping Center',
-                'destino': 'Aeroporto',
-                'data_viagem': '2024-01-21T08:00:00',
-                'veiculo_solicitado': 'Honda Civic', 
-                'valor': 60.00
-            }
-        ]
-    })
-
-@app.route('/api/motorista/viagens/historico', methods=['GET'])
-def get_historico_viagens():
-    print("🎯 API /api/motorista/viagens/historico ACESSADA!")
-    return jsonify({
-        'success': True,
-        'viagens': [
-            {
-                'id_viagem': 3,
-                'cliente_nome': 'Ana Costa',
-                'origem': 'Estação Central',
-                'destino': 'Universidade',
-                'data_viagem': '2024-01-18T09:15:00',
-                'veiculo_solicitado': 'Toyota Corolla',
-                'valor': 20.00,
-                'status': 'concluida'
-            }
-        ]
-    })
-
-@app.route('/api/motorista/viagens/<int:viagem_id>/aceitar', methods=['POST'])
-def aceitar_viagem(viagem_id):
-    print(f"🎯 API /api/motorista/viagens/{viagem_id}/aceitar ACESSADA!")
-    return jsonify({'success': True, 'message': 'Viagem aceita!'})
-
-@app.route('/api/motorista/viagens/<int:viagem_id>/recusar', methods=['POST'])
-def recusar_viagem(viagem_id):
-    print(f"🎯 API /api/motorista/viagens/{viagem_id}/recusar ACESSADA!")
-    return jsonify({'success': True, 'message': 'Viagem recusada'})
-
-@app.route('/api/motorista/viagens/<int:viagem_id>/iniciar', methods=['POST'])
-def iniciar_viagem(viagem_id):
-    print(f"🎯 API /api/motorista/viagens/{viagem_id}/iniciar ACESSADA!")
-    return jsonify({'success': True, 'message': 'Viagem iniciada!'})
-
-# ========== APIS PARA VIAGENS (COM NOMES ÚNICOS) ==========
-
-@app.route('/api/viagens', methods=['POST'])
-def criar_viagem_admin():
-    try:
-        print("🎯 CRIANDO NOVA VIAGEM...")
-        data = request.get_json()
-        print("📦 Dados recebidos:", data)
-        
-        # Validação básica
-        if not data.get('id_cliente') or not data.get('origem') or not data.get('destino'):
-            return jsonify({'success': False, 'error': 'Dados incompletos'}), 400
-        
-        conn = db.get_connection()
-        if not conn:
-            return jsonify({'success': False, 'error': 'Sem conexão com banco'}), 500
-            
-        cursor = conn.cursor()
-        
-        # Inserir viagem
-        cursor.execute("""
-            INSERT INTO viagens 
-            (id_cliente, origem, destino, data_viagem, veiculo_solicitado, valor, passageiros, observacoes, status) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'pendente')
-        """, (
-            data['id_cliente'],
-            data['origem'],
-            data['destino'],
-            data.get('data_viagem'),
-            data.get('veiculo_solicitado'),
-            data.get('valor', 0),
-            data.get('passageiros', 1),
-            data.get('observacoes', '')
-        ))
-        
-        conn.commit()
-        novo_id = cursor.lastrowid
-        cursor.close()
-        conn.close()
-        
-        print(f"✅ VIAGEM CRIADA COM SUCESSO! ID: {novo_id}")
-        
-        return jsonify({
-            'success': True,
-            'message': 'Viagem criada com sucesso!',
-            'id_viagem': novo_id
-        }), 201
-        
-    except Exception as e:
-        print(f"💥 ERRO: {str(e)}")
-        import traceback
-        print(f"💥 TRACEBACK: {traceback.format_exc()}")
-        return jsonify({'success': False, 'error': f'Erro: {str(e)}'}), 500
-
-@app.route('/api/admin/clientes', methods=['GET'])
-def get_clientes_admin():
-    try:
-        print("👥 Buscando lista de clientes...")
-        
-        conn = db.get_connection()
-        if conn:
-            cursor = conn.cursor(dictionary=True)
-            cursor.execute("""
-                SELECT id, nome, email, telefone
-                FROM usuarios 
-                WHERE tipo = 'cliente'
-                ORDER BY nome
-            """)
-            
-            clientes = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            
-            print(f"✅ {len(clientes)} clientes encontrados")
-            
-            return jsonify({
-                'success': True,
-                'clientes': clientes
-            })
-            
-    except Exception as e:
-        print(f"❌ Erro ao buscar clientes: {e}")
-        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
-    
-    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
-
-@app.route('/api/admin/funcionarios', methods=['GET'])
-def get_funcionarios_admin():
-    try:
-        cargo = request.args.get('cargo')
-        print(f"👥 Buscando funcionários - Cargo: {cargo}")
-        
-        conn = db.get_connection()
-        if conn:
-            cursor = conn.cursor(dictionary=True)
-            
-            if cargo:
-                cursor.execute("""
-                    SELECT id, nome, email, telefone, cargo
-                    FROM funcionarios 
-                    WHERE cargo = %s AND ativo = TRUE
-                    ORDER BY nome
-                """, (cargo,))
-            else:
-                cursor.execute("""
-                    SELECT id, nome, email, telefone, cargo, ativo
-                    FROM funcionarios 
-                    ORDER BY data_cadastro DESC
-                """)
-            
-            funcionarios = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            
-            print(f"✅ {len(funcionarios)} funcionários encontrados")
-            
-            return jsonify({
-                'success': True,
-                'funcionarios': funcionarios
-            })
-            
-    except Exception as e:
-        print(f"❌ Erro ao buscar funcionários: {e}")
-        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
-    
-    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
 # ========== INICIAR SERVIDOR ==========
 if __name__ == '__main__':
     print("TREVOCAR - SISTEMA DE LOCADORA")
@@ -1598,7 +1436,6 @@ if __name__ == '__main__':
     print(" Servidor iniciado!")
     print(" Sistema de login/cadastro ativo!")
     print(" Sistema de funcionários ativo!")
-    print(" Sistema de manutenção ativo!")
     print("Acesse: http://localhost:5000")
     print("=====================================")
     

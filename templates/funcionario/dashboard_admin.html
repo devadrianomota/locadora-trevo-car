@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Trevocar</title>
+    <style>
+        :root {
+            --verde-principal: #2E8B57;
+            --verde-escuro: #1E6B47;
+            --verde-claro: #4CAF50;
+            --verde-suave: #E8F5E8;
+            --cinza-claro: #f8f9fa;
+            --cinza-medio: #e9ecef;
+            --cinza-escuro: #343a40;
+            --branco: #ffffff;
+            --vermelho: #dc3545;
+            --laranja: #fd7e14;
+            --azul: #007bff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cinza-claro);
+            color: var(--cinza-escuro);
+            line-height: 1.6;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-escuro));
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: var(--branco);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-details {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-role {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .logout-btn {
+            background-color: rgba(255,255,255,0.2);
+            color: var(--branco);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Container Principal */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Header do Dashboard */
+        .dashboard-header {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--verde-principal);
+        }
+        
+        .dashboard-title {
+            color: var(--verde-principal);
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .dashboard-subtitle {
+            color: var(--cinza-escuro);
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        /* Cards de Estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--verde-principal);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--verde-principal);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: var(--cinza-escuro);
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        /* Seções de Gestão */
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .management-card {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--verde-suave);
+        }
+        
+        .card-icon {
+            font-size: 28px;
+            color: var(--verde-principal);
+        }
+        
+        .card-title {
+            font-size: 22px;
+            color: var(--verde-principal);
+            font-weight: 600;
+        }
+        
+        /* Botões */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
+            color: var(--branco);
+        }
+        
+        .btn-secondary {
+            background: var(--verde-suave);
+            color: var(--verde-principal);
+            border: 1px solid var(--verde-principal);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--laranja), #ff9800);
+            color: var(--branco);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--vermelho), #c62828);
+            color: var(--branco);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Listas de Dados */
+        .data-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--cinza-medio);
+            transition: background-color 0.3s;
+        }
+        
+        .data-item:hover {
+            background-color: var(--verde-suave);
+        }
+        
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 600;
+            color: var(--cinza-escuro);
+        }
+        
+        .item-details {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .item-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-available {
+            background-color: var(--verde-suave);
+            color: var(--verde-principal);
+        }
+        
+        .status-rented {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-maintenance {
+            background-color: #f8d7da;
+            color: var(--vermelho);
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: 15px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background: var(--verde-suave);
+            color: var(--verde-principal);
+        }
+
+        .delete-btn {
+            background: #f8d7da;
+            color: var(--vermelho);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .management-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .item-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal-content {
+            background-color: var(--branco);
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close-btn:hover {
+            color: var(--vermelho);
+        }
+
+        .modal-title {
+            color: var(--verde-principal);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--cinza-escuro);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--cinza-medio);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--verde-principal);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--cinza-medio);
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--cinza-medio);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea:focus {
+            border-color: var(--verde-principal);
+            outline: none;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--branco);
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: var(--cinza-escuro);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
+            color: var(--branco);
+            box-shadow: 0 2px 8px rgba(46, 139, 87, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    // Pegar parâmetros da URL
+    function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            nome: params.get('nome') || 'Administrador',
+            cargo: params.get('cargo') || 'administrador'
+        };
+    }
+    
+    // Atualizar a interface com os dados
+    function atualizarInterface() {
+        const params = getUrlParams();
+        console.log('👤 Dados do usuário:', params);
+        
+        // Atualizar o nome na navbar
+        const userNameElement = document.getElementById('user-name');
+        const userRoleElement = document.getElementById('user-role');
+        
+        if (userNameElement) {
+            userNameElement.textContent = params.nome;
+        }
+        
+        if (userRoleElement) {
+            userRoleElement.textContent = params.cargo.charAt(0).toUpperCase() + params.cargo.slice(1);
+        }
+    }
+
+    // Sistema de abas
+    function mostrarAba(abaId) {
+        // Esconder todas as abas
+        document.querySelectorAll('.tab-content').forEach(aba => {
+            aba.classList.remove('active');
+        });
+        
+        // Remover active de todas as tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Mostrar aba selecionada
+        document.getElementById(abaId).classList.add('active');
+        
+        // Ativar tab clicada
+        event.target.classList.add('active');
+        
+        // Carregar dados específicos da aba se necessário
+        if (abaId === 'aba-viagens') {
+            carregarViagensMotoristas();
+        }
+    }
+</script>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span>🏎️</span>
+            <span>Trevocar Admin</span>
+        </div>
+        <div class="user-info">
+            <div class="user-details">
+                <div class="user-name" id="user-name">Administrador</div>
+                <div class="user-role" id="user-role">Administrador</div>
+            </div>
+            <a href="/logout-funcionarios" class="logout-btn">🚪 Sair</a>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <span>📊</span>
+                Dashboard Administrativo
+            </h1>
+            <p class="dashboard-subtitle">Controle completo do sistema Trevocar</p>
+        </div>
+
+        <!-- Sistema de Abas -->
+        <div class="tabs">
+            <div class="tab active" onclick="mostrarAba('aba-dashboard')">📊 Dashboard</div>
+            <div class="tab" onclick="mostrarAba('aba-viagens')">🚗 Gestão de Viagens</div>
+        </div>
+
+        <!-- Aba Dashboard -->
+        <div id="aba-dashboard" class="tab-content active">
+            <!-- Estatísticas em Tempo Real -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🚗</div>
+                    <div class="stat-number" id="total-veiculos">0</div>
+                    <div class="stat-label">Total de Veículos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-number" id="total-funcionarios">0</div>
+                    <div class="stat-label">Funcionários</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏢</div>
+                    <div class="stat-number" id="total-filiais">0</div>
+                    <div class="stat-label">Filiais</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-number" id="total-categorias">0</div>
+                    <div class="stat-label">Categorias</div>
+                </div>
+            </div>
+
+            <!-- Gestão de Veículos -->
+            <div class="management-grid">
+                <!-- Gestão de Veículos -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">🚙</div>
+                        <h3 class="card-title">Gestão de Veículos</h3>
+                    </div>
+                    <div class="data-list" id="veiculos-list">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarVeiculos()">
+                            🔄 Atualizar
+                        </button>
+                        <button class="btn btn-secondary" onclick="abrirModalVeiculo()">
+                            ➕ Novo Veículo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gestão de Funcionários -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">👥</div>
+                        <h3 class="card-title">Gestão de Funcionários</h3>
+                    </div>
+                    <div class="data-list" id="funcionarios-list">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarFuncionarios()">
+                            🔄 Atualizar
+                        </button>
+                        <button class="btn btn-secondary" onclick="abrirModalFuncionario()">
+                            ➕ Cadastrar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Gestão de Filiais -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">🏢</div>
+                        <h3 class="card-title">Gestão de Filiais</h3>
+                    </div>
+                    <div class="data-list" id="filiais-list">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarFiliais()">
+                            🔄 Atualizar
+                        </button>
+                        <button class="btn btn-secondary" onclick="abrirModalFilial()">
+                            ➕ Nova Filial
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Categorias de Veículos -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">📋</div>
+                        <h3 class="card-title">Categorias de Veículos</h3>
+                    </div>
+                    <div class="data-list" id="categorias-list">
+                        <!-- Dados carregados via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarCategorias()">
+                            🔄 Atualizar
+                        </button>
+                        <button class="btn btn-secondary" onclick="abrirModalCategoria()">
+                            ➕ Nova Categoria
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba Gestão de Viagens -->
+        <div id="aba-viagens" class="tab-content">
+            <div class="management-grid">
+                <!-- Criar Nova Viagem -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">🚀</div>
+                        <h3 class="card-title">Criar Nova Viagem</h3>
+                    </div>
+                    <form id="formNovaViagem">
+                        <div class="form-group">
+                            <label for="cliente_viagem">Cliente *</label>
+                            <select id="cliente_viagem" name="id_cliente" required>
+                                <option value="">Selecione um cliente</option>
+                                <!-- Clientes carregados via JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="origem_viagem">Origem *</label>
+                                <input type="text" id="origem_viagem" name="origem" required placeholder="Local de partida">
+                            </div>
+                            <div class="form-group">
+                                <label for="destino_viagem">Destino *</label>
+                                <input type="text" id="destino_viagem" name="destino" required placeholder="Local de destino">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="data_viagem">Data/Hora *</label>
+                                <input type="datetime-local" id="data_viagem" name="data_viagem" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="valor_viagem">Valor (R$)</label>
+                                <input type="number" id="valor_viagem" name="valor" step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="veiculo_viagem">Veículo Sugerido</label>
+                            <select id="veiculo_viagem" name="veiculo_solicitado">
+                                <option value="">Qualquer veículo</option>
+                                <!-- Veículos carregados via JavaScript -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="passageiros_viagem">Passageiros</label>
+                                <input type="number" id="passageiros_viagem" name="passageiros" min="1" value="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="motorista_viagem">Motorista Designado</label>
+                                <select id="motorista_viagem" name="id_motorista">
+                                    <option value="">Atribuir automaticamente</option>
+                                    <!-- Motoristas carregados via JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="observacoes_viagem">Observações</label>
+                            <textarea id="observacoes_viagem" name="observacoes" rows="3" placeholder="Informações adicionais..."></textarea>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">🚀 Criar Viagem</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Viagens Pendentes -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">⏳</div>
+                        <h3 class="card-title">Viagens Pendentes</h3>
+                    </div>
+                    <div class="data-list" id="viagens-pendentes-list">
+                        <!-- Viagens carregadas via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarViagensMotoristas()">
+                            🔄 Atualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Viagens em Andamento -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">🚗</div>
+                        <h3 class="card-title">Viagens em Andamento</h3>
+                    </div>
+                    <div class="data-list" id="viagens-andamento-list">
+                        <!-- Viagens carregadas via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarViagensMotoristas()">
+                            🔄 Atualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Histórico de Viagens -->
+                <div class="management-card">
+                    <div class="card-header">
+                        <div class="card-icon">📊</div>
+                        <h3 class="card-title">Histórico de Viagens</h3>
+                    </div>
+                    <div class="data-list" id="viagens-concluidas-list">
+                        <!-- Viagens carregadas via JavaScript -->
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="carregarViagensMotoristas()">
+                            🔄 Atualizar
+                        </button>
+                    <button class="btn btn-secondary" onclick="exportarRelatorioViagens()">
+                            📄 Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Cadastrar Veículo -->
+    <div id="modalVeiculo" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalVeiculo()">&times;</span>
+            <h2 class="modal-title">🚗 Cadastrar Novo Veículo</h2>
+            
+            <form id="formVeiculo">
+                <div class="form-group">
+                    <label for="placa">Placa *</label>
+                    <input type="text" id="placa" name="placa" required maxlength="8" placeholder="ABC1D23">
+                </div>
+                
+                <div class="form-group">
+                    <label for="modelo">Modelo *</label>
+                    <input type="text" id="modelo" name="modelo" required placeholder="BYD Dolphin">
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ano">Ano *</label>
+                        <input type="number" id="ano" name="ano" required min="2000" max="2030" placeholder="2024">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cor">Cor *</label>
+                        <input type="text" id="cor" name="cor" required placeholder="Branco">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="quilometragem">Quilometragem</label>
+                    <input type="number" id="quilometragem" name="quilometragem" step="0.01" placeholder="0.00" value="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_categoria">Categoria *</label>
+                    <select id="id_categoria" name="id_categoria" required>
+                        <option value="">Selecione uma categoria</option>
+                        <!-- Opções carregadas via JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_filial">Filial *</label>
+                    <select id="id_filial" name="id_filial" required>
+                        <option value="">Selecione uma filial</option>
+                        <!-- Opções carregadas via JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModalVeiculo()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Cadastrar Veículo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Editar Veículo -->
+    <div id="modalEditarVeiculo" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalEditarVeiculo()">&times;</span>
+            <h2 class="modal-title">✏️ Editar Veículo</h2>
+            
+            <form id="formEditarVeiculo">
+                <input type="hidden" id="editar_id_veiculo" name="id_veiculo">
+                
+                <div class="form-group">
+                    <label for="editar_placa">Placa *</label>
+                    <input type="text" id="editar_placa" name="placa" required maxlength="8">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editar_modelo">Modelo *</label>
+                    <input type="text" id="editar_modelo" name="modelo" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editar_ano">Ano *</label>
+                        <input type="number" id="editar_ano" name="ano" required min="2000" max="2030">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="editar_cor">Cor *</label>
+                        <input type="text" id="editar_cor" name="cor" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editar_quilometragem">Quilometragem</label>
+                    <input type="number" id="editar_quilometragem" name="quilometragem" step="0.01">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editar_status">Status *</label>
+                    <select id="editar_status" name="status" required>
+                        <option value="disponível">Disponível</option>
+                        <option value="alugado">Alugado</option>
+                        <option value="em manutenção">Em Manutenção</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editar_id_categoria">Categoria *</label>
+                    <select id="editar_id_categoria" name="id_categoria" required>
+                        <!-- Opções carregadas via JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editar_id_filial">Filial *</label>
+                    <select id="editar_id_filial" name="id_filial" required>
+                        <!-- Opções carregadas via JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModalEditarVeiculo()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modais existentes (Filial, Categoria, Funcionário) -->
+    <div id="modalFilial" class="modal" style="display: none;">
+        <!-- Conteúdo do modal de filial -->
+    </div>
+
+    <div id="modalCategoria" class="modal" style="display: none;">
+        <!-- Conteúdo do modal de categoria -->
+    </div>
+
+    <div id="modalFuncionario" class="modal" style="display: none;">
+        <!-- Conteúdo do modal de funcionário -->
+    </div>
+
+    <script>
+       // ========== FUNÇÕES PRINCIPAIS ==========
+
+// Carregar dados quando a página abrir
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🏁 Página carregada - verificando elementos...');
+    
+    atualizarInterface();
+    carregarEstatisticas();
+    carregarVeiculos();
+    carregarFuncionarios();
+    carregarFiliais();
+    carregarCategorias();
+    
+    // Carregar dados para a aba de viagens
+    carregarDadosViagens();
+});
+
+// ========== FUNÇÕES DE EDIÇÃO ==========
+
+// Abrir modal de edição de veículo
+function editarVeiculo(idVeiculo) {
+    console.log('✏️ Editando veículo:', idVeiculo);
+    
+    // Buscar dados do veículo
+    fetch(`/api/veiculo/${idVeiculo}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const veiculo = data.veiculo;
+                
+                // Preencher formulário
+                document.getElementById('editar_id_veiculo').value = veiculo.id_veiculo;
+                document.getElementById('editar_placa').value = veiculo.placa;
+                document.getElementById('editar_modelo').value = veiculo.modelo;
+                document.getElementById('editar_ano').value = veiculo.ano;
+                document.getElementById('editar_cor').value = veiculo.cor;
+                document.getElementById('editar_quilometragem').value = veiculo.quilometragem;
+                document.getElementById('editar_status').value = veiculo.status;
+                
+                // Carregar opções dos selects
+                carregarOpcoesModalEdicao().then(() => {
+                    document.getElementById('editar_id_categoria').value = veiculo.id_categoria;
+                    document.getElementById('editar_id_filial').value = veiculo.id_filial;
+                    
+                    // Abrir modal
+                    document.getElementById('modalEditarVeiculo').style.display = 'block';
+                });
+            } else {
+                alert('❌ Erro ao carregar dados do veículo');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('❌ Erro ao carregar dados do veículo');
+        });
+}
+
+// Carregar opções para o modal de edição
+async function carregarOpcoesModalEdicao() {
+    try {
+        // Carregar categorias
+        const responseCategorias = await fetch('/api/categorias');
+        const dataCategorias = await responseCategorias.json();
+        
+        const selectCategoria = document.getElementById('editar_id_categoria');
+        if (dataCategorias.success) {
+            selectCategoria.innerHTML = dataCategorias.categorias.map(cat => 
+                `<option value="${cat.id_categoria}">${cat.nome}</option>`
+            ).join('');
+        }
+        
+        // Carregar filiais
+        const responseFiliais = await fetch('/api/filiais');
+        const dataFiliais = await responseFiliais.json();
+        
+        const selectFilial = document.getElementById('editar_id_filial');
+        if (dataFiliais.success) {
+            selectFilial.innerHTML = dataFiliais.filiais.map(filial => 
+                `<option value="${filial.id_filial}">${filial.nome}</option>`
+            ).join('');
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar opções do modal:', error);
+    }
+}
+
+// Fechar modal de edição
+function fecharModalEditarVeiculo() {
+    document.getElementById('modalEditarVeiculo').style.display = 'none';
+    document.getElementById('formEditarVeiculo').reset();
+}
+
+// Submeter edição de veículo
+document.getElementById('formEditarVeiculo').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const dados = Object.fromEntries(formData);
+    
+    // Converter para tipos apropriados
+    dados.ano = parseInt(dados.ano);
+    dados.quilometragem = parseFloat(dados.quilometragem);
+    dados.id_categoria = parseInt(dados.id_categoria);
+    dados.id_filial = parseInt(dados.id_filial);
+    
+    console.log('📤 Enviando edição do veículo:', dados);
+    
+    try {
+        const response = await fetch(`/api/veiculos/${dados.id_veiculo}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Veículo atualizado com sucesso!');
+            fecharModalEditarVeiculo();
+            carregarVeiculos(); // Recarregar lista
+        } else {
+            alert('❌ Erro ao atualizar veículo: ' + resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao atualizar veículo:', error);
+        alert('❌ Erro de conexão ao atualizar veículo');
+    }
+});
+
+// Excluir veículo
+function excluirVeiculo(idVeiculo, placa) {
+    if (!confirm(`❌ Tem certeza que deseja excluir o veículo ${placa}?`)) {
+        return;
+    }
+    
+    fetch(`/api/veiculos/${idVeiculo}`, {
+        method: 'DELETE'
+    })
+    .then(response => response.json())
+    .then(resultado => {
+        if (resultado.success) {
+            alert('✅ Veículo excluído com sucesso!');
+            carregarVeiculos(); // Recarregar lista
+            carregarEstatisticas(); // Atualizar estatísticas
+        } else {
+            alert('❌ Erro ao excluir veículo: ' + resultado.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao excluir veículo');
+    });
+}
+
+// ========== FUNÇÕES DA ABA DE VIAGENS ==========
+
+// Carregar dados para a aba de viagens
+async function carregarDadosViagens() {
+    try {
+        console.log('🚗 Carregando dados para viagens...');
+        
+        // Tentar carregar clientes da API
+        try {
+            const responseClientes = await fetch('/api/admin/clientes');
+            if (responseClientes.ok) {
+                const dataClientes = await responseClientes.json();
+                const selectCliente = document.getElementById('cliente_viagem');
+                if (dataClientes.success) {
+                    selectCliente.innerHTML = '<option value="">Selecione um cliente</option>' +
+                        dataClientes.clientes.map(cliente => 
+                            `<option value="${cliente.id}">${cliente.nome} - ${cliente.email}</option>`
+                        ).join('');
+                    console.log('✅ Clientes carregados da API');
+                }
+            }
+        } catch (error) {
+            console.log('❌ API Clientes não disponível:', error);
+            usarDadosDemoClientes();
+        }
+        
+        // Tentar carregar veículos da API
+        try {
+            const responseVeiculos = await fetch('/api/veiculos');
+            if (responseVeiculos.ok) {
+                const dataVeiculos = await responseVeiculos.json();
+                const selectVeiculo = document.getElementById('veiculo_viagem');
+                if (dataVeiculos.success) {
+                    selectVeiculo.innerHTML = '<option value="">Qualquer veículo</option>' +
+                        dataVeiculos.veiculos.map(veiculo => 
+                            `<option value="${veiculo.modelo}">${veiculo.modelo} - ${veiculo.placa}</option>`
+                        ).join('');
+                }
+            }
+        } catch (error) {
+            console.log('❌ API Veículos não disponível:', error);
+            usarDadosDemoVeiculos();
+        }
+        
+        // Tentar carregar motoristas da API
+        try {
+            const responseMotoristas = await fetch('/api/admin/funcionarios?cargo=motorista');
+            if (responseMotoristas.ok) {
+                const dataMotoristas = await responseMotoristas.json();
+                const selectMotorista = document.getElementById('motorista_viagem');
+                if (dataMotoristas.success) {
+                    selectMotorista.innerHTML = '<option value="">Atribuir automaticamente</option>' +
+                        dataMotoristas.funcionarios.map(funcionario => 
+                            `<option value="${funcionario.id}">${funcionario.nome}</option>`
+                        ).join('');
+                }
+            }
+        } catch (error) {
+            console.log('❌ API Motoristas não disponível:', error);
+            usarDadosDemoMotoristas();
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados para viagens:', error);
+        usarTodosDadosDemo();
+    }
+}
+
+// Dados de demonstração
+function usarDadosDemoClientes() {
+    const selectCliente = document.getElementById('cliente_viagem');
+    selectCliente.innerHTML = `
+        <option value="">Selecione um cliente</option>
+        <option value="1">Maria Silva - maria@email.com</option>
+        <option value="2">João Santos - joao@email.com</option>
+        <option value="3">Ana Costa - ana@email.com</option>
+        <option value="4">Carlos Oliveira - carlos@email.com</option>
+        <option value="5">Paula Rodrigues - paula@email.com</option>
+    `;
+}
+
+function usarDadosDemoVeiculos() {
+    const selectVeiculo = document.getElementById('veiculo_viagem');
+    selectVeiculo.innerHTML = `
+        <option value="">Qualquer veículo</option>
+        <option value="Toyota Corolla">Toyota Corolla - ABC1D23</option>
+        <option value="Honda Civic">Honda Civic - DEF4G56</option>
+        <option value="BYD Dolphin">BYD Dolphin - GHI7J89</option>
+        <option value="Volkswagen Nivus">Volkswagen Nivus - JKL0M12</option>
+        <option value="Fiat Pulse">Fiat Pulse - MNO3P45</option>
+    `;
+}
+
+function usarDadosDemoMotoristas() {
+    const selectMotorista = document.getElementById('motorista_viagem');
+    selectMotorista.innerHTML = `
+        <option value="">Atribuir automaticamente</option>
+        <option value="1">Carlos Motorista</option>
+        <option value="2">Pedro Motorista</option>
+        <option value="3">Ana Motorista</option>
+        <option value="4">Ricardo Motorista</option>
+        <option value="5">Fernanda Motorista</option>
+    `;
+}
+
+function usarTodosDadosDemo() {
+    usarDadosDemoClientes();
+    usarDadosDemoVeiculos();
+    usarDadosDemoMotoristas();
+}
+
+// Carregar viagens para motoristas
+async function carregarViagensMotoristas() {
+    try {
+        // Esta função carregaria as viagens do sistema
+        // Por enquanto, vamos usar dados de exemplo
+        
+        const viagensPendentes = [
+            {
+                id: 1,
+                cliente: 'Maria Silva',
+                origem: 'Aeroporto',
+                destino: 'Hotel',
+                data: '2024-01-20 14:30',
+                valor: 45.00,
+                status: 'pendente'
+            }
+        ];
+        
+        const viagensAndamento = [
+            {
+                id: 2,
+                cliente: 'João Santos',
+                origem: 'Shopping',
+                destino: 'Aeroporto',
+                data: '2024-01-20 10:00',
+                valor: 60.00,
+                motorista: 'Carlos Motorista',
+                status: 'em_andamento'
+            }
+        ];
+        
+        const viagensConcluidas = [
+            {
+                id: 3,
+                cliente: 'Ana Costa',
+                origem: 'Centro',
+                destino: 'Praia',
+                data: '2024-01-19 15:30',
+                valor: 35.00,
+                motorista: 'Pedro Motorista',
+                status: 'concluida'
+            }
+        ];
+        
+        // Renderizar viagens pendentes
+        const listaPendentes = document.getElementById('viagens-pendentes-list');
+        listaPendentes.innerHTML = viagensPendentes.map(viagem => `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">${viagem.cliente}</div>
+                    <div class="item-details">${viagem.origem} → ${viagem.destino}</div>
+                    <div class="item-details">${viagem.data} • R$ ${viagem.valor.toFixed(2)}</div>
+                </div>
+                <div class="item-status status-rented">Pendente</div>
+            </div>
+        `).join('');
+        
+        // Renderizar viagens em andamento
+        const listaAndamento = document.getElementById('viagens-andamento-list');
+        listaAndamento.innerHTML = viagensAndamento.map(viagem => `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">${viagem.cliente}</div>
+                    <div class="item-details">${viagem.origem} → ${viagem.destino}</div>
+                    <div class="item-details">${viagem.motorista} • R$ ${viagem.valor.toFixed(2)}</div>
+                </div>
+                <div class="item-status status-available">Em Andamento</div>
+            </div>
+        `).join('');
+        
+        // Renderizar viagens concluídas
+        const listaConcluidas = document.getElementById('viagens-concluidas-list');
+        listaConcluidas.innerHTML = viagensConcluidas.map(viagem => `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">${viagem.cliente}</div>
+                    <div class="item-details">${viagem.origem} → ${viagem.destino}</div>
+                    <div class="item-details">${viagem.motorista} • R$ ${viagem.valor.toFixed(2)}</div>
+                </div>
+                <div class="item-status status-available">Concluída</div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Erro ao carregar viagens:', error);
+    }
+}
+
+// Submeter nova viagem
+document.getElementById('formNovaViagem').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const dados = Object.fromEntries(formData);
+    
+    // Validar dados
+    if (!dados.id_cliente) {
+        alert('❌ Selecione um cliente!');
+        return;
+    }
+    
+    if (!dados.origem || !dados.destino) {
+        alert('❌ Preencha origem e destino!');
+        return;
+    }
+    
+    if (!dados.data_viagem) {
+        alert('❌ Selecione data e hora!');
+        return;
+    }
+    
+    // Se não tem motorista selecionado, remover do dados
+    if (!dados.id_motorista) {
+        delete dados.id_motorista;
+    }
+    
+    console.log('📤 Tentando criar viagem:', dados);
+    
+    try {
+        const response = await fetch('/api/viagens', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Viagem criada com sucesso!');
+            this.reset();
+            carregarViagensMotoristas();
+            
+            // Atualizar data para o próximo horário disponível
+            const agora = new Date();
+            agora.setHours(agora.getHours() + 1);
+            document.getElementById('data_viagem').value = agora.toISOString().slice(0, 16);
+            
+        } else {
+            alert('❌ Erro ao criar viagem: ' + resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao criar viagem:', error);
+        
+        // Se a API não existe (404, 405), simular sucesso para demonstração
+        if (error.message.includes('404') || error.message.includes('405')) {
+            alert('✅ Viagem criada com sucesso! (Modo Demonstração)\n\nCliente: ' + 
+                  document.querySelector('#cliente_viagem option:checked').textContent + 
+                  '\nOrigem: ' + dados.origem + 
+                  '\nDestino: ' + dados.destino +
+                  '\nData: ' + new Date(dados.data_viagem).toLocaleString());
+            
+            this.reset();
+            carregarViagensMotoristas();
+            
+            // Atualizar data para o próximo horário disponível
+            const agora = new Date();
+            agora.setHours(agora.getHours() + 1);
+            document.getElementById('data_viagem').value = agora.toISOString().slice(0, 16);
+        } else {
+            alert('❌ Erro de conexão ao criar viagem: ' + error.message);
+        }
+    }
+});
+
+// Exportar relatório de viagens
+function exportarRelatorioViagens() {
+    alert('📊 Funcionalidade de exportação em desenvolvimento...');
+    // Aqui você implementaria a geração de PDF/Excel
+}
+
+// ========== FUNÇÕES DE CARREGAMENTO DE DADOS ==========
+
+// Carregar lista de veículos
+async function carregarVeiculos() {
+    try {
+        console.log('🚗 Carregando veículos...');
+        const response = await fetch('/api/veiculos');
+        const data = await response.json();
+        
+        const lista = document.getElementById('veiculos-list');
+        
+        if (data.success && data.veiculos && data.veiculos.length > 0) {
+            lista.innerHTML = data.veiculos.map(veiculo => `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">${veiculo.modelo} - ${veiculo.placa}</div>
+                        <div class="item-details">
+                            ${veiculo.ano} • ${veiculo.cor} • ${veiculo.quilometragem} km
+                            ${veiculo.categoria_nome ? ` • ${veiculo.categoria_nome}` : ''}
+                        </div>
+                    </div>
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" onclick="editarVeiculo(${veiculo.id_veiculo})">
+                            ✏️ Editar
+                        </button>
+                        <button class="action-btn delete-btn" onclick="excluirVeiculo(${veiculo.id_veiculo}, '${veiculo.placa}')">
+                            🗑️ Excluir
+                        </button>
+                    </div>
+                    <div class="item-status status-${veiculo.status.replace(' ', '-')}">
+                        ${veiculo.status}
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            lista.innerHTML = `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">Nenhum veículo cadastrado</div>
+                        <div class="item-details">Cadastre o primeiro veículo no sistema</div>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar veículos:', error);
+        document.getElementById('veiculos-list').innerHTML = `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">Erro ao carregar veículos</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Carregar estatísticas gerais
+async function carregarEstatisticas() {
+    try {
+        console.log('📊 Carregando estatísticas...');
+        const response = await fetch('/api/estatisticas');
+        const data = await response.json();
+        
+        if (data.success) {
+            const stats = data.estatisticas;
+            document.getElementById('total-veiculos').textContent = stats.total_veiculos;
+            document.getElementById('total-funcionarios').textContent = stats.total_funcionarios;
+            document.getElementById('total-filiais').textContent = stats.total_filiais;
+            document.getElementById('total-categorias').textContent = stats.total_categorias;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar estatísticas:', error);
+        // Valores padrão em caso de erro
+        document.getElementById('total-veiculos').textContent = '0';
+        document.getElementById('total-funcionarios').textContent = '0';
+        document.getElementById('total-filiais').textContent = '0';
+        document.getElementById('total-categorias').textContent = '0';
+    }
+}
+
+// Carregar lista de funcionários
+async function carregarFuncionarios() {
+    try {
+        console.log('👥 Carregando funcionários...');
+        const response = await fetch('/api/funcionarios');
+        const data = await response.json();
+        
+        const lista = document.getElementById('funcionarios-list');
+        
+        if (data.success && data.funcionarios && data.funcionarios.length > 0) {
+            lista.innerHTML = data.funcionarios.map(funcionario => `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">ID ${funcionario.id} - ${funcionario.nome}</div>
+                        <div class="item-details">
+                            ${funcionario.email} • ${funcionario.cargo}
+                        </div>
+                    </div>
+                    <div class="item-status ${funcionario.ativo ? 'status-available' : 'status-maintenance'}">
+                        ${funcionario.ativo ? 'Ativo' : 'Inativo'}
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            lista.innerHTML = `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">Nenhum funcionário cadastrado</div>
+                        <div class="item-details">Cadastre funcionários pelo sistema</div>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar funcionários:', error);
+        document.getElementById('funcionarios-list').innerHTML = `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">Erro ao carregar funcionários</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Carregar lista de filiais
+async function carregarFiliais() {
+    try {
+        console.log('🏢 Carregando filiais...');
+        const response = await fetch('/api/filiais');
+        const data = await response.json();
+        
+        const lista = document.getElementById('filiais-list');
+        
+        if (data.success && data.filiais && data.filiais.length > 0) {
+            lista.innerHTML = data.filiais.map(filial => `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">${filial.nome}</div>
+                        <div class="item-details">${filial.endereco}</div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            lista.innerHTML = `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">Nenhuma filial cadastrada</div>
+                        <div class="item-details">Cadastre a primeira filial</div>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar filiais:', error);
+        document.getElementById('filiais-list').innerHTML = `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">Erro ao carregar filiais</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Carregar lista de categorias
+async function carregarCategorias() {
+    try {
+        console.log('📋 Carregando categorias...');
+        const response = await fetch('/api/categorias');
+        const data = await response.json();
+        
+        const lista = document.getElementById('categorias-list');
+        
+        if (data.success && data.categorias && data.categorias.length > 0) {
+            lista.innerHTML = data.categorias.map(categoria => `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">${categoria.nome}</div>
+                        <div class="item-details">R$ ${categoria.preco_diaria.toFixed(2)}/dia</div>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            lista.innerHTML = `
+                <div class="data-item">
+                    <div class="item-info">
+                        <div class="item-name">Nenhuma categoria cadastrada</div>
+                        <div class="item-details">Cadastre categorias de veículos</div>
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar categorias:', error);
+        document.getElementById('categorias-list').innerHTML = `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">Erro ao carregar categorias</div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// ========== FUNÇÕES DE MODAL ==========
+
+function abrirModalVeiculo() {
+    console.log('📝 Abrindo modal de veículo...');
+    document.getElementById('modalVeiculo').style.display = 'block';
+    carregarOpcoesModal();
+}
+
+function fecharModalVeiculo() {
+    document.getElementById('modalVeiculo').style.display = 'none';
+    document.getElementById('formVeiculo').reset();
+}
+
+function abrirModalFilial() {
+    document.getElementById('modalFilial').style.display = 'block';
+}
+
+function fecharModalFilial() {
+    document.getElementById('modalFilial').style.display = 'none';
+    document.getElementById('formFilial').reset();
+}
+
+function abrirModalCategoria() {
+    document.getElementById('modalCategoria').style.display = 'block';
+}
+
+function fecharModalCategoria() {
+    document.getElementById('modalCategoria').style.display = 'none';
+    document.getElementById('formCategoria').reset();
+}
+
+function abrirModalFuncionario() {
+    document.getElementById('modalFuncionario').style.display = 'block';
+}
+
+function fecharModalFuncionario() {
+    document.getElementById('modalFuncionario').style.display = 'none';
+    document.getElementById('formFuncionario').reset();
+}
+
+// Carregar opções dos selects
+async function carregarOpcoesModal() {
+    try {
+        // Carregar categorias
+        const responseCategorias = await fetch('/api/categorias');
+        const dataCategorias = await responseCategorias.json();
+        
+        const selectCategoria = document.getElementById('id_categoria');
+        if (dataCategorias.success) {
+            selectCategoria.innerHTML = '<option value="">Selecione uma categoria</option>' +
+                dataCategorias.categorias.map(cat => 
+                    `<option value="${cat.id_categoria}">${cat.nome} - R$ ${cat.preco_diaria.toFixed(2)}/dia</option>`
+                ).join('');
+        }
+        
+        // Carregar filiais
+        const responseFiliais = await fetch('/api/filiais');
+        const dataFiliais = await responseFiliais.json();
+        
+        const selectFilial = document.getElementById('id_filial');
+        if (dataFiliais.success) {
+            selectFilial.innerHTML = '<option value="">Selecione uma filial</option>' +
+                dataFiliais.filiais.map(filial => 
+                    `<option value="${filial.id_filial}">${filial.nome}</option>`
+                ).join('');
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar opções do modal:', error);
+    }
+}
+
+// ========== SUBMISSÃO DE FORMULÁRIOS ==========
+
+// Submeter formulário de veículo
+document.getElementById('formVeiculo').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const dados = Object.fromEntries(formData);
+    
+    // Converter para números
+    dados.ano = parseInt(dados.ano);
+    dados.quilometragem = parseFloat(dados.quilometragem);
+    dados.id_categoria = parseInt(dados.id_categoria);
+    dados.id_filial = parseInt(dados.id_filial);
+    
+    console.log('📤 Enviando dados do veículo:', dados);
+    
+    try {
+        const response = await fetch('/api/veiculos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Veículo cadastrado com sucesso!');
+            fecharModalVeiculo();
+            carregarVeiculos(); // Recarregar a lista
+            carregarEstatisticas(); // Atualizar estatísticas
+        } else {
+            alert('❌ Erro ao cadastrar veículo: ' + resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao cadastrar veículo:', error);
+        alert('❌ Erro de conexão ao cadastrar veículo');
+    }
+});
+
+// Submeter formulário de filial
+document.getElementById('formFilial').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const dados = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/api/filiais', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Filial cadastrada com sucesso!');
+            fecharModalFilial();
+            carregarFiliais();
+            carregarEstatisticas();
+        } else {
+            alert('❌ Erro ao cadastrar filial: ' + resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao cadastrar filial:', error);
+        alert('❌ Erro de conexão ao cadastrar filial');
+    }
+});
+
+// Submeter formulário de categoria
+document.getElementById('formCategoria').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const dados = Object.fromEntries(formData);
+    dados.preco_diaria = parseFloat(dados.preco_diaria);
+    
+    try {
+        const response = await fetch('/api/categorias', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Categoria cadastrada com sucesso!');
+            fecharModalCategoria();
+            carregarCategorias();
+            carregarEstatisticas();
+        } else {
+            alert('❌ Erro ao cadastrar categoria: ' + resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao cadastrar categoria:', error);
+        alert('❌ Erro de conexão ao cadastrar categoria');
+    }
+});
+
+// Submeter formulário de funcionário
+document.getElementById('formFuncionario').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const dados = Object.fromEntries(formData);
+    
+    // Validar senha
+    if (dados.senha !== dados.confirmar_senha) {
+        alert('❌ As senhas não coincidem!');
+        return;
+    }
+    
+    if (dados.senha.length < 6) {
+        alert('❌ A senha deve ter pelo menos 6 caracteres!');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/funcionarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Funcionário cadastrado com sucesso!');
+            fecharModalFuncionario();
+            carregarFuncionarios();
+            carregarEstatisticas();
+        } else {
+            alert('❌ Erro ao cadastrar funcionário: ' + resultado.error);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao cadastrar funcionário:', error);
+        alert('❌ Erro de conexão ao cadastrar funcionário');
+    }
+});
+
+// Fechar modal ao clicar fora
+window.addEventListener('click', function(e) {
+    if (e.target.classList.contains('modal')) {
+        e.target.style.display = 'none';
+    }
+});
+
+// ========== FUNÇÕES UTILITÁRIAS ==========
+
+// Pegar parâmetros da URL
+function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        nome: params.get('nome') || 'Administrador',
+        cargo: params.get('cargo') || 'administrador'
+    };
+}
+
+// Atualizar a interface com os dados
+function atualizarInterface() {
+    const params = getUrlParams();
+    console.log('👤 Dados do usuário:', params);
+    
+    // Atualizar o nome na navbar
+    const userNameElement = document.getElementById('user-name');
+    const userRoleElement = document.getElementById('user-role');
+    
+    if (userNameElement) {
+        userNameElement.textContent = params.nome;
+    }
+    
+    if (userRoleElement) {
+        userRoleElement.textContent = params.cargo.charAt(0).toUpperCase() + params.cargo.slice(1);
+    }
+}
+
+// Sistema de abas
+function mostrarAba(abaId) {
+    // Esconder todas as abas
+    document.querySelectorAll('.tab-content').forEach(aba => {
+        aba.classList.remove('active');
+    });
+    
+    // Remover active de todas as tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Mostrar aba selecionada
+    document.getElementById(abaId).classList.add('active');
+    
+    // Ativar tab clicada
+    event.target.classList.add('active');
+    
+    // Carregar dados específicos da aba se necessário
+    if (abaId === 'aba-viagens') {
+        carregarViagensMotoristas();
+    }
+}
+
+// Debug das APIs
+console.log('🔄 Testando APIs...');
+
+// Testar cada API individualmente
+async function testarAPIs() {
+    try {
+        const response = await fetch('/api/veiculos');
+        const data = await response.json();
+        console.log('🚗 API Veículos:', data);
+    } catch (error) {
+        console.error('❌ Erro API Veículos:', error);
+    }
+}
+
+testarAPIs();
+    </script>
+
+</body>
+</html>

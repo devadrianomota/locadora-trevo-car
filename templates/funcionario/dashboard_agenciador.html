@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenciador - Trevocar</title>
+    <style>
+        :root {
+            --verde-principal: #2E8B57;
+            --verde-escuro: #1E6B47;
+            --verde-claro: #4CAF50;
+            --verde-suave: #E8F5E8;
+            --cinza-claro: #f8f9fa;
+            --cinza-medio: #e9ecef;
+            --cinza-escuro: #343a40;
+            --branco: #ffffff;
+            --azul: #007bff;
+            --laranja: #fd7e14;
+            --vermelho: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--cinza-claro);
+            color: var(--cinza-escuro);
+            line-height: 1.6;
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-escuro));
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: var(--branco);
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .user-details {
+            text-align: right;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-role {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .logout-btn {
+            background-color: rgba(255,255,255,0.2);
+            color: var(--branco);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .logout-btn:hover {
+            background-color: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        /* Container Principal */
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        /* Header do Dashboard */
+        .dashboard-header {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--verde-principal);
+        }
+        
+        .dashboard-title {
+            color: var(--verde-principal);
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .dashboard-subtitle {
+            color: var(--cinza-escuro);
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        /* Filtros */
+        .filters {
+            background: var(--branco);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--cinza-escuro);
+        }
+        
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid var(--cinza-medio);
+            border-radius: 6px;
+            background: var(--branco);
+        }
+        
+        /* Tabela de Reservas */
+        .reservas-table {
+            background: var(--branco);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-escuro));
+            color: var(--branco);
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 100px 1fr 120px 120px 120px 100px 120px 150px;
+            gap: 15px;
+            font-weight: 600;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 120px 120px 120px 100px 120px 150px;
+            gap: 15px;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--cinza-medio);
+            align-items: center;
+        }
+        
+        .table-row:hover {
+            background-color: var(--verde-suave);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .status-active {
+            background-color: var(--verde-suave);
+            color: var(--verde-principal);
+        }
+        
+        .status-completed {
+            background-color: #e3f2fd;
+            color: var(--azul);
+        }
+        
+        .status-cancelled {
+            background-color: #ffebee;
+            color: var(--vermelho);
+        }
+        
+        /* Botões de Ação */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 11px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--verde-principal), var(--verde-claro));
+            color: var(--branco);
+        }
+        
+        .btn-success {
+            background: var(--verde-claro);
+            color: var(--branco);
+        }
+        
+        .btn-warning {
+            background: var(--laranja);
+            color: var(--branco);
+        }
+        
+        .btn-danger {
+            background: var(--vermelho);
+            color: var(--branco);
+        }
+        
+        .btn-secondary {
+            background: var(--cinza-medio);
+            color: var(--cinza-escuro);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background-color: var(--branco);
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .modal-title {
+            color: var(--verde-principal);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--cinza-escuro);
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--cinza-medio);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--verde-principal);
+            outline: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--cinza-medio);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        .close-btn:hover {
+            color: var(--cinza-escuro);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <span>🏎️</span>
+            <span>Trevocar Agenciador</span>
+        </div>
+        <div class="user-info">
+            <div class="user-details">
+                <div class="user-name" id="user-name">Agenciador</div>
+                <div class="user-role" id="user-role">Agenciador</div>
+            </div>
+            <a href="/logout-funcionarios" class="logout-btn">🚪 Sair</a>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <span>📋</span>
+                Gestão de Reservas
+            </h1>
+            <p class="dashboard-subtitle">Controle completo das reservas e locações</p>
+        </div>
+
+       
+        <!-- Na seção de filtros, adicione: -->
+<div class="filters">
+    <div class="filter-group">
+        <span class="filter-label">Status:</span>
+        <select class="filter-select" id="filterStatus" onchange="filtrarReservas()">
+            <option value="">Todos</option>
+            <option value="active">Ativas</option>
+            <option value="completed">Concluídas</option>
+            <option value="cancelled">Canceladas</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <span class="filter-label">Ordenar por:</span>
+        <select class="filter-select" id="filterOrder" onchange="filtrarReservas()">
+            <option value="data_criacao">Data de Criação</option>
+            <option value="data_retirada">Data de Retirada</option>
+            <option value="valor">Valor</option>
+        </select>
+    </div>
+    
+    <button class="btn btn-primary" onclick="carregarReservas()">
+        🔄 Atualizar
+    </button>
+    
+    <!-- BOTÃO NOVO -->
+    <button class="btn btn-success" onclick="abrirModalNovaReserva()">
+        ➕ Nova Reserva
+    </button>
+</div>
+
+        <!-- Tabela de Reservas -->
+        <div class="reservas-table">
+            <div class="table-header">
+                <div>Código</div>
+                <div>Veículo</div>
+                <div>Retirada</div>
+                <div>Devolução</div>
+                <div>Valor</div>
+                <div>Avaliação</div>
+                <div>Status</div>
+                <div>Ações</div>
+            </div>
+            <div id="reservas-list">
+                <!-- Reservas carregadas via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Alterar Status -->
+    <div id="modalStatus" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalStatus()">&times;</span>
+            <h2 class="modal-title">🔄 Alterar Status da Reserva</h2>
+            
+            <form id="formStatus">
+                <input type="hidden" id="reserva_id" name="reserva_id">
+                
+                <div class="form-group">
+                    <label for="novo_status">Novo Status *</label>
+                    <select id="novo_status" name="novo_status" required>
+                        <option value="">Selecione o status</option>
+                        <option value="active">Ativa</option>
+                        <option value="completed">Concluída</option>
+                        <option value="cancelled">Cancelada</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="motivo-cancelamento-group" style="display: none;">
+                    <label for="motivo_cancelamento">Motivo do Cancelamento *</label>
+                    <textarea id="motivo_cancelamento" name="motivo_cancelamento" placeholder="Informe o motivo do cancelamento..."></textarea>
+                </div>
+                
+                <div class="form-group" id="info-pagamento-group" style="display: none;">
+                    <label for="pagamento_status">Status do Pagamento</label>
+                    <select id="pagamento_status" name="pagamento_status">
+                        <option value="pendente">Pendente</option>
+                        <option value="pago">Pago</option>
+                        <option value="parcial">Parcial</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="fecharModalStatus()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Atualizar Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Detalhes da Reserva -->
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalDetalhes()">&times;</span>
+            <h2 class="modal-title">📄 Detalhes da Reserva</h2>
+            
+            <div id="detalhes-reserva">
+                <!-- Detalhes carregados via JavaScript -->
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="fecharModalDetalhes()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nova Reserva -->
+<div id="modalNovaReserva" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="fecharModalNovaReserva()">&times;</span>
+        <h2 class="modal-title">➕ Nova Reserva</h2>
+        
+        <form id="formNovaReserva">
+            <div class="form-group">
+                <label for="usuario_id">Cliente *</label>
+                <select id="usuario_id" name="usuario_id" required>
+                    <option value="">Selecione um cliente</option>
+                    <!-- Clientes carregados via JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_veiculo">Veículo *</label>
+                <select id="id_veiculo" name="id_veiculo" required>
+                    <option value="">Selecione um veículo</option>
+                    <!-- Veículos carregados via JavaScript -->
+                </select>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="data_retirada">Data de Retirada *</label>
+                    <input type="date" id="data_retirada" name="data_retirada" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="data_devolucao">Data de Devolução *</label>
+                    <input type="date" id="data_devolucao" name="data_devolucao" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="local_retirada">Local de Retirada *</label>
+                    <select id="local_retirada" name="local_retirada" required>
+                        <option value="">Selecione o local</option>
+                        <option value="Filial Centro">Filial Centro</option>
+                        <option value="Filial Zona Sul">Filial Zona Sul</option>
+                        <option value="Aeroporto">Aeroporto</option>
+                        <option value="Hotel">Hotel</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="local_devolucao">Local de Devolução *</label>
+                    <select id="local_devolucao" name="local_devolucao" required>
+                        <option value="">Selecione o local</option>
+                        <option value="Filial Centro">Filial Centro</option>
+                        <option value="Filial Zona Sul">Filial Zona Sul</option>
+                        <option value="Aeroporto">Aeroporto</option>
+                        <option value="Hotel">Hotel</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="valor">Valor Total (R$) *</label>
+                <input type="number" id="valor" name="valor" required step="0.01" min="0" placeholder="150.00">
+            </div>
+            
+<div class="form-group">
+    <div id="detalhes-calculo" style="
+        background: var(--verde-suave); 
+        padding: 12px; 
+        border-radius: 8px; 
+        border-left: 4px solid var(--verde-principal);
+        font-size: 14px;
+        display: none;
+    ">
+        <div id="texto-calculo">Selecione as datas e o veículo para ver o cálculo</div>
+    </div>
+</div>
+
+            <div class="form-group">
+                <label for="id_seguro">Seguro</label>
+                <select id="id_seguro" name="id_seguro">
+                    <option value="">Sem seguro</option>
+                    <option value="1">Seguro Básico</option>
+                    <option value="2">Seguro Completo</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="fecharModalNovaReserva()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Criar Reserva</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+   <script>
+    // Variáveis globais
+    let todasReservas = [];
+    
+    // Pegar parâmetros da URL
+    function getUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            nome: params.get('nome') || 'Agenciador',
+            cargo: params.get('cargo') || 'agenciador'
+        };
+    }
+    
+    // Atualizar interface
+    function atualizarInterface() {
+        const params = getUrlParams();
+        document.getElementById('user-name').textContent = params.nome;
+        document.getElementById('user-role').textContent = params.cargo.charAt(0).toUpperCase() + params.cargo.slice(1);
+    }
+    
+    // Carregar reservas
+    async function carregarReservas() {
+        try {
+            console.log('📋 Carregando reservas...');
+            const response = await fetch('/api/reservas');
+            const data = await response.json();
+            
+            if (data.success) {
+                todasReservas = data.reservas;
+                filtrarReservas();
+            } else {
+                alert('Erro ao carregar reservas: ' + data.error);
+            }
+        } catch (error) {
+            console.error('Erro ao carregar reservas:', error);
+            document.getElementById('reservas-list').innerHTML = `
+                <div class="table-row">
+                    <div colspan="8" style="text-align: center; padding: 20px;">
+                        Erro ao carregar reservas
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    // Filtrar reservas
+    function filtrarReservas() {
+        const statusFilter = document.getElementById('filterStatus').value;
+        const orderBy = document.getElementById('filterOrder').value;
+        
+        let reservasFiltradas = [...todasReservas];
+        
+        // Aplicar filtro de status
+        if (statusFilter) {
+            reservasFiltradas = reservasFiltradas.filter(reserva => reserva.status === statusFilter);
+        }
+        
+        // Aplicar ordenação
+        reservasFiltradas.sort((a, b) => {
+            if (orderBy === 'data_retirada') {
+                return new Date(a.data_retirada) - new Date(b.data_retirada);
+            } else if (orderBy === 'valor') {
+                return b.valor - a.valor;
+            } else {
+                return new Date(b.data_criacao) - new Date(a.data_criacao);
+            }
+        });
+        
+        renderizarReservas(reservasFiltradas);
+    }
+    
+   // Renderizar reservas na tabela (VERSÃO CORRIGIDA)
+function renderizarReservas(reservas) {
+    const container = document.getElementById('reservas-list');
+    
+    if (!container) {
+        console.error('Elemento reservas-list não encontrado!');
+        return;
+    }
+    
+    if (!reservas || reservas.length === 0) {
+        container.innerHTML = `
+            <div class="table-row">
+                <div style="text-align: center; padding: 20px; grid-column: 1 / -1;">
+                    Nenhuma reserva encontrada
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    try {
+        container.innerHTML = reservas.map(reserva => {
+            // CONVERSÃO SEGURA do valor para número
+            let valorNumerico = 0;
+            
+            try {
+                if (typeof reserva.valor === 'number') {
+                    valorNumerico = reserva.valor;
+                } else if (typeof reserva.valor === 'string') {
+                    // Remove caracteres não numéricos antes da conversão
+                    const valorLimpo = reserva.valor.replace(/[^\d,.-]/g, '').replace(',', '.');
+                    valorNumerico = parseFloat(valorLimpo) || 0;
+                }
+            } catch (error) {
+                console.warn(`Erro ao converter valor da reserva ${reserva.id}:`, error);
+                valorNumerico = 0;
+            }
+            
+            console.log(`💰 Reserva ${reserva.id}: valor=${reserva.valor}, tipo=${typeof reserva.valor}, convertido=${valorNumerico}`);
+            
+            return `
+                <div class="table-row">
+                    <div><strong>${reserva.codigo || 'N/A'}</strong></div>
+                    <div>${reserva.veiculo || 'N/A'}</div>
+                    <div>${formatarData(reserva.data_retirada)}</div>
+                    <div>${formatarData(reserva.data_devolucao)}</div>
+                    <div>R$ ${valorNumerico.toFixed(2)}</div>
+                    <div>${reserva.avaliacao ? '⭐'.repeat(Math.min(reserva.avaliacao, 5)) : '-'}</div>
+                    <div>
+                        <span class="status-badge status-${reserva.status}">
+                            ${getStatusText(reserva.status)}
+                        </span>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-sm" onclick="verDetalhes(${reserva.id})">
+                            👁️ Detalhes
+                        </button>
+                        <button class="btn btn-success btn-sm" onclick="alterarStatus(${reserva.id})">
+                            ✏️ Alterar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Erro ao renderizar reservas:', error);
+        container.innerHTML = `
+            <div class="table-row">
+                <div style="text-align: center; padding: 20px; grid-column: 1 / -1; color: red;">
+                    Erro ao carregar reservas
+                </div>
+            </div>
+        `;
+    }
+}
+
+// FUNÇÕES AUXILIARES (adicione estas se não existirem)
+function formatarData(dataString) {
+    if (!dataString) return 'N/A';
+    
+    try {
+        const data = new Date(dataString);
+        return data.toLocaleDateString('pt-BR');
+    } catch (error) {
+        return dataString;
+    }
+}
+
+function getStatusText(status) {
+    const statusMap = {
+        'pendente': 'Pendente',
+        'confirmada': 'Confirmada',
+        'em_andamento': 'Em Andamento',
+        'concluida': 'Concluída',
+        'cancelada': 'Cancelada'
+    };
+    
+    return statusMap[status] || status;
+}
+
+// Funções dos botões (se não existirem)
+function verDetalhes(id) {
+    console.log('Ver detalhes da reserva:', id);
+    // Implemente a lógica para ver detalhes
+}
+
+function alterarStatus(id) {
+    console.log('Alterar status da reserva:', id);
+    // Implemente a lógica para alterar status
+}
+    
+    // Funções auxiliares
+    function formatarData(data) {
+        if (!data) return '-';
+        return new Date(data).toLocaleDateString('pt-BR');
+    }
+    
+    function getStatusText(status) {
+        const statusMap = {
+            'active': 'Ativa',
+            'completed': 'Concluída', 
+            'cancelled': 'Cancelada'
+        };
+        return statusMap[status] || status;
+    }
+    
+    // Modal functions
+    function verDetalhes(reservaId) {
+    try {
+        console.log('🔍 Abrindo detalhes da reserva ID:', reservaId);
+        
+        const reserva = todasReservas.find(r => r.id === reservaId);
+        if (!reserva) {
+            console.error('Reserva não encontrada');
+            return;
+        }
+        
+        // Converter valor para número com segurança
+        const valor = Number(reserva.valor) || 0;
+        
+        // Criar HTML dos detalhes
+        const html = `
+            <div style="line-height: 2;">
+                <p><strong>Código:</strong> ${reserva.codigo || 'N/A'}</p>
+                <p><strong>Veículo:</strong> ${reserva.veiculo || 'N/A'}</p>
+                <p><strong>Data Retirada:</strong> ${formatarData(reserva.data_retirada)}</p>
+                <p><strong>Data Devolução:</strong> ${formatarData(reserva.data_devolucao)}</p>
+                <p><strong>Local Retirada:</strong> ${reserva.local_retirada || '-'}</p>
+                <p><strong>Local Devolução:</strong> ${reserva.local_devolucao || '-'}</p>
+                <p><strong>Valor:</strong> R$ ${valor.toFixed(2)}</p>
+                <p><strong>Status:</strong> ${getStatusText(reserva.status)}</p>
+                <p><strong>Avaliação:</strong> ${reserva.avaliacao ? '⭐'.repeat(reserva.avaliacao) : 'Não avaliada'}</p>
+                ${reserva.motivo_cancelamento ? `<p><strong>Motivo Cancelamento:</strong> ${reserva.motivo_cancelamento}</p>` : ''}
+            </div>
+        `;
+        
+        // Atualizar conteúdo e mostrar modal
+        document.getElementById('detalhes-reserva').innerHTML = html;
+        document.getElementById('modalDetalhes').style.display = 'block';
+        
+        console.log('✅ Modal de detalhes aberto com sucesso');
+        
+    } catch (error) {
+        console.error('❌ Erro ao abrir detalhes:', error);
+        alert('Erro ao carregar detalhes da reserva');
+    }
+}
+    
+    function fecharModalDetalhes() {
+        document.getElementById('modalDetalhes').style.display = 'none';
+    }
+    
+    function alterarStatus(reservaId) {
+        const reserva = todasReservas.find(r => r.id === reservaId);
+        if (!reserva) return;
+        
+        document.getElementById('reserva_id').value = reservaId;
+        document.getElementById('novo_status').value = reserva.status;
+        document.getElementById('motivo_cancelamento').value = reserva.motivo_cancelamento || '';
+        
+        document.getElementById('modalStatus').style.display = 'block';
+    }
+    
+    function fecharModalStatus() {
+        document.getElementById('modalStatus').style.display = 'none';
+        document.getElementById('formStatus').reset();
+        document.getElementById('motivo-cancelamento-group').style.display = 'none';
+        document.getElementById('info-pagamento-group').style.display = 'none';
+    }
+    
+    // Modal Nova Reserva
+    function abrirModalNovaReserva() {
+        document.getElementById('modalNovaReserva').style.display = 'block';
+        carregarDadosNovaReserva();
+        document.getElementById('detalhes-calculo').style.display = 'none';
+    }
+    
+    function fecharModalNovaReserva() {
+        document.getElementById('modalNovaReserva').style.display = 'none';
+        document.getElementById('formNovaReserva').reset();
+    }
+    
+    // Carregar dados para o modal de nova reserva
+    async function carregarDadosNovaReserva() {
+        try {
+            // Carregar clientes
+            const responseClientes = await fetch('/api/clientes');
+            const dataClientes = await responseClientes.json();
+            
+            const selectClientes = document.getElementById('usuario_id');
+            if (dataClientes.success) {
+                selectClientes.innerHTML = '<option value="">Selecione um cliente</option>' +
+                    dataClientes.clientes.map(cliente => 
+                        `<option value="${cliente.id}">${cliente.nome} - ${cliente.email}</option>`
+                    ).join('');
+            }
+            
+            // Carregar veículos disponíveis
+            const responseVeiculos = await fetch('/api/veiculos-disponiveis');
+            const dataVeiculos = await responseVeiculos.json();
+            
+            const selectVeiculos = document.getElementById('id_veiculo');
+            if (dataVeiculos.success) {
+                selectVeiculos.innerHTML = '<option value="">Selecione um veículo</option>' +
+                    dataVeiculos.veiculos.map(veiculo => 
+                        `<option value="${veiculo.id_veiculo}" data-preco="${veiculo.preco_diaria}">
+                            ${veiculo.modelo} - ${veiculo.placa} - R$ ${veiculo.preco_diaria.toFixed(2)}/dia
+                        </option>`
+                    ).join('');
+            }
+            
+            // Configurar cálculo automático
+            configurarCalculoAutomatico();
+            
+        } catch (error) {
+            console.error('Erro ao carregar dados para nova reserva:', error);
+        }
+    }
+    
+    // Configurar cálculo automático
+    // Configurar cálculo automático (VERSÃO CORRIGIDA)
+function configurarCalculoAutomatico() {
+    // Configurar datas mínimas primeiro
+    const hoje = new Date().toISOString().split('T')[0];
+    document.getElementById('data_retirada').min = hoje;
+    document.getElementById('data_devolucao').min = hoje;
+    
+    // Adicionar event listeners para TODOS os campos relevantes
+    document.getElementById('data_retirada').addEventListener('input', calcularValorReserva);
+    document.getElementById('data_retirada').addEventListener('change', function() {
+        const dataRetirada = this.value;
+        if (dataRetirada) {
+            document.getElementById('data_devolucao').min = dataRetirada;
+        }
+        calcularValorReserva();
+    });
+    
+    document.getElementById('data_devolucao').addEventListener('input', calcularValorReserva);
+    document.getElementById('data_devolucao').addEventListener('change', calcularValorReserva);
+    
+    document.getElementById('id_veiculo').addEventListener('change', calcularValorReserva);
+    
+    console.log('✅ Cálculo automático configurado');
+}
+
+// Função principal de cálculo (VERSÃO MAIS ROBUSTA)
+async function calcularValorReserva() {
+    const dataRetirada = document.getElementById('data_retirada').value;
+    const dataDevolucao = document.getElementById('data_devolucao').value;
+    const veiculoId = document.getElementById('id_veiculo').value;
+    
+    // Se algum campo estiver vazio, limpar
+    if (!dataRetirada || !dataDevolucao || !veiculoId) {
+        document.getElementById('valor').value = '';
+        document.getElementById('detalhes-calculo').style.display = 'none';
+        return;
+    }
+    
+    // Validar datas silenciosamente
+    if (new Date(dataDevolucao) <= new Date(dataRetirada)) {
+        document.getElementById('valor').value = '';
+        document.getElementById('detalhes-calculo').style.display = 'none';
+        return;
+    }
+    
+    try {
+        // Calcular diferença de dias
+        const diffTime = Math.abs(new Date(dataDevolucao) - new Date(dataRetirada));
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        // Buscar preço do veículo
+        const response = await fetch(`/api/veiculo/${veiculoId}`);
+        
+        if (!response.ok) {
+            console.error('❌ Erro na API:', response.status);
+            return;
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.veiculo) {
+            const precoDiaria = data.veiculo.preco_diaria || 0;
+            const valorBase = diffDays * precoDiaria;
+            const valorFinal = aplicarTaxas(valorBase, diffDays);
+            
+            document.getElementById('valor').value = valorFinal.toFixed(2);
+            atualizarDisplayCalculo(diffDays, precoDiaria, valorBase, valorFinal);
+            
+        } else {
+            console.error('❌ Veículo não encontrado ou dados inválidos');
+            document.getElementById('valor').value = '';
+            document.getElementById('detalhes-calculo').style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao calcular valor:', error);
+        document.getElementById('valor').value = '';
+        document.getElementById('detalhes-calculo').style.display = 'none';
+    }
+}
+    
+    // Aplicar taxas e descontos
+    function aplicarTaxas(valorBase, dias) {
+        let valorFinal = valorBase;
+        valorFinal += 25.00; // Taxa de limpeza
+        valorFinal *= 1.05;  // Taxa de serviço 5%
+        
+        if (dias >= 7) valorFinal *= 0.95;  // 5% desconto
+        if (dias >= 15) valorFinal *= 0.90; // 10% desconto
+        
+        return Math.round(valorFinal * 100) / 100;
+    }
+    
+    // Atualizar display dos detalhes do cálculo
+    function atualizarDisplayCalculo(dias, diaria, base, final) {
+        const detalhesDiv = document.getElementById('detalhes-calculo');
+        const textoDiv = document.getElementById('texto-calculo');
+        
+        if (dias && diaria) {
+            let html = `
+                <div><strong>📊 Detalhes do Cálculo:</strong></div>
+                <div>• ${dias} dias × R$ ${diaria.toFixed(2)}/dia = R$ ${base.toFixed(2)}</div>
+                <div>• Taxa de limpeza: R$ 25.00</div>
+                <div>• Taxa de serviço: 5%</div>
+            `;
+            
+            if (dias >= 7) {
+                html += `<div>• Desconto locação longa: ${dias >= 15 ? '10%' : '5%'}</div>`;
+            }
+            
+            html += `<div><strong>💎 Valor final: R$ ${final.toFixed(2)}</strong></div>`;
+            
+            textoDiv.innerHTML = html;
+            detalhesDiv.style.display = 'block';
+        } else {
+            detalhesDiv.style.display = 'none';
+        }
+    }
+    
+    // Event Listeners
+    document.getElementById('novo_status').addEventListener('change', function() {
+        const motivoGroup = document.getElementById('motivo-cancelamento-group');
+        const pagamentoGroup = document.getElementById('info-pagamento-group');
+        
+        if (this.value === 'cancelled') {
+            motivoGroup.style.display = 'block';
+            pagamentoGroup.style.display = 'none';
+        } else if (this.value === 'completed') {
+            motivoGroup.style.display = 'none';
+            pagamentoGroup.style.display = 'block';
+        } else {
+            motivoGroup.style.display = 'none';
+            pagamentoGroup.style.display = 'none';
+        }
+    });
+    
+    // Submeter alteração de status
+    document.getElementById('formStatus').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const dados = {
+            reserva_id: parseInt(formData.get('reserva_id')),
+            novo_status: formData.get('novo_status'),
+            motivo_cancelamento: formData.get('motivo_cancelamento'),
+            pagamento_status: formData.get('pagamento_status')
+        };
+        
+        try {
+            const response = await fetch('/api/reservas/status', {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(dados)
+            });
+            
+            const resultado = await response.json();
+            
+            if (resultado.success) {
+                alert('✅ Status da reserva atualizado com sucesso!');
+                fecharModalStatus();
+                carregarReservas();
+            } else {
+                alert('❌ Erro ao atualizar status: ' + resultado.error);
+            }
+            
+        } catch (error) {
+            console.error('Erro ao atualizar status:', error);
+            alert('❌ Erro de conexão ao atualizar status');
+        }
+    });
+    
+    // Submeter nova reserva
+    document.getElementById('formNovaReserva').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validação de datas
+        const dataRetirada = document.getElementById('data_retirada').value;
+        const dataDevolucao = document.getElementById('data_devolucao').value;
+        
+        if (dataRetirada && dataDevolucao && new Date(dataDevolucao) <= new Date(dataRetirada)) {
+            alert('❌ A data de devolução deve ser posterior à data de retirada!');
+            document.getElementById('data_devolucao').focus();
+            return;
+        }
+        
+        const formData = new FormData(this);
+        const dados = Object.fromEntries(formData);
+        
+        // Validar dados obrigatórios
+        if (!dados.usuario_id || !dados.id_veiculo || !dados.data_retirada || !dados.data_devolucao) {
+            alert('❌ Preencha todos os campos obrigatórios!');
+            return;
+        }
+        
+        // Processar dados
+        dados.codigo = 'RES' + Date.now().toString().slice(-6);
+        dados.status = 'active';
+        dados.usuario_id = parseInt(dados.usuario_id);
+        dados.id_veiculo = parseInt(dados.id_veiculo);
+        dados.valor = parseFloat(dados.valor) || 0;
+        dados.id_seguro = dados.id_seguro ? parseInt(dados.id_seguro) : null;
+        
+        try {
+            const response = await fetch('/api/reservas', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(dados)
+            });
+            
+            const resultado = await response.json();
+            
+            if (resultado.success) {
+                alert('✅ Reserva criada com sucesso! Código: ' + dados.codigo);
+                fecharModalNovaReserva();
+                carregarReservas();
+            } else {
+                alert('❌ Erro ao criar reserva: ' + resultado.error);
+            }
+            
+        } catch (error) {
+            console.error('Erro ao criar reserva:', error);
+            alert('❌ Erro de conexão ao criar reserva');
+        }
+    });
+    
+    // Fechar modais ao clicar fora
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+        }
+    });
+    
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+        atualizarInterface();
+        carregarReservas();
+    });
+</script>
+</body>
+</html>

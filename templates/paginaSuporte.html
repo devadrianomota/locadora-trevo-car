@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Suporte - TrevoCar</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+
+  header {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+  }
+  header img {
+    height: 36px;
+    margin-right: 12px;
+  }
+  header h1 {
+    font-size: 20px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+
+  main {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .chat-box {
+    background: white;
+    width: 360px;
+    max-width: 95vw;
+    height: 500px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+
+  .messages {
+    flex-grow: 1;
+    padding: 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #e9f1ea;
+  }
+
+  .msg {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.3;
+  }
+  .msg.support {
+    align-self: flex-start;
+    background-color: #28a745;
+    color: white;
+    border-radius: 16px 16px 16px 4px;
+  }
+  .msg.user {
+    align-self: flex-end;
+    background-color: #dbf1d6;
+    color: #2c5d1f;
+    border-radius: 16px 16px 4px 16px;
+  }
+
+
+  .input-area {
+    padding: 12px 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 8px;
+    background: white;
+  }
+  .input-area input[type="text"] {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    outline-offset: 2px;
+  }
+  .input-area button {
+    background-color: #28a745;
+    border: none;
+    color: white;
+    padding: 0 18px;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  .input-area button:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+  }
+  .input-area button:hover:not(:disabled) {
+    background-color: #1e7e33;
+  }
+
+  .messages::-webkit-scrollbar {
+    width: 8px;
+  }
+  .messages::-webkit-scrollbar-thumb {
+    background-color: #28a745;
+    border-radius: 20px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo-trevocar.png" alt="Logo TrevoCar" />
+  <h1>Suporte TrevoCar</h1>
+</header>
+
+<main>
+  <div class="chat-box" role="region" aria-label="Janela de Suporte ao Cliente">
+    <div class="messages" id="messages" aria-live="polite" aria-relevant="additions">
+      <div class="msg support">Ola! Sou suporte da TrevoCar, em que posso te ajudar?</div>
+    </div>
+    <form class="input-area" id="chat-form" aria-label="Enviar mensagem para suporte">
+      <input type="text" id="chat-input" aria-required="true" placeholder="Digite sua mensagem..." autocomplete="off" />
+      <button type="submit" id="send-btn" disabled>Enviar</button>
+    </form>
+  </div>
+</main>
+
+<script>
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  const button = document.getElementById('send-btn');
+  const messages = document.getElementById('messages');
+
+  input.addEventListener('input', () => {
+    button.disabled = (input.value.trim() === '');
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+   
+    const userMsg = document.createElement('div');
+    userMsg.className = 'msg user';
+    userMsg.textContent = text;
+    messages.appendChild(userMsg);
+
+   
+    input.value = '';
+    button.disabled = true;
+
+  
+    messages.scrollTop = messages.scrollHeight;
+
+  
+    setTimeout(() => {
+      const supportMsg = document.createElement('div');
+      supportMsg.className = 'msg support';
+
+   
+      supportMsg.textContent = 'Obrigado por entrar em contato! Em breve um atendente responderá você.';
+      messages.appendChild(supportMsg);
+      messages.scrollTop = messages.scrollHeight;
+    }, 1500);
+  });
+
+ 
+  messages.scrollTop = messages.scrollHeight;
+</script>
+
+</body>
+</html>

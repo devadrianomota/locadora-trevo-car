@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trevocar - Dashboard Motorista</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background: rgba(255,255,255,0.15);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Main Content */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-title h1 {
+            font-size: 2.8rem;
+            color: #27ae60;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .dashboard-title h2 {
+            font-size: 1.4rem;
+            color: #7f8c8d;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-title p {
+            color: #95a5a6;
+            font-size: 1.1rem;
+        }
+
+        .separator {
+            border: none;
+            height: 3px;
+            background: linear-gradient(90deg, transparent 0%, #27ae60 50%, transparent 100%);
+            margin: 2rem 0;
+            border-radius: 2px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(46, 204, 113, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px rgba(46, 204, 113, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #27ae60;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: 600;
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .toggle-label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #27ae60;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Actions Section */
+        .actions-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(46, 204, 113, 0.1);
+        }
+
+        .section-title {
+            color: #27ae60;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-title::before {
+            content: '🚗';
+            font-size: 1.5rem;
+        }
+
+        /* Viagens Cards */
+        .viagens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .viagem-card {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .viagem-card:hover {
+            background: #fff;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+
+        .viagem-card.pendente {
+            border-left-color: #f39c12;
+        }
+
+        .viagem-card.agendada {
+            border-left-color: #3498db;
+        }
+
+        .viagem-card.concluida {
+            border-left-color: #27ae60;
+        }
+
+        .viagem-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .viagem-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .viagem-status {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-pendente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-agendada {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-concluida {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .viagem-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #7f8c8d;
+        }
+
+        .detail-value {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .viagem-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Tables Section */
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(46, 204, 113, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 1.5rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .table-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr 1fr 1fr 1fr;
+            padding: 1.2rem 2rem;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .table-row:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .table-row:hover {
+            background-color: #e8f4fd;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .logo h1 {
+                font-size: 1.8rem;
+            }
+
+            .dashboard-container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .viagens-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                text-align: center;
+            }
+
+            .user-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .viagem-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">🚗</div>
+            <h1>Trevocar</h1>
+        </div>
+        <div class="user-info">
+            <span class="user-name" id="user-name">Motorista</span>
+            <a href="/logout-funcionarios" class="logout-btn">
+                🚪 Sair
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="dashboard-container">
+        <div class="dashboard-title">
+            <h1># Trevocar Driver</h1>
+            <h2>## Dashboard do Motorista</h2>
+            <p>- Controle de viagens e disponibilidade</p>
+        </div>
+
+        <hr class="separator">
+
+        <!-- Cards de Estatísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-viagens">0</div>
+                <div class="stat-label">Total de Viagens</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="viagens-pendentes">0</div>
+                <div class="stat-label">Viagens Pendentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="viagens-agendadas">0</div>
+                <div class="stat-label">Viagens Agendadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="viagens-concluidas">0</div>
+                <div class="stat-label">Viagens Concluídas</div>
+            </div>
+        </div>
+
+        <!-- Controle de Disponibilidade -->
+        <div class="actions-section">
+            <h2 class="section-title">Status de Disponibilidade</h2>
+            <div class="toggle-container">
+                <span class="toggle-label" id="status-label">Disponível para viagens</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="disponibilidade-toggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <p id="status-message" style="color: #7f8c8d; margin-top: 0.5rem;">
+                Quando disponível, você receberá novas solicitações de viagem.
+            </p>
+        </div>
+
+        <!-- Viagens Pendentes -->
+        <div class="actions-section">
+            <h2 class="section-title">Viagens Pendentes</h2>
+            <div class="viagens-grid" id="viagens-pendentes-list">
+                <div class="viagem-card pendente pulse">
+                    <div style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                        Carregando viagens pendentes...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Viagens Agendadas -->
+        <div class="actions-section">
+            <h2 class="section-title">Viagens Agendadas</h2>
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-row">
+                        <div>Cliente</div>
+                        <div>Origem → Destino</div>
+                        <div>Data/Hora</div>
+                        <div>Veículo</div>
+                        <div>Valor</div>
+                        <div>Ações</div>
+                    </div>
+                </div>
+                <div class="table-body" id="viagens-agendadas-list">
+                    <div class="table-row">
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #7f8c8d;">
+                            Carregando viagens agendadas...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Histórico de Viagens -->
+        <div class="actions-section">
+            <h2 class="section-title">Histórico de Viagens</h2>
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-row">
+                        <div>Cliente</div>
+                        <div>Origem → Destino</div>
+                        <div>Data/Hora</div>
+                        <div>Veículo</div>
+                        <div>Valor</div>
+                        <div>Status</div>
+                    </div>
+                </div>
+                <div class="table-body" id="historico-viagens-list">
+                    <div class="table-row">
+                        <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #7f8c8d;">
+                            Carregando histórico...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Debug force - REMOVA DEPOIS
+async function testarAPIs() {
+    console.log('🧪 Testando APIs...');
+    
+    const apis = [
+        '/api/motorista/perfil',
+        '/api/motorista/estatisticas',
+        '/api/motorista/viagens/pendentes'
+    ];
+    
+    for (const api of apis) {
+        try {
+            const response = await fetch(api);
+            console.log(`${api}: ${response.status} ${response.statusText}`);
+        } catch (error) {
+            console.error(`${api}: ERRO - ${error.message}`);
+        }
+    }
+}
+
+// Chame esta função no console do navegador para testar
+window.testarAPIs = testarAPIs;
+
+       // Variáveis globais
+let motoristaId = null;
+let disponibilidadeAtual = 'não';
+let usuarioLogado = 'Motorista';
+
+// Inicializar dashboard quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚗 Inicializando Dashboard do Motorista...');
+    
+    // Obter parâmetros da URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const nome = urlParams.get('nome') || 'Motorista';
+    const cargo = urlParams.get('cargo') || 'motorista';
+    
+    usuarioLogado = nome;
+    
+    // Atualizar interface
+    atualizarInterfaceUsuario(nome);
+    
+    // Carregar dados do motorista
+    inicializarDashboard();
+});
+
+// Atualizar interface com dados do usuário
+function atualizarInterfaceUsuario(nome) {
+    document.getElementById('user-name').textContent = nome;
+}
+
+// Inicializar todos os dados do dashboard
+async function inicializarDashboard() {
+    try {
+        console.log('📦 Carregando dados iniciais do dashboard...');
+        
+        // Carregar perfil do motorista primeiro
+        await carregarPerfilMotorista();
+        
+        // Carregar dados em paralelo para melhor performance
+        await Promise.all([
+            carregarEstatisticas(),
+            carregarViagensPendentes(),
+            carregarViagensAgendadas(),
+            carregarHistoricoViagens()
+        ]);
+        
+        console.log('✅ Dashboard inicializado com sucesso!');
+        
+    } catch (error) {
+        console.error('❌ Erro ao inicializar dashboard:', error);
+        mostrarMensagem('Erro ao carregar dados do dashboard', 'error');
+    }
+}
+
+// Carregar perfil do motorista
+async function carregarPerfilMotorista() {
+    try {
+        console.log('👤 Buscando perfil do motorista...');
+        
+        const response = await fetch('/api/motorista/perfil');
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.motorista) {
+            const motorista = data.motorista;
+            motoristaId = motorista.id_motorista;
+            disponibilidadeAtual = motorista.disponibilidade;
+            
+            // Configurar toggle de disponibilidade
+            configurarToggleDisponibilidade();
+            
+            // Atualizar nome se necessário
+            if (motorista.funcionario_nome || motorista.nome) {
+                const nomeCompleto = motorista.funcionario_nome || motorista.nome;
+                document.getElementById('user-name').textContent = nomeCompleto;
+                usuarioLogado = nomeCompleto;
+            }
+            
+            console.log(`✅ Perfil carregado: ${motorista.nome} (ID: ${motoristaId})`);
+            
+        } else {
+            throw new Error(data.error || 'Perfil não encontrado');
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar perfil:', error);
+        
+        // Em caso de erro, usar dados da sessão
+        motoristaId = 1; // Valor padrão temporário
+        configurarToggleDisponibilidade();
+        
+        mostrarMensagem('Usando modo de demonstração - Conecte com o backend', 'warning');
+    }
+}
+
+// Configurar toggle de disponibilidade
+function configurarToggleDisponibilidade() {
+    const toggle = document.getElementById('disponibilidade-toggle');
+    const disponivel = disponibilidadeAtual === 'sim';
+    
+    toggle.checked = disponivel;
+    atualizarDisplayDisponibilidade(disponivel);
+    
+    // Adicionar event listener
+    toggle.addEventListener('change', function() {
+        gerenciarDisponibilidade(this.checked);
+    });
+    
+    console.log('✅ Toggle de disponibilidade configurado');
+}
+
+// Gerenciar mudança de disponibilidade
+async function gerenciarDisponibilidade(disponivel) {
+    try {
+        console.log(`🔄 ${disponivel ? 'Ativando' : 'Desativando'} disponibilidade...`);
+        
+        // Feedback visual imediato
+        atualizarDisplayDisponibilidade(disponivel);
+        
+        const response = await fetch('/api/motorista/disponibilidade', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                disponibilidade: disponivel ? 'sim' : 'não'
+            })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            disponibilidadeAtual = disponivel ? 'sim' : 'não';
+            mostrarMensagem(
+                `Disponibilidade ${disponivel ? 'ativada' : 'desativada'} com sucesso!`, 
+                'success'
+            );
+            
+            // Recarregar viagens pendentes se ficou disponível
+            if (disponivel) {
+                setTimeout(() => carregarViagensPendentes(), 1000);
+            }
+            
+        } else {
+            throw new Error(result.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao atualizar disponibilidade:', error);
+        
+        // Reverter toggle em caso de erro
+        const toggle = document.getElementById('disponibilidade-toggle');
+        toggle.checked = !toggle.checked;
+        atualizarDisplayDisponibilidade(!toggle.checked);
+        
+        mostrarMensagem('Erro ao atualizar disponibilidade', 'error');
+    }
+}
+
+// Atualizar display visual da disponibilidade
+function atualizarDisplayDisponibilidade(disponivel) {
+    const label = document.getElementById('status-label');
+    const message = document.getElementById('status-message');
+    
+    if (disponivel) {
+        label.textContent = 'Disponível para viagens';
+        label.style.color = '#27ae60';
+        message.textContent = 'Você está disponível e receberá novas solicitações de viagem.';
+        message.style.color = '#27ae60';
+    } else {
+        label.textContent = 'Indisponível';
+        label.style.color = '#e74c3c';
+        message.textContent = 'Você não receberá novas solicitações de viagem.';
+        message.style.color = '#e74c3c';
+    }
+}
+
+// Carregar estatísticas do motorista
+async function carregarEstatisticas() {
+    try {
+        console.log('📊 Buscando estatísticas...');
+        
+        const response = await fetch('/api/motorista/estatisticas');
+        
+        if (!response.ok) {
+            // Se a API não existir, usar dados de demonstração
+            return usarEstatisticasDemonstracao();
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const stats = data.estatisticas;
+            atualizarEstatisticas(stats);
+        } else {
+            throw new Error(data.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar estatísticas:', error);
+        usarEstatisticasDemonstracao();
+    }
+}
+
+// Atualizar estatísticas na interface
+function atualizarEstatisticas(estatisticas) {
+    const {
+        total_viagens = 0,
+        viagens_pendentes = 0,
+        viagens_agendadas = 0,
+        viagens_concluidas = 0
+    } = estatisticas;
+    
+    animarContador('total-viagens', total_viagens);
+    animarContador('viagens-pendentes', viagens_pendentes);
+    animarContador('viagens-agendadas', viagens_agendadas);
+    animarContador('viagens-concluidas', viagens_concluidas);
+    
+    console.log('✅ Estatísticas atualizadas:', estatisticas);
+}
+
+// Dados de demonstração para estatísticas
+function usarEstatisticasDemonstracao() {
+    const estatisticasDemo = {
+        total_viagens: 45,
+        viagens_pendentes: 2,
+        viagens_agendadas: 3,
+        viagens_concluidas: 40
+    };
+    
+    atualizarEstatisticas(estatisticasDemo);
+    console.log('📊 Usando estatísticas de demonstração');
+}
+
+// Carregar viagens pendentes
+async function carregarViagensPendentes() {
+    try {
+        console.log('⏳ Buscando viagens pendentes...');
+        
+        const response = await fetch('/api/motorista/viagens/pendentes');
+        
+        if (!response.ok) {
+            // Se a API não existir, usar dados de demonstração
+            return usarViagensPendentesDemonstracao();
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            renderizarViagensPendentes(data.viagens);
+        } else {
+            throw new Error(data.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar viagens pendentes:', error);
+        usarViagensPendentesDemonstracao();
+    }
+}
+
+// Renderizar viagens pendentes na interface
+function renderizarViagensPendentes(viagens) {
+    const container = document.getElementById('viagens-pendentes-list');
+    
+    if (!viagens || viagens.length === 0) {
+        container.innerHTML = `
+            <div class="viagem-card pendente">
+                <div style="text-align: center; padding: 2rem; color: #7f8c8d;">
+                    ${disponibilidadeAtual === 'sim' ? 
+                      'Nenhuma viagem pendente no momento' : 
+                      'Você está indisponível para novas viagens'}
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = viagens.map(viagem => criarCardViagemPendente(viagem)).join('');
+    console.log(`✅ ${viagens.length} viagens pendentes renderizadas`);
+}
+
+// Criar card para viagem pendente
+function criarCardViagemPendente(viagem) {
+    return `
+        <div class="viagem-card pendente">
+            <div class="viagem-header">
+                <div class="viagem-title">Viagem #${viagem.id_viagem}</div>
+                <span class="viagem-status status-pendente">Pendente</span>
+            </div>
+            <div class="viagem-details">
+                <div class="detail-item">
+                    <span class="detail-label">Cliente:</span>
+                    <span class="detail-value">${viagem.cliente_nome || 'Cliente'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Trajeto:</span>
+                    <span class="detail-value">${viagem.origem} → ${viagem.destino}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Data/Hora:</span>
+                    <span class="detail-value">${formatarDataHora(viagem.data_viagem)}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Veículo:</span>
+                    <span class="detail-value">${viagem.veiculo_solicitado || 'Qualquer'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Valor:</span>
+                    <span class="detail-value">R$ ${viagem.valor ? viagem.valor.toFixed(2) : '0.00'}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Passageiros:</span>
+                    <span class="detail-value">${viagem.passageiros || 1}</span>
+                </div>
+                ${viagem.observacoes ? `
+                <div class="detail-item">
+                    <span class="detail-label">Observações:</span>
+                    <span class="detail-value">${viagem.observacoes}</span>
+                </div>
+                ` : ''}
+                ${viagem.cliente_telefone ? `
+                <div class="detail-item">
+                    <span class="detail-label">Contato:</span>
+                    <span class="detail-value">${viagem.cliente_telefone}</span>
+                </div>
+                ` : ''}
+            </div>
+            <div class="viagem-actions">
+                <button class="btn btn-success" onclick="aceitarViagem(${viagem.id_viagem})" 
+                        ${disponibilidadeAtual !== 'sim' ? 'disabled' : ''}>
+                    ✅ Aceitar
+                </button>
+                <button class="btn btn-danger" onclick="recusarViagem(${viagem.id_viagem})">
+                    ❌ Recusar
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Dados de demonstração para viagens pendentes
+function usarViagensPendentesDemonstracao() {
+    const viagensDemo = [
+        {
+            id_viagem: 1,
+            cliente_nome: 'Maria Silva',
+            origem: 'Aeroporto Internacional',
+            destino: 'Hotel Central',
+            data_viagem: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 horas no futuro
+            veiculo_solicitado: 'Toyota Corolla',
+            valor: 45.00,
+            passageiros: 2,
+            observacoes: 'Voo atrasado, aguardar no saguão',
+            cliente_telefone: '(11) 99999-9999'
+        },
+        {
+            id_viagem: 2,
+            cliente_nome: 'Carlos Santos',
+            origem: 'Centro Empresarial',
+            destino: 'Restaurante Vista',
+            data_viagem: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6 horas no futuro
+            veiculo_solicitado: 'Honda Civic',
+            valor: 35.00,
+            passageiros: 4,
+            observacoes: 'Reunião de negócios',
+            cliente_telefone: '(11) 98888-8888'
+        }
+    ];
+    
+    renderizarViagensPendentes(viagensDemo);
+}
+
+// Carregar viagens agendadas
+async function carregarViagensAgendadas() {
+    try {
+        console.log('📅 Buscando viagens agendadas...');
+        
+        const response = await fetch('/api/motorista/viagens/agendadas');
+        
+        if (!response.ok) {
+            return usarViagensAgendadasDemonstracao();
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            renderizarViagensAgendadas(data.viagens);
+        } else {
+            throw new Error(data.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar viagens agendadas:', error);
+        usarViagensAgendadasDemonstracao();
+    }
+}
+
+// Renderizar viagens agendadas
+function renderizarViagensAgendadas(viagens) {
+    const container = document.getElementById('viagens-agendadas-list');
+    
+    if (!viagens || viagens.length === 0) {
+        container.innerHTML = `
+            <div class="table-row">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #7f8c8d;">
+                    Nenhuma viagem agendada
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = viagens.map(viagem => criarLinhaViagemAgendada(viagem)).join('');
+    console.log(`✅ ${viagens.length} viagens agendadas renderizadas`);
+}
+
+// Criar linha para viagem agendada
+function criarLinhaViagemAgendada(viagem) {
+    return `
+        <div class="table-row">
+            <div><strong>${viagem.cliente_nome || 'Cliente'}</strong></div>
+            <div>${viagem.origem} → ${viagem.destino}</div>
+            <div>${formatarDataHora(viagem.data_viagem)}</div>
+            <div>${viagem.veiculo_solicitado || 'Qualquer'}</div>
+            <div>R$ ${viagem.valor ? viagem.valor.toFixed(2) : '0.00'}</div>
+            <div>
+                <button class="btn btn-info" onclick="iniciarViagem(${viagem.id_viagem})" 
+                        style="padding: 0.5rem 1rem;">
+                    🚀 Iniciar
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Dados de demonstração para viagens agendadas
+function usarViagensAgendadasDemonstracao() {
+    const viagensDemo = [
+        {
+            id_viagem: 3,
+            cliente_nome: 'Ana Costa',
+            origem: 'Shopping Center',
+            destino: 'Aeroporto',
+            data_viagem: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Amanhã
+            veiculo_solicitado: 'Toyota Corolla',
+            valor: 60.00
+        },
+        {
+            id_viagem: 4,
+            cliente_nome: 'Roberto Lima',
+            origem: 'Hotel Praia',
+            destino: 'Centro de Convenções',
+            data_viagem: new Date(Date.now() + 26 * 60 * 60 * 1000).toISOString(), // Amanhã + 2h
+            veiculo_solicitado: 'Honda Civic',
+            valor: 25.00
+        }
+    ];
+    
+    renderizarViagensAgendadas(viagensDemo);
+}
+
+// Carregar histórico de viagens
+async function carregarHistoricoViagens() {
+    try {
+        console.log('📚 Buscando histórico de viagens...');
+        
+        const response = await fetch('/api/motorista/viagens/historico');
+        
+        if (!response.ok) {
+            return usarHistoricoDemonstracao();
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            renderizarHistoricoViagens(data.viagens);
+        } else {
+            throw new Error(data.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao carregar histórico:', error);
+        usarHistoricoDemonstracao();
+    }
+}
+
+// Renderizar histórico de viagens
+function renderizarHistoricoViagens(viagens) {
+    const container = document.getElementById('historico-viagens-list');
+    
+    if (!viagens || viagens.length === 0) {
+        container.innerHTML = `
+            <div class="table-row">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: #7f8c8d;">
+                    Nenhuma viagem no histórico
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = viagens.map(viagem => criarLinhaHistorico(viagem)).join('');
+    console.log(`✅ ${viagens.length} viagens no histórico renderizadas`);
+}
+
+// Criar linha para histórico
+function criarLinhaHistorico(viagem) {
+    const statusClass = viagem.status === 'concluida' ? 'status-concluida' : 'status-pendente';
+    const statusText = viagem.status === 'concluida' ? 'Concluída' : 'Cancelada';
+    
+    return `
+        <div class="table-row">
+            <div><strong>${viagem.cliente_nome || 'Cliente'}</strong></div>
+            <div>${viagem.origem} → ${viagem.destino}</div>
+            <div>${formatarDataHora(viagem.data_viagem)}</div>
+            <div>${viagem.veiculo_solicitado || 'Qualquer'}</div>
+            <div>R$ ${viagem.valor ? viagem.valor.toFixed(2) : '0.00'}</div>
+            <div>
+                <span class="viagem-status ${statusClass}">${statusText}</span>
+            </div>
+        </div>
+    `;
+}
+
+// Dados de demonstração para histórico
+function usarHistoricoDemonstracao() {
+    const historicoDemo = [
+        {
+            id_viagem: 5,
+            cliente_nome: 'Paula Oliveira',
+            origem: 'Estação Central',
+            destino: 'Universidade',
+            data_viagem: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 dias atrás
+            veiculo_solicitado: 'Toyota Corolla',
+            valor: 20.00,
+            status: 'concluida'
+        },
+        {
+            id_viagem: 6,
+            cliente_nome: 'Lucas Mendes',
+            origem: 'Centro',
+            destino: 'Shopping',
+            data_viagem: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 dia atrás
+            veiculo_solicitado: 'Honda Civic',
+            valor: 18.50,
+            status: 'concluida'
+        }
+    ];
+    
+    renderizarHistoricoViagens(historicoDemo);
+}
+
+// ========== AÇÕES DE VIAGENS ==========
+
+// Aceitar viagem
+async function aceitarViagem(viagemId) {
+    if (!confirm('Deseja aceitar esta viagem?')) return;
+    
+    try {
+        console.log(`✅ Aceitando viagem ${viagemId}...`);
+        
+        const response = await fetch(`/api/motorista/viagens/${viagemId}/aceitar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarMensagem('Viagem aceita com sucesso!', 'success');
+            
+            // Recarregar dados relevantes
+            setTimeout(() => {
+                carregarEstatisticas();
+                carregarViagensPendentes();
+                carregarViagensAgendadas();
+            }, 500);
+            
+        } else {
+            throw new Error(result.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao aceitar viagem:', error);
+        mostrarMensagem('Erro ao aceitar viagem: ' + error.message, 'error');
+    }
+}
+
+// Recusar viagem
+async function recusarViagem(viagemId) {
+    if (!confirm('Deseja recusar esta viagem?')) return;
+    
+    try {
+        console.log(`❌ Recusando viagem ${viagemId}...`);
+        
+        const response = await fetch(`/api/motorista/viagens/${viagemId}/recusar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarMensagem('Viagem recusada.', 'info');
+            
+            // Recarregar viagens pendentes
+            setTimeout(() => carregarViagensPendentes(), 500);
+            
+        } else {
+            throw new Error(result.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao recusar viagem:', error);
+        mostrarMensagem('Erro ao recusar viagem', 'error');
+    }
+}
+
+// Iniciar viagem
+async function iniciarViagem(viagemId) {
+    if (!confirm('Deseja iniciar esta viagem?')) return;
+    
+    try {
+        console.log(`🚀 Iniciando viagem ${viagemId}...`);
+        
+        const response = await fetch(`/api/motorista/viagens/${viagemId}/iniciar`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erro HTTP: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarMensagem('Viagem iniciada! Boa viagem! 🚗', 'success');
+            
+            // Recarregar viagens agendadas
+            setTimeout(() => carregarViagensAgendadas(), 500);
+            
+        } else {
+            throw new Error(result.error);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erro ao iniciar viagem:', error);
+        mostrarMensagem('Erro ao iniciar viagem', 'error');
+    }
+}
+
+// ========== FUNÇÕES UTILITÁRIAS ==========
+
+// Animação de contador
+function animarContador(elementId, valorFinal, duracao = 1000) {
+    const elemento = document.getElementById(elementId);
+    let valorInicial = parseInt(elemento.textContent) || 0;
+    
+    // Se já estiver no valor correto, não animar
+    if (valorInicial === valorFinal) return;
+    
+    let incremento = (valorFinal - valorInicial) / (duracao / 16);
+    let valorAtual = valorInicial;
+
+    const timer = setInterval(() => {
+        valorAtual += incremento;
+        
+        if ((incremento > 0 && valorAtual >= valorFinal) || 
+            (incremento < 0 && valorAtual <= valorFinal)) {
+            valorAtual = valorFinal;
+            clearInterval(timer);
+        }
+        
+        elemento.textContent = Math.floor(valorAtual);
+    }, 16);
+}
+
+// Formatar data e hora
+function formatarDataHora(dataString) {
+    if (!dataString) return 'N/A';
+    
+    try {
+        const data = new Date(dataString);
+        
+        // Verificar se a data é válida
+        if (isNaN(data.getTime())) {
+            return 'Data inválida';
+        }
+        
+        return data.toLocaleString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+    } catch (error) {
+        console.error('Erro ao formatar data:', error);
+        return dataString; // Retorna original em caso de erro
+    }
+}
+
+// Sistema de mensagens
+function mostrarMensagem(mensagem, tipo = 'info') {
+    // Remover mensagens existentes
+    const mensagensExistentes = document.querySelectorAll('.mensagem-flutuante');
+    mensagensExistentes.forEach(msg => msg.remove());
+    
+    const cores = {
+        success: '#27ae60',
+        error: '#e74c3c',
+        warning: '#f39c12',
+        info: '#3498db'
+    };
+    
+    const cor = cores[tipo] || cores.info;
+    
+    const mensagemDiv = document.createElement('div');
+    mensagemDiv.className = 'mensagem-flutuante';
+    mensagemDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${cor};
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            font-weight: 600;
+            max-width: 400px;
+        ">
+            ${mensagem}
+        </div>
+    `;
+    
+    document.body.appendChild(mensagemDiv);
+    
+    // Adicionar estilo de animação se não existir
+    if (!document.querySelector('#mensagem-styles')) {
+        const style = document.createElement('style');
+        style.id = 'mensagem-styles';
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Remover após 5 segundos com animação
+    setTimeout(() => {
+        if (mensagemDiv.parentNode) {
+            mensagemDiv.querySelector('div').style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => {
+                if (mensagemDiv.parentNode) {
+                    mensagemDiv.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Função para recarregar todos os dados
+function recarregarDashboard() {
+    console.log('🔄 Recarregando dashboard...');
+    inicializarDashboard();
+}
+
+// Exportar funções para uso global (se necessário)
+window.recarregarDashboard = recarregarDashboard;
+window.aceitarViagem = aceitarViagem;
+window.recusarViagem = recusarViagem;
+window.iniciarViagem = iniciarViagem;
+
+console.log('✅ JavaScript do Motorista carregado!');
+    </script>
+</body>
+</html>

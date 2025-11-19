@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Perguntas Frequentes - TrevoCar</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    background-color: #f9f9f9;
+    color: #333;
+  }
+  
+  header {
+    background-color: #28a745; 
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+  }
+  header img {
+    height: 40px;
+    margin-right: 12px;
+  }
+  header h1 {
+    color: white;
+    font-weight: 700;
+    font-size: 24px;
+    margin: 0;
+    user-select: none;
+  }
+
+  main {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px;
+  }
+
+  .intro-text {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  .intro-text h2 {
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 6px;
+    color: #28a745; 
+  }
+  .intro-text p {
+    font-weight: 500;
+    font-size: 16px;
+    margin-top: 0;
+  }
+  .intro-text p a {
+    color: #28a745;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .intro-text p a:hover {
+    text-decoration: underline;
+  }
+
+ 
+  .search-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto 40px auto;
+    position: relative;
+  }
+  .search-container input[type="text"] {
+    width: 100%;
+    padding: 10px 38px 10px 15px;
+    border: 2px solid #28a745;
+    border-radius: 25px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .search-container input[type="text"]:focus {
+    border-color: #1e7e34;
+  }
+  .search-container svg {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    stroke: #28a745;
+    width: 20px;
+    height: 20px;
+  }
+
+  
+  .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px 40px;
+  }
+
+  .faq-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #28a745;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: box-shadow 0.3s, background-color 0.3s;
+  }
+  .faq-item:hover {
+    background-color: #e6f4ea;
+    box-shadow: 0 5px 8px rgb(0 0 0 / 0.15);
+  }
+  .faq-item span {
+    font-weight: 700;
+    transition: transform 0.3s;
+  }
+  .faq-item.open span {
+    transform: rotate(90deg);
+  }
+
+  
+  .faq-answer {
+    max-width: 900px;
+    margin: 10px auto 30px auto;
+    background-color: #daf0d8;
+    border-radius: 8px;
+    padding: 15px 25px;
+    font-weight: 500;
+    color: #206c22;
+    display: none;
+  }
+  .faq-answer.active {
+    display: block;
+  }
+
+  
+  @media (max-width: 700px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+      gap: 15px 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo-trevocar.png" alt="Logo TrevoCar" />
+  <h1>TREVOCAR</h1>
+</header>
+
+<main>
+  <section class="intro-text">
+    <h2>Perguntas frequentes</h2>
+    <p><strong>Como podemos ajudar?</strong></p>
+    <p>Se já é nosso cliente, está com o carro ou devolveu, você também pode encontrar informações no nosso <a href="#">Portal do Cliente</a>.</p>
+  </section>
+
+  <section class="search-container">
+    <input type="text" id="search" placeholder="Busque por palavras-chave" oninput="filtrarPerguntas()" />
+    <svg fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+  </section>
+
+  <section class="faq-grid" id="faq-list">
+    <div class="faq-item" onclick="toggleFaq(this)">Compra do carro alugado <span>▶</span></div>
+    <div class="faq-answer">Você pode comprar os carros disponíveis na nossa frota. Consulte as condições especiais com a equipe TrevoCar.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Reserva <span>▶</span></div>
+    <div class="faq-answer">A reserva é feita pelo site, podendo ser feito pagamento parcial ou total conforme o plano escolhido.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Dados cadastrais e Dados de acesso <span>▶</span></div>
+    <div class="faq-answer">Mantenha seus dados atualizados para garantir um atendimento eficiente.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Prorrogação <span>▶</span></div>
+    <div class="faq-answer">Solicite prorrogação do aluguel pelo portal ou app, sujeito à disponibilidade.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Cuidados com o carro, revisão e manutenção corretiva <span>▶</span></div>
+    <div class="faq-answer">Nossos carros passam por revisão regular para garantir segurança e conforto.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Lavagem e Limpeza Garantida <span>▶</span></div>
+    <div class="faq-answer">O carro será entregue limpo e higienizado em todas as reservas.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Pré-requisitos e formas de pagamentos <span>▶</span></div>
+    <div class="faq-answer">Aceitamos cartão, débito, pix e boleto. Clientes devem atender requisitos mínimos.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Localiza Mensal Flex <span>▶</span></div>
+    <div class="faq-answer">Plano mensal flexível com vantagens especiais. Consulte valores e condições.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Nome Social <span>▶</span></div>
+    <div class="faq-answer">Respeitamos o nome social de nossos clientes para garantir inclusão e respeito.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Diárias e horas extras <span>▶</span></div>
+    <div class="faq-answer">Entenda como são calculadas as diárias e cobranças por horas adicionais.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Condutor jovem <span>▶</span></div>
+    <div class="faq-answer">Motoristas menores de 25 anos podem ter tarifas e requisitos adicionais.</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">Condutor adicional <span>▶</span></div>
+    <div class="faq-answer">Adicione motoristas adicionais sem custo extra ou com pequena taxa.</div>
+  </section>
+</main>
+
+<script>
+  
+  function toggleFaq(element) {
+    const allFaqs = document.querySelectorAll('.faq-item');
+    allFaqs.forEach(faq => {
+      if(faq !== element) {
+        faq.classList.remove('open');
+        faq.nextElementSibling.classList.remove('active');
+      }
+    });
+    element.classList.toggle('open');
+    const answer = element.nextElementSibling;
+    answer.classList.toggle('active');
+  }
+
+
+  function filtrarPerguntas() {
+    const input = document.getElementById('search');
+    const filtro = input.value.toLowerCase();
+    const perguntas = document.querySelectorAll('.faq-item');
+    perguntas.forEach((pergunta, index) => {
+      const texto = pergunta.textContent.toLowerCase();
+      const resposta = pergunta.nextElementSibling;
+      if(texto.indexOf(filtro) > -1) {
+        pergunta.style.display = '';
+        resposta.style.display = 'none';
+        resposta.classList.remove('active');
+        pergunta.classList.remove('open');
+      } else {
+        pergunta.style.display = 'none';
+        resposta.style.display = 'none';
+        resposta.classList.remove('active');
+        pergunta.classList.remove('open');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
