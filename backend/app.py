@@ -1589,8 +1589,397 @@ def get_funcionarios_admin():
     except Exception as e:
         print(f"❌ Erro ao buscar funcionários: {e}")
         return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+    
+# ========== APIS PARA VIAGENS (ADMIN) ==========
+
+@app.route('/api/admin/viagens', methods=['GET'])
+def get_viagens_admin():
+    try:
+        print("🚗 Buscando lista de viagens para admin...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT 
+                    v.id_viagem,
+                    v.id_cliente,
+                    v.id_motorista,
+                    v.origem,
+                    v.destino,
+                    v.data_viagem,
+                    v.veiculo_solicitado,
+                    v.valor,
+                    v.passageiros,
+                    v.observacoes,
+                    v.status,
+                    v.data_criacao,
+                    v.data_aceitacao,
+                    v.data_inicio,
+                    v.data_conclusao,
+                    u.nome as nome_cliente,
+                    f.nome as nome_motorista
+                FROM viagens v
+                LEFT JOIN usuarios u ON v.id_cliente = u.id
+                LEFT JOIN funcionarios f ON v.id_motorista = f.id
+                ORDER BY v.data_criacao DESC
+            """)
+            
+            viagens = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ {len(viagens)} viagens encontradas")
+            
+            # Converter dados para JSON
+            for viagem in viagens:
+                if viagem['data_viagem']:
+                    viagem['data_viagem'] = viagem['data_viagem'].isoformat()
+                if viagem['data_criacao']:
+                    viagem['data_criacao'] = viagem['data_criacao'].isoformat()
+                if viagem['data_aceitacao']:
+                    viagem['data_aceitacao'] = viagem['data_aceitacao'].isoformat()
+                if viagem['data_inicio']:
+                    viagem['data_inicio'] = viagem['data_inicio'].isoformat()
+                if viagem['data_conclusao']:
+                    viagem['data_conclusao'] = viagem['data_conclusao'].isoformat()
+                if viagem['valor']:
+                    viagem['valor'] = float(viagem['valor'])
+            
+            return jsonify({
+                'success': True,
+                'viagens': viagens,
+                'total': len(viagens)
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao buscar viagens: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
     
     return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+@app.route('/api/viagens', methods=['GET'])
+def get_viagens():
+    try:
+        print("🚗 Buscando lista de viagens...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT 
+                    v.id_viagem,
+                    v.id_cliente,
+                    v.id_motorista,
+                    v.origem,
+                    v.destino,
+                    v.data_viagem,
+                    v.veiculo_solicitado,
+                    v.valor,
+                    v.passageiros,
+                    v.observacoes,
+                    v.status,
+                    v.data_criacao,
+                    u.nome as nome_cliente,
+                    f.nome as nome_motorista
+                FROM viagens v
+                LEFT JOIN usuarios u ON v.id_cliente = u.id
+                LEFT JOIN funcionarios f ON v.id_motorista = f.id
+                ORDER BY v.data_criacao DESC
+            """)
+            
+            viagens = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ {len(viagens)} viagens encontradas")
+            
+            # Converter dados para JSON
+            for viagem in viagens:
+                if viagem['data_viagem']:
+                    viagem['data_viagem'] = viagem['data_viagem'].isoformat()
+                if viagem['data_criacao']:
+                    viagem['data_criacao'] = viagem['data_criacao'].isoformat()
+                if viagem['valor']:
+                    viagem['valor'] = float(viagem['valor'])
+            
+            return jsonify({
+                'success': True,
+                'viagens': viagens
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao buscar viagens: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+@app.route('/api/admin/motoristas', methods=['GET'])
+def get_motoristas_admin():
+    try:
+        print("👨‍✈️ Buscando lista de motoristas...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT id, nome, email, telefone, cargo
+                FROM funcionarios 
+                WHERE cargo LIKE '%motorista%' AND ativo = TRUE
+                ORDER BY nome
+            """)
+            
+            motoristas = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ {len(motoristas)} motoristas encontrados")
+            
+            return jsonify({
+                'success': True,
+                'motoristas': motoristas
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao buscar motoristas: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+# Ações para viagens
+@app.route('/api/admin/viagens/<int:viagem_id>/aceitar', methods=['PUT'])
+def aceitar_viagem_admin(viagem_id):
+    try:
+        print(f"✅ Aceitando viagem {viagem_id}...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE viagens 
+                SET status = 'aceita', data_aceitacao = NOW() 
+                WHERE id_viagem = %s
+            """, (viagem_id,))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Viagem {viagem_id} aceita com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Viagem aceita com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao aceitar viagem: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+@app.route('/api/admin/viagens/<int:viagem_id>/recusar', methods=['PUT'])
+def recusar_viagem_admin(viagem_id):
+    try:
+        data = request.get_json()
+        motivo = data.get('motivo', 'Motivo não informado')
+        
+        print(f"❌ Recusando viagem {viagem_id}...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE viagens 
+                SET status = 'recusada', observacoes = CONCAT(COALESCE(observacoes, ''), ' Motivo recusa: ', %s)
+                WHERE id_viagem = %s
+            """, (motivo, viagem_id))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Viagem {viagem_id} recusada com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Viagem recusada com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao recusar viagem: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+@app.route('/api/admin/viagens/<int:viagem_id>/iniciar', methods=['PUT'])
+def iniciar_viagem_admin(viagem_id):
+    try:
+        print(f"🚀 Iniciando viagem {viagem_id}...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE viagens 
+                SET status = 'em_andamento', data_inicio = NOW() 
+                WHERE id_viagem = %s
+            """, (viagem_id,))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Viagem {viagem_id} iniciada com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Viagem iniciada com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao iniciar viagem: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+@app.route('/api/admin/viagens/<int:viagem_id>/concluir', methods=['PUT'])
+def concluir_viagem_admin(viagem_id):
+    try:
+        print(f"🏁 Concluindo viagem {viagem_id}...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE viagens 
+                SET status = 'concluida', data_conclusao = NOW() 
+                WHERE id_viagem = %s
+            """, (viagem_id,))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Viagem {viagem_id} concluída com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Viagem concluída com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao concluir viagem: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+@app.route('/api/admin/viagens/<int:viagem_id>/cancelar', methods=['PUT'])
+def cancelar_viagem_admin(viagem_id):
+    try:
+        print(f"❌ Cancelando viagem {viagem_id}...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE viagens 
+                SET status = 'cancelada' 
+                WHERE id_viagem = %s
+            """, (viagem_id,))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Viagem {viagem_id} cancelada com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Viagem cancelada com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao cancelar viagem: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+# API para editar veículo
+@app.route('/api/veiculos/<int:veiculo_id>', methods=['PUT'])
+def atualizar_veiculo(veiculo_id):
+    try:
+        print(f"✏️ Atualizando veículo {veiculo_id}...")
+        data = request.get_json()
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                UPDATE veiculo 
+                SET placa = %s, modelo = %s, ano = %s, cor = %s, 
+                    quilometragem = %s, status = %s, id_categoria = %s, id_filial = %s
+                WHERE id_veiculo = %s
+            """, (
+                data['placa'], data['modelo'], data['ano'], data['cor'],
+                data.get('quilometragem', 0), data['status'], 
+                data['id_categoria'], data['id_filial'], veiculo_id
+            ))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Veículo {veiculo_id} atualizado com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Veículo atualizado com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao atualizar veículo: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+# API para excluir veículo
+@app.route('/api/veiculos/<int:veiculo_id>', methods=['DELETE'])
+def excluir_veiculo(veiculo_id):
+    try:
+        print(f"🗑️ Excluindo veículo {veiculo_id}...")
+        
+        conn = db.get_connection()
+        if conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("DELETE FROM veiculo WHERE id_veiculo = %s", (veiculo_id,))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            print(f"✅ Veículo {veiculo_id} excluído com sucesso")
+            
+            return jsonify({
+                'success': True,
+                'message': 'Veículo excluído com sucesso!'
+            })
+            
+    except Exception as e:
+        print(f"❌ Erro ao excluir veículo: {e}")
+        return jsonify({'success': False, 'error': 'Erro interno do servidor'}), 500
+    
+    return jsonify({'success': False, 'error': 'Erro de conexão'}), 500
+
+
 # ========== INICIAR SERVIDOR ==========
 if __name__ == '__main__':
     print("TREVOCAR - SISTEMA DE LOCADORA")

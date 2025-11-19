@@ -164,7 +164,7 @@
         /* Seções de Gestão */
         .management-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
             gap: 25px;
             margin-bottom: 40px;
         }
@@ -290,17 +290,27 @@
             font-weight: 600;
         }
         
-        .status-available {
-            background-color: var(--verde-suave);
-            color: var(--verde-principal);
-        }
-        
-        .status-rented {
+        .status-pendente {
             background-color: #fff3cd;
             color: #856404;
         }
         
-        .status-maintenance {
+        .status-aceita {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-andamento {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-concluida {
+            background-color: var(--verde-suave);
+            color: var(--verde-principal);
+        }
+        
+        .status-cancelada {
             background-color: #f8d7da;
             color: var(--vermelho);
         }
@@ -420,17 +430,20 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid var(--cinza-medio);
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s;
+            font-family: inherit;
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: var(--verde-principal);
             outline: none;
         }
@@ -442,23 +455,6 @@
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid var(--cinza-medio);
-        }
-
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--cinza-medio);
-            border-radius: 8px;
-            font-size: 16px;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 80px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group textarea:focus {
-            border-color: var(--verde-principal);
-            outline: none;
         }
 
         /* Tabs */
@@ -495,62 +491,28 @@
         .tab-content.active {
             display: block;
         }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
-
-<script>
-    // Pegar parâmetros da URL
-    function getUrlParams() {
-        const params = new URLSearchParams(window.location.search);
-        return {
-            nome: params.get('nome') || 'Administrador',
-            cargo: params.get('cargo') || 'administrador'
-        };
-    }
-    
-    // Atualizar a interface com os dados
-    function atualizarInterface() {
-        const params = getUrlParams();
-        console.log('👤 Dados do usuário:', params);
-        
-        // Atualizar o nome na navbar
-        const userNameElement = document.getElementById('user-name');
-        const userRoleElement = document.getElementById('user-role');
-        
-        if (userNameElement) {
-            userNameElement.textContent = params.nome;
-        }
-        
-        if (userRoleElement) {
-            userRoleElement.textContent = params.cargo.charAt(0).toUpperCase() + params.cargo.slice(1);
-        }
-    }
-
-    // Sistema de abas
-    function mostrarAba(abaId) {
-        // Esconder todas as abas
-        document.querySelectorAll('.tab-content').forEach(aba => {
-            aba.classList.remove('active');
-        });
-        
-        // Remover active de todas as tabs
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.classList.remove('active');
-        });
-        
-        // Mostrar aba selecionada
-        document.getElementById(abaId).classList.add('active');
-        
-        // Ativar tab clicada
-        event.target.classList.add('active');
-        
-        // Carregar dados específicos da aba se necessário
-        if (abaId === 'aba-viagens') {
-            carregarViagensMotoristas();
-        }
-    }
-</script>
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -619,7 +581,7 @@
                         <h3 class="card-title">Gestão de Veículos</h3>
                     </div>
                     <div class="data-list" id="veiculos-list">
-                        <!-- Dados carregados via JavaScript -->
+                        <div class="loading">Carregando veículos...</div>
                     </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="carregarVeiculos()">
@@ -638,7 +600,7 @@
                         <h3 class="card-title">Gestão de Funcionários</h3>
                     </div>
                     <div class="data-list" id="funcionarios-list">
-                        <!-- Dados carregados via JavaScript -->
+                        <div class="loading">Carregando funcionários...</div>
                     </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="carregarFuncionarios()">
@@ -657,7 +619,7 @@
                         <h3 class="card-title">Gestão de Filiais</h3>
                     </div>
                     <div class="data-list" id="filiais-list">
-                        <!-- Dados carregados via JavaScript -->
+                        <div class="loading">Carregando filiais...</div>
                     </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="carregarFiliais()">
@@ -676,7 +638,7 @@
                         <h3 class="card-title">Categorias de Veículos</h3>
                     </div>
                     <div class="data-list" id="categorias-list">
-                        <!-- Dados carregados via JavaScript -->
+                        <div class="loading">Carregando categorias...</div>
                     </div>
                     <div class="btn-group">
                         <button class="btn btn-primary" onclick="carregarCategorias()">
@@ -703,8 +665,7 @@
                         <div class="form-group">
                             <label for="cliente_viagem">Cliente *</label>
                             <select id="cliente_viagem" name="id_cliente" required>
-                                <option value="">Selecione um cliente</option>
-                                <!-- Clientes carregados via JavaScript -->
+                                <option value="">Carregando clientes...</option>
                             </select>
                         </div>
                         
@@ -726,15 +687,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="valor_viagem">Valor (R$)</label>
-                                <input type="number" id="valor_viagem" name="valor" step="0.01" placeholder="0.00">
+                                <input type="number" id="valor_viagem" name="valor" step="0.01" placeholder="0.00" min="0">
                             </div>
                         </div>
                         
                         <div class="form-group">
                             <label for="veiculo_viagem">Veículo Sugerido</label>
                             <select id="veiculo_viagem" name="veiculo_solicitado">
-                                <option value="">Qualquer veículo</option>
-                                <!-- Veículos carregados via JavaScript -->
+                                <option value="">Carregando veículos...</option>
                             </select>
                         </div>
                         
@@ -746,8 +706,7 @@
                             <div class="form-group">
                                 <label for="motorista_viagem">Motorista Designado</label>
                                 <select id="motorista_viagem" name="id_motorista">
-                                    <option value="">Atribuir automaticamente</option>
-                                    <!-- Motoristas carregados via JavaScript -->
+                                    <option value="">Carregando motoristas...</option>
                                 </select>
                             </div>
                         </div>
@@ -758,6 +717,7 @@
                         </div>
                         
                         <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="limparFormularioViagem()">Limpar</button>
                             <button type="submit" class="btn btn-primary">🚀 Criar Viagem</button>
                         </div>
                     </form>
@@ -770,30 +730,15 @@
                         <h3 class="card-title">Viagens Pendentes</h3>
                     </div>
                     <div class="data-list" id="viagens-pendentes-list">
-                        <!-- Viagens carregadas via JavaScript -->
+                        <div class="loading">Carregando viagens pendentes...</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="carregarViagensMotoristas()">
+                        <button class="btn btn-primary" onclick="carregarViagens()">
                             🔄 Atualizar
                         </button>
                     </div>
                 </div>
 
-                <!-- Viagens em Andamento -->
-                <div class="management-card">
-                    <div class="card-header">
-                        <div class="card-icon">🚗</div>
-                        <h3 class="card-title">Viagens em Andamento</h3>
-                    </div>
-                    <div class="data-list" id="viagens-andamento-list">
-                        <!-- Viagens carregadas via JavaScript -->
-                    </div>
-                    <div class="btn-group">
-                        <button class="btn btn-primary" onclick="carregarViagensMotoristas()">
-                            🔄 Atualizar
-                        </button>
-                    </div>
-                </div>
 
                 <!-- Histórico de Viagens -->
                 <div class="management-card">
@@ -802,13 +747,13 @@
                         <h3 class="card-title">Histórico de Viagens</h3>
                     </div>
                     <div class="data-list" id="viagens-concluidas-list">
-                        <!-- Viagens carregadas via JavaScript -->
+                        <div class="loading">Carregando histórico...</div>
                     </div>
                     <div class="btn-group">
-                        <button class="btn btn-primary" onclick="carregarViagensMotoristas()">
+                        <button class="btn btn-primary" onclick="carregarViagens()">
                             🔄 Atualizar
                         </button>
-                    <button class="btn btn-secondary" onclick="exportarRelatorioViagens()">
+                        <button class="btn btn-secondary" onclick="exportarRelatorioViagens()">
                             📄 Exportar
                         </button>
                     </div>
@@ -818,7 +763,7 @@
     </div>
 
     <!-- Modal para Cadastrar Veículo -->
-    <div id="modalVeiculo" class="modal" style="display: none;">
+    <div id="modalVeiculo" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="fecharModalVeiculo()">&times;</span>
             <h2 class="modal-title">🚗 Cadastrar Novo Veículo</h2>
@@ -854,16 +799,14 @@
                 <div class="form-group">
                     <label for="id_categoria">Categoria *</label>
                     <select id="id_categoria" name="id_categoria" required>
-                        <option value="">Selecione uma categoria</option>
-                        <!-- Opções carregadas via JavaScript -->
+                        <option value="">Carregando categorias...</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="id_filial">Filial *</label>
                     <select id="id_filial" name="id_filial" required>
-                        <option value="">Selecione uma filial</option>
-                        <!-- Opções carregadas via JavaScript -->
+                        <option value="">Carregando filiais...</option>
                     </select>
                 </div>
                 
@@ -876,7 +819,7 @@
     </div>
 
     <!-- Modal para Editar Veículo -->
-    <div id="modalEditarVeiculo" class="modal" style="display: none;">
+    <div id="modalEditarVeiculo" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="fecharModalEditarVeiculo()">&times;</span>
             <h2 class="modal-title">✏️ Editar Veículo</h2>
@@ -923,14 +866,14 @@
                 <div class="form-group">
                     <label for="editar_id_categoria">Categoria *</label>
                     <select id="editar_id_categoria" name="id_categoria" required>
-                        <!-- Opções carregadas via JavaScript -->
+                        <option value="">Carregando categorias...</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="editar_id_filial">Filial *</label>
                     <select id="editar_id_filial" name="id_filial" required>
-                        <!-- Opções carregadas via JavaScript -->
+                        <option value="">Carregando filiais...</option>
                     </select>
                 </div>
                 
@@ -942,478 +885,173 @@
         </div>
     </div>
 
-    <!-- Modais existentes (Filial, Categoria, Funcionário) -->
-    <div id="modalFilial" class="modal" style="display: none;">
-        <!-- Conteúdo do modal de filial -->
-    </div>
+       <script>
+// ========== CONFIGURAÇÕES GLOBAIS ==========
+const CONFIG = {
+    API_BASE_URL: '/api',
+    DEMO_MODE: false,
+    ENDPOINTS: {
+        VIAGENS: ['/viagens', '/admin/viagens', '/viagens/todas'],
+        CLIENTES: ['/clientes', '/admin/clientes'], 
+        MOTORISTAS: ['/motoristas', '/admin/motoristas', '/funcionarios?cargo=motorista'],
+        VEICULOS: ['/veiculos', '/veiculos-disponiveis']
+    }
+};
 
-    <div id="modalCategoria" class="modal" style="display: none;">
-        <!-- Conteúdo do modal de categoria -->
-    </div>
+// ========== ESTADO DA APLICAÇÃO ==========
+const appState = {
+    viagens: [],
+    veiculos: [],
+    clientes: [],
+    motoristas: [],
+    categorias: [],
+    filiais: [],
+    funcionarios: [],
+    endpointsAtivos: {}
+};
 
-    <div id="modalFuncionario" class="modal" style="display: none;">
-        <!-- Conteúdo do modal de funcionário -->
-    </div>
-
-    <script>
-       // ========== FUNÇÕES PRINCIPAIS ==========
-
-// Carregar dados quando a página abrir
+// ========== INICIALIZAÇÃO ==========
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏁 Página carregada - verificando elementos...');
+    console.log('🏁 Dashboard Admin inicializando...');
     
+    // Configurar data/hora padrão para o formulário de viagem
+    const agora = new Date();
+    agora.setHours(agora.getHours() + 1);
+    document.getElementById('data_viagem').value = agora.toISOString().slice(0, 16);
+    
+    // Carregar dados iniciais
+    inicializarDashboard();
+    
+    // Configurar event listeners
+    configurarEventListeners();
+});
+
+// ========== FUNÇÕES DE INICIALIZAÇÃO ==========
+async function inicializarDashboard() {
     atualizarInterface();
+    
+    // Primeiro descobrir quais endpoints estão ativos
+    await descobrirEndpointsAtivos();
+    
+    // Depois carregar os dados
     carregarEstatisticas();
     carregarVeiculos();
     carregarFuncionarios();
     carregarFiliais();
     carregarCategorias();
-    
-    // Carregar dados para a aba de viagens
-    carregarDadosViagens();
-});
+}
 
-// ========== FUNÇÕES DE EDIÇÃO ==========
-
-// Abrir modal de edição de veículo
-function editarVeiculo(idVeiculo) {
-    console.log('✏️ Editando veículo:', idVeiculo);
+async function descobrirEndpointsAtivos() {
+    console.log('🔍 Descobrindo endpoints ativos...');
     
-    // Buscar dados do veículo
-    fetch(`/api/veiculo/${idVeiculo}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const veiculo = data.veiculo;
-                
-                // Preencher formulário
-                document.getElementById('editar_id_veiculo').value = veiculo.id_veiculo;
-                document.getElementById('editar_placa').value = veiculo.placa;
-                document.getElementById('editar_modelo').value = veiculo.modelo;
-                document.getElementById('editar_ano').value = veiculo.ano;
-                document.getElementById('editar_cor').value = veiculo.cor;
-                document.getElementById('editar_quilometragem').value = veiculo.quilometragem;
-                document.getElementById('editar_status').value = veiculo.status;
-                
-                // Carregar opções dos selects
-                carregarOpcoesModalEdicao().then(() => {
-                    document.getElementById('editar_id_categoria').value = veiculo.id_categoria;
-                    document.getElementById('editar_id_filial').value = veiculo.id_filial;
-                    
-                    // Abrir modal
-                    document.getElementById('modalEditarVeiculo').style.display = 'block';
-                });
-            } else {
-                alert('❌ Erro ao carregar dados do veículo');
+    const endpointsParaTestar = [
+        ...CONFIG.ENDPOINTS.VIAGENS.map(e => ({ tipo: 'viagens', endpoint: e })),
+        ...CONFIG.ENDPOINTS.CLIENTES.map(e => ({ tipo: 'clientes', endpoint: e })),
+        ...CONFIG.ENDPOINTS.MOTORISTAS.map(e => ({ tipo: 'motoristas', endpoint: e })),
+        ...CONFIG.ENDPOINTS.VEICULOS.map(e => ({ tipo: 'veiculos', endpoint: e }))
+    ];
+
+    for (const item of endpointsParaTestar) {
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}${item.endpoint}`);
+            if (response.ok) {
+                appState.endpointsAtivos[item.tipo] = item.endpoint;
+                console.log(`✅ Endpoint ativo: ${item.tipo} -> ${item.endpoint}`);
+                break; // Usa o primeiro endpoint que funcionar para cada tipo
             }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert('❌ Erro ao carregar dados do veículo');
-        });
-}
-
-// Carregar opções para o modal de edição
-async function carregarOpcoesModalEdicao() {
-    try {
-        // Carregar categorias
-        const responseCategorias = await fetch('/api/categorias');
-        const dataCategorias = await responseCategorias.json();
-        
-        const selectCategoria = document.getElementById('editar_id_categoria');
-        if (dataCategorias.success) {
-            selectCategoria.innerHTML = dataCategorias.categorias.map(cat => 
-                `<option value="${cat.id_categoria}">${cat.nome}</option>`
-            ).join('');
+        } catch (error) {
+            // Continua para o próximo endpoint
         }
-        
-        // Carregar filiais
-        const responseFiliais = await fetch('/api/filiais');
-        const dataFiliais = await responseFiliais.json();
-        
-        const selectFilial = document.getElementById('editar_id_filial');
-        if (dataFiliais.success) {
-            selectFilial.innerHTML = dataFiliais.filiais.map(filial => 
-                `<option value="${filial.id_filial}">${filial.nome}</option>`
-            ).join('');
-        }
-        
-    } catch (error) {
-        console.error('Erro ao carregar opções do modal:', error);
-    }
-}
-
-// Fechar modal de edição
-function fecharModalEditarVeiculo() {
-    document.getElementById('modalEditarVeiculo').style.display = 'none';
-    document.getElementById('formEditarVeiculo').reset();
-}
-
-// Submeter edição de veículo
-document.getElementById('formEditarVeiculo').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const dados = Object.fromEntries(formData);
-    
-    // Converter para tipos apropriados
-    dados.ano = parseInt(dados.ano);
-    dados.quilometragem = parseFloat(dados.quilometragem);
-    dados.id_categoria = parseInt(dados.id_categoria);
-    dados.id_filial = parseInt(dados.id_filial);
-    
-    console.log('📤 Enviando edição do veículo:', dados);
-    
-    try {
-        const response = await fetch(`/api/veiculos/${dados.id_veiculo}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dados)
-        });
-        
-        const resultado = await response.json();
-        
-        if (resultado.success) {
-            alert('✅ Veículo atualizado com sucesso!');
-            fecharModalEditarVeiculo();
-            carregarVeiculos(); // Recarregar lista
-        } else {
-            alert('❌ Erro ao atualizar veículo: ' + resultado.error);
-        }
-        
-    } catch (error) {
-        console.error('Erro ao atualizar veículo:', error);
-        alert('❌ Erro de conexão ao atualizar veículo');
-    }
-});
-
-// Excluir veículo
-function excluirVeiculo(idVeiculo, placa) {
-    if (!confirm(`❌ Tem certeza que deseja excluir o veículo ${placa}?`)) {
-        return;
     }
     
-    fetch(`/api/veiculos/${idVeiculo}`, {
-        method: 'DELETE'
-    })
-    .then(response => response.json())
-    .then(resultado => {
-        if (resultado.success) {
-            alert('✅ Veículo excluído com sucesso!');
-            carregarVeiculos(); // Recarregar lista
-            carregarEstatisticas(); // Atualizar estatísticas
-        } else {
-            alert('❌ Erro ao excluir veículo: ' + resultado.error);
+    console.log('📋 Endpoints ativos encontrados:', appState.endpointsAtivos);
+}
+
+function configurarEventListeners() {
+    // Formulários
+    document.getElementById('formNovaViagem').addEventListener('submit', criarViagem);
+    document.getElementById('formVeiculo').addEventListener('submit', cadastrarVeiculo);
+    document.getElementById('formEditarVeiculo').addEventListener('submit', editarVeiculoSubmit);
+    
+    // Fechar modais ao clicar fora
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
         }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        alert('❌ Erro de conexão ao excluir veículo');
     });
 }
 
-// ========== FUNÇÕES DA ABA DE VIAGENS ==========
+// ========== SISTEMA DE ABAS ==========
+function mostrarAba(abaId) {
+    // Esconder todas as abas
+    document.querySelectorAll('.tab-content').forEach(aba => {
+        aba.classList.remove('active');
+    });
+    
+    // Remover active de todas as tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    // Mostrar aba selecionada
+    document.getElementById(abaId).classList.add('active');
+    
+    // Ativar tab clicada
+    event.target.classList.add('active');
+    
+    // Carregar dados específicos da aba
+    if (abaId === 'aba-viagens') {
+        carregarDadosViagens();
+    }
+}
 
-// Carregar dados para a aba de viagens
-async function carregarDadosViagens() {
+// ========== FUNÇÕES DO DASHBOARD GERAL ==========
+
+// Carregar estatísticas
+async function carregarEstatisticas() {
     try {
-        console.log('🚗 Carregando dados para viagens...');
-        
-        // Tentar carregar clientes da API
-        try {
-            const responseClientes = await fetch('/api/admin/clientes');
-            if (responseClientes.ok) {
-                const dataClientes = await responseClientes.json();
-                const selectCliente = document.getElementById('cliente_viagem');
-                if (dataClientes.success) {
-                    selectCliente.innerHTML = '<option value="">Selecione um cliente</option>' +
-                        dataClientes.clientes.map(cliente => 
-                            `<option value="${cliente.id}">${cliente.nome} - ${cliente.email}</option>`
-                        ).join('');
-                    console.log('✅ Clientes carregados da API');
-                }
-            }
-        } catch (error) {
-            console.log('❌ API Clientes não disponível:', error);
-            usarDadosDemoClientes();
-        }
-        
-        // Tentar carregar veículos da API
-        try {
-            const responseVeiculos = await fetch('/api/veiculos');
-            if (responseVeiculos.ok) {
-                const dataVeiculos = await responseVeiculos.json();
-                const selectVeiculo = document.getElementById('veiculo_viagem');
-                if (dataVeiculos.success) {
-                    selectVeiculo.innerHTML = '<option value="">Qualquer veículo</option>' +
-                        dataVeiculos.veiculos.map(veiculo => 
-                            `<option value="${veiculo.modelo}">${veiculo.modelo} - ${veiculo.placa}</option>`
-                        ).join('');
-                }
-            }
-        } catch (error) {
-            console.log('❌ API Veículos não disponível:', error);
-            usarDadosDemoVeiculos();
-        }
-        
-        // Tentar carregar motoristas da API
-        try {
-            const responseMotoristas = await fetch('/api/admin/funcionarios?cargo=motorista');
-            if (responseMotoristas.ok) {
-                const dataMotoristas = await responseMotoristas.json();
-                const selectMotorista = document.getElementById('motorista_viagem');
-                if (dataMotoristas.success) {
-                    selectMotorista.innerHTML = '<option value="">Atribuir automaticamente</option>' +
-                        dataMotoristas.funcionarios.map(funcionario => 
-                            `<option value="${funcionario.id}">${funcionario.nome}</option>`
-                        ).join('');
-                }
-            }
-        } catch (error) {
-            console.log('❌ API Motoristas não disponível:', error);
-            usarDadosDemoMotoristas();
-        }
-        
-    } catch (error) {
-        console.error('Erro ao carregar dados para viagens:', error);
-        usarTodosDadosDemo();
-    }
-}
-
-// Dados de demonstração
-function usarDadosDemoClientes() {
-    const selectCliente = document.getElementById('cliente_viagem');
-    selectCliente.innerHTML = `
-        <option value="">Selecione um cliente</option>
-        <option value="1">Maria Silva - maria@email.com</option>
-        <option value="2">João Santos - joao@email.com</option>
-        <option value="3">Ana Costa - ana@email.com</option>
-        <option value="4">Carlos Oliveira - carlos@email.com</option>
-        <option value="5">Paula Rodrigues - paula@email.com</option>
-    `;
-}
-
-function usarDadosDemoVeiculos() {
-    const selectVeiculo = document.getElementById('veiculo_viagem');
-    selectVeiculo.innerHTML = `
-        <option value="">Qualquer veículo</option>
-        <option value="Toyota Corolla">Toyota Corolla - ABC1D23</option>
-        <option value="Honda Civic">Honda Civic - DEF4G56</option>
-        <option value="BYD Dolphin">BYD Dolphin - GHI7J89</option>
-        <option value="Volkswagen Nivus">Volkswagen Nivus - JKL0M12</option>
-        <option value="Fiat Pulse">Fiat Pulse - MNO3P45</option>
-    `;
-}
-
-function usarDadosDemoMotoristas() {
-    const selectMotorista = document.getElementById('motorista_viagem');
-    selectMotorista.innerHTML = `
-        <option value="">Atribuir automaticamente</option>
-        <option value="1">Carlos Motorista</option>
-        <option value="2">Pedro Motorista</option>
-        <option value="3">Ana Motorista</option>
-        <option value="4">Ricardo Motorista</option>
-        <option value="5">Fernanda Motorista</option>
-    `;
-}
-
-function usarTodosDadosDemo() {
-    usarDadosDemoClientes();
-    usarDadosDemoVeiculos();
-    usarDadosDemoMotoristas();
-}
-
-// Carregar viagens para motoristas
-async function carregarViagensMotoristas() {
-    try {
-        // Esta função carregaria as viagens do sistema
-        // Por enquanto, vamos usar dados de exemplo
-        
-        const viagensPendentes = [
-            {
-                id: 1,
-                cliente: 'Maria Silva',
-                origem: 'Aeroporto',
-                destino: 'Hotel',
-                data: '2024-01-20 14:30',
-                valor: 45.00,
-                status: 'pendente'
-            }
-        ];
-        
-        const viagensAndamento = [
-            {
-                id: 2,
-                cliente: 'João Santos',
-                origem: 'Shopping',
-                destino: 'Aeroporto',
-                data: '2024-01-20 10:00',
-                valor: 60.00,
-                motorista: 'Carlos Motorista',
-                status: 'em_andamento'
-            }
-        ];
-        
-        const viagensConcluidas = [
-            {
-                id: 3,
-                cliente: 'Ana Costa',
-                origem: 'Centro',
-                destino: 'Praia',
-                data: '2024-01-19 15:30',
-                valor: 35.00,
-                motorista: 'Pedro Motorista',
-                status: 'concluida'
-            }
-        ];
-        
-        // Renderizar viagens pendentes
-        const listaPendentes = document.getElementById('viagens-pendentes-list');
-        listaPendentes.innerHTML = viagensPendentes.map(viagem => `
-            <div class="data-item">
-                <div class="item-info">
-                    <div class="item-name">${viagem.cliente}</div>
-                    <div class="item-details">${viagem.origem} → ${viagem.destino}</div>
-                    <div class="item-details">${viagem.data} • R$ ${viagem.valor.toFixed(2)}</div>
-                </div>
-                <div class="item-status status-rented">Pendente</div>
-            </div>
-        `).join('');
-        
-        // Renderizar viagens em andamento
-        const listaAndamento = document.getElementById('viagens-andamento-list');
-        listaAndamento.innerHTML = viagensAndamento.map(viagem => `
-            <div class="data-item">
-                <div class="item-info">
-                    <div class="item-name">${viagem.cliente}</div>
-                    <div class="item-details">${viagem.origem} → ${viagem.destino}</div>
-                    <div class="item-details">${viagem.motorista} • R$ ${viagem.valor.toFixed(2)}</div>
-                </div>
-                <div class="item-status status-available">Em Andamento</div>
-            </div>
-        `).join('');
-        
-        // Renderizar viagens concluídas
-        const listaConcluidas = document.getElementById('viagens-concluidas-list');
-        listaConcluidas.innerHTML = viagensConcluidas.map(viagem => `
-            <div class="data-item">
-                <div class="item-info">
-                    <div class="item-name">${viagem.cliente}</div>
-                    <div class="item-details">${viagem.origem} → ${viagem.destino}</div>
-                    <div class="item-details">${viagem.motorista} • R$ ${viagem.valor.toFixed(2)}</div>
-                </div>
-                <div class="item-status status-available">Concluída</div>
-            </div>
-        `).join('');
-        
-    } catch (error) {
-        console.error('Erro ao carregar viagens:', error);
-    }
-}
-
-// Submeter nova viagem
-document.getElementById('formNovaViagem').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const dados = Object.fromEntries(formData);
-    
-    // Validar dados
-    if (!dados.id_cliente) {
-        alert('❌ Selecione um cliente!');
-        return;
-    }
-    
-    if (!dados.origem || !dados.destino) {
-        alert('❌ Preencha origem e destino!');
-        return;
-    }
-    
-    if (!dados.data_viagem) {
-        alert('❌ Selecione data e hora!');
-        return;
-    }
-    
-    // Se não tem motorista selecionado, remover do dados
-    if (!dados.id_motorista) {
-        delete dados.id_motorista;
-    }
-    
-    console.log('📤 Tentando criar viagem:', dados);
-    
-    try {
-        const response = await fetch('/api/viagens', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dados)
-        });
+        console.log('📊 Carregando estatísticas...');
+        const response = await fetch(`${CONFIG.API_BASE_URL}/estatisticas`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const resultado = await response.json();
+        const data = await response.json();
         
-        if (resultado.success) {
-            alert('✅ Viagem criada com sucesso!');
-            this.reset();
-            carregarViagensMotoristas();
-            
-            // Atualizar data para o próximo horário disponível
-            const agora = new Date();
-            agora.setHours(agora.getHours() + 1);
-            document.getElementById('data_viagem').value = agora.toISOString().slice(0, 16);
-            
+        if (data.success) {
+            const stats = data.estatisticas;
+            document.getElementById('total-veiculos').textContent = stats.total_veiculos || '0';
+            document.getElementById('total-funcionarios').textContent = stats.total_funcionarios || '0';
+            document.getElementById('total-filiais').textContent = stats.total_filiais || '0';
+            document.getElementById('total-categorias').textContent = stats.total_categorias || '0';
         } else {
-            alert('❌ Erro ao criar viagem: ' + resultado.error);
+            throw new Error('Estatísticas não disponíveis');
         }
-        
     } catch (error) {
-        console.error('Erro ao criar viagem:', error);
-        
-        // Se a API não existe (404, 405), simular sucesso para demonstração
-        if (error.message.includes('404') || error.message.includes('405')) {
-            alert('✅ Viagem criada com sucesso! (Modo Demonstração)\n\nCliente: ' + 
-                  document.querySelector('#cliente_viagem option:checked').textContent + 
-                  '\nOrigem: ' + dados.origem + 
-                  '\nDestino: ' + dados.destino +
-                  '\nData: ' + new Date(dados.data_viagem).toLocaleString());
-            
-            this.reset();
-            carregarViagensMotoristas();
-            
-            // Atualizar data para o próximo horário disponível
-            const agora = new Date();
-            agora.setHours(agora.getHours() + 1);
-            document.getElementById('data_viagem').value = agora.toISOString().slice(0, 16);
-        } else {
-            alert('❌ Erro de conexão ao criar viagem: ' + error.message);
-        }
+        console.error('Erro ao carregar estatísticas:', error);
+        document.getElementById('total-veiculos').textContent = '0';
+        document.getElementById('total-funcionarios').textContent = '0';
+        document.getElementById('total-filiais').textContent = '0';
+        document.getElementById('total-categorias').textContent = '0';
     }
-});
-
-// Exportar relatório de viagens
-function exportarRelatorioViagens() {
-    alert('📊 Funcionalidade de exportação em desenvolvimento...');
-    // Aqui você implementaria a geração de PDF/Excel
 }
 
-// ========== FUNÇÕES DE CARREGAMENTO DE DADOS ==========
-
-// Carregar lista de veículos
+// Carregar veículos
 async function carregarVeiculos() {
     try {
         console.log('🚗 Carregando veículos...');
-        const response = await fetch('/api/veiculos');
-        const data = await response.json();
+        const response = await fetch(`${CONFIG.API_BASE_URL}/veiculos`);
         
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
         const lista = document.getElementById('veiculos-list');
         
-        if (data.success && data.veiculos && data.veiculos.length > 0) {
+        if (data.success && data.veiculos) {
+            appState.veiculos = data.veiculos;
             lista.innerHTML = data.veiculos.map(veiculo => `
                 <div class="data-item">
                     <div class="item-info">
@@ -1431,7 +1069,7 @@ async function carregarVeiculos() {
                             🗑️ Excluir
                         </button>
                     </div>
-                    <div class="item-status status-${veiculo.status.replace(' ', '-')}">
+                    <div class="item-status status-${veiculo.status === 'disponível' ? 'available' : 'maintenance'}">
                         ${veiculo.status}
                     </div>
                 </div>
@@ -1452,50 +1090,32 @@ async function carregarVeiculos() {
             <div class="data-item">
                 <div class="item-info">
                     <div class="item-name">Erro ao carregar veículos</div>
+                    <div class="item-details">Verifique a conexão com o servidor</div>
                 </div>
             </div>
         `;
     }
 }
 
-// Carregar estatísticas gerais
-async function carregarEstatisticas() {
-    try {
-        console.log('📊 Carregando estatísticas...');
-        const response = await fetch('/api/estatisticas');
-        const data = await response.json();
-        
-        if (data.success) {
-            const stats = data.estatisticas;
-            document.getElementById('total-veiculos').textContent = stats.total_veiculos;
-            document.getElementById('total-funcionarios').textContent = stats.total_funcionarios;
-            document.getElementById('total-filiais').textContent = stats.total_filiais;
-            document.getElementById('total-categorias').textContent = stats.total_categorias;
-        }
-    } catch (error) {
-        console.error('Erro ao carregar estatísticas:', error);
-        // Valores padrão em caso de erro
-        document.getElementById('total-veiculos').textContent = '0';
-        document.getElementById('total-funcionarios').textContent = '0';
-        document.getElementById('total-filiais').textContent = '0';
-        document.getElementById('total-categorias').textContent = '0';
-    }
-}
-
-// Carregar lista de funcionários
+// Carregar funcionários
 async function carregarFuncionarios() {
     try {
         console.log('👥 Carregando funcionários...');
-        const response = await fetch('/api/funcionarios');
-        const data = await response.json();
+        const response = await fetch(`${CONFIG.API_BASE_URL}/funcionarios`);
         
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
         const lista = document.getElementById('funcionarios-list');
         
-        if (data.success && data.funcionarios && data.funcionarios.length > 0) {
+        if (data.success && data.funcionarios) {
+            appState.funcionarios = data.funcionarios;
             lista.innerHTML = data.funcionarios.map(funcionario => `
                 <div class="data-item">
                     <div class="item-info">
-                        <div class="item-name">ID ${funcionario.id} - ${funcionario.nome}</div>
+                        <div class="item-name">${funcionario.nome}</div>
                         <div class="item-details">
                             ${funcionario.email} • ${funcionario.cargo}
                         </div>
@@ -1521,22 +1141,28 @@ async function carregarFuncionarios() {
             <div class="data-item">
                 <div class="item-info">
                     <div class="item-name">Erro ao carregar funcionários</div>
+                    <div class="item-details">Verifique a conexão com o servidor</div>
                 </div>
             </div>
         `;
     }
 }
 
-// Carregar lista de filiais
+// Carregar filiais
 async function carregarFiliais() {
     try {
         console.log('🏢 Carregando filiais...');
-        const response = await fetch('/api/filiais');
-        const data = await response.json();
+        const response = await fetch(`${CONFIG.API_BASE_URL}/filiais`);
         
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
         const lista = document.getElementById('filiais-list');
         
-        if (data.success && data.filiais && data.filiais.length > 0) {
+        if (data.success && data.filiais) {
+            appState.filiais = data.filiais;
             lista.innerHTML = data.filiais.map(filial => `
                 <div class="data-item">
                     <div class="item-info">
@@ -1561,27 +1187,33 @@ async function carregarFiliais() {
             <div class="data-item">
                 <div class="item-info">
                     <div class="item-name">Erro ao carregar filiais</div>
+                    <div class="item-details">Verifique a conexão com o servidor</div>
                 </div>
             </div>
         `;
     }
 }
 
-// Carregar lista de categorias
+// Carregar categorias
 async function carregarCategorias() {
     try {
         console.log('📋 Carregando categorias...');
-        const response = await fetch('/api/categorias');
-        const data = await response.json();
+        const response = await fetch(`${CONFIG.API_BASE_URL}/categorias`);
         
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
         const lista = document.getElementById('categorias-list');
         
-        if (data.success && data.categorias && data.categorias.length > 0) {
+        if (data.success && data.categorias) {
+            appState.categorias = data.categorias;
             lista.innerHTML = data.categorias.map(categoria => `
                 <div class="data-item">
                     <div class="item-info">
                         <div class="item-name">${categoria.nome}</div>
-                        <div class="item-details">R$ ${categoria.preco_diaria.toFixed(2)}/dia</div>
+                        <div class="item-details">R$ ${parseFloat(categoria.preco_diaria || 0).toFixed(2)}/dia</div>
                     </div>
                 </div>
             `).join('');
@@ -1601,14 +1233,651 @@ async function carregarCategorias() {
             <div class="data-item">
                 <div class="item-info">
                     <div class="item-name">Erro ao carregar categorias</div>
+                    <div class="item-details">Verifique a conexão com o servidor</div>
                 </div>
             </div>
         `;
     }
 }
 
-// ========== FUNÇÕES DE MODAL ==========
+// ========== FUNÇÕES DA ABA DE VIAGENS ==========
+async function carregarDadosViagens() {
+    try {
+        console.log('🚗 Carregando dados para viagens...');
+        
+        await Promise.all([
+            carregarClientes(),
+            carregarVeiculosParaViagem(),
+            carregarMotoristas(),
+            carregarViagens()
+        ]);
+        
+    } catch (error) {
+        console.error('Erro ao carregar dados para viagens:', error);
+        mostrarErroCarregamento();
+    }
+}
 
+async function carregarClientes() {
+    try {
+        let endpoint = appState.endpointsAtivos.clientes || '/clientes';
+        const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const selectCliente = document.getElementById('cliente_viagem');
+        
+        if (data.success && data.clientes) {
+            appState.clientes = data.clientes;
+            selectCliente.innerHTML = '<option value="">Selecione um cliente</option>' +
+                data.clientes.map(cliente => 
+                    `<option value="${cliente.id_cliente || cliente.id}">${cliente.nome} - ${cliente.email || 'Sem email'}</option>`
+                ).join('');
+        } else {
+            selectCliente.innerHTML = '<option value="">Nenhum cliente disponível</option>';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar clientes:', error);
+        document.getElementById('cliente_viagem').innerHTML = '<option value="">Erro ao carregar clientes</option>';
+    }
+}
+
+async function carregarVeiculosParaViagem() {
+    try {
+        let endpoint = appState.endpointsAtivos.veiculos || '/veiculos';
+        const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const selectVeiculo = document.getElementById('veiculo_viagem');
+        
+        if (data.success && data.veiculos) {
+            selectVeiculo.innerHTML = '<option value="">Qualquer veículo disponível</option>' +
+                data.veiculos.map(veiculo => 
+                    `<option value="${veiculo.modelo}">${veiculo.modelo} - ${veiculo.placa}</option>`
+                ).join('');
+        } else {
+            selectVeiculo.innerHTML = '<option value="">Nenhum veículo disponível</option>';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar veículos:', error);
+        document.getElementById('veiculo_viagem').innerHTML = '<option value="">Erro ao carregar veículos</option>';
+    }
+}
+
+async function carregarMotoristas() {
+    try {
+        let endpoint = appState.endpointsAtivos.motoristas;
+        
+        if (!endpoint) {
+            // Se não encontrou endpoint específico, tentar filtrar funcionários
+            const response = await fetch(`${CONFIG.API_BASE_URL}/funcionarios`);
+            if (response.ok) {
+                const data = await response.json();
+                const selectMotorista = document.getElementById('motorista_viagem');
+                
+                if (data.success && data.funcionarios) {
+                    const motoristas = data.funcionarios.filter(f => 
+                        f.cargo && f.cargo.toLowerCase().includes('motorista')
+                    );
+                    
+                    appState.motoristas = motoristas;
+                    selectMotorista.innerHTML = '<option value="">Atribuir automaticamente</option>' +
+                        motoristas.map(motorista => 
+                            `<option value="${motorista.id_funcionario || motorista.id}">${motorista.nome}</option>`
+                        ).join('');
+                    return;
+                }
+            }
+            throw new Error('Nenhum endpoint de motoristas disponível');
+        }
+        
+        const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const selectMotorista = document.getElementById('motorista_viagem');
+        
+        if (data.success && data.motoristas) {
+            appState.motoristas = data.motoristas;
+            selectMotorista.innerHTML = '<option value="">Atribuir automaticamente</option>' +
+                data.motoristas.map(motorista => 
+                    `<option value="${motorista.id_funcionario || motorista.id}">${motorista.nome}</option>`
+                ).join('');
+        } else {
+            selectMotorista.innerHTML = '<option value="">Nenhum motorista disponível</option>';
+        }
+    } catch (error) {
+        console.error('Erro ao carregar motoristas:', error);
+        document.getElementById('motorista_viagem').innerHTML = '<option value="">Erro ao carregar motoristas</option>';
+    }
+}
+
+async function carregarViagens() {
+    try {
+        let endpoint = appState.endpointsAtivos.viagens;
+        
+        if (!endpoint) {
+            // Se não encontrou endpoint, tentar criar viagem de teste para ver se a tabela existe
+            console.log('⚠️  Nenhum endpoint de viagens encontrado. Verificando se a tabela existe...');
+            await testarCriacaoViagem();
+            return;
+        }
+        
+        console.log(`🔄 Carregando viagens do endpoint: ${endpoint}`);
+        const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('📦 Dados de viagens recebidos:', data);
+        
+        if (data.success && data.viagens) {
+            appState.viagens = data.viagens;
+            console.log(`✅ ${data.viagens.length} viagens carregadas`);
+            renderizarViagens(data.viagens);
+        } else if (data.viagens) {
+            appState.viagens = data.viagens;
+            console.log(`✅ ${data.viagens.length} viagens carregadas (estrutura alternativa)`);
+            renderizarViagens(data.viagens);
+        } else {
+            console.log('ℹ️ Nenhuma viagem encontrada');
+            renderizarViagens([]);
+        }
+    } catch (error) {
+        console.error('Erro ao carregar viagens:', error);
+        mostrarErroViagensEspecifico();
+    }
+}
+
+// Função para testar se podemos criar viagens (verifica se a tabela existe)
+async function testarCriacaoViagem() {
+    try {
+        console.log('🧪 Testando criação de viagem...');
+        
+        // Dados de teste mínimos
+        const dadosTeste = {
+            id_cliente: 1,
+            origem: 'Teste',
+            destino: 'Teste', 
+            data_viagem: new Date().toISOString(),
+            valor: 0,
+            passageiros: 1,
+            status: 'pendente'
+        };
+        
+        const response = await fetch(`${CONFIG.API_BASE_URL}/viagens`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosTeste)
+        });
+        
+        if (response.ok) {
+            console.log('✅ Tabela de viagens existe! Endpoint POST /api/viagens funciona.');
+            // Agora tentar buscar as viagens novamente
+            const responseGet = await fetch(`${CONFIG.API_BASE_URL}/viagens`);
+            if (responseGet.ok) {
+                const data = await responseGet.json();
+                if (data.viagens) {
+                    appState.viagens = data.viagens;
+                    renderizarViagens(data.viagens);
+                    appState.endpointsAtivos.viagens = '/viagens';
+                    return;
+                }
+            }
+        }
+        
+        throw new Error('Não foi possível acessar a tabela de viagens');
+        
+    } catch (error) {
+        console.error('❌ Teste de viagem falhou:', error);
+        mostrarConfiguracaoViagens();
+    }
+}
+
+function mostrarConfiguracaoViagens() {
+    const elementos = ['viagens-pendentes-list', 'viagens-andamento-list', 'viagens-concluidas-list'];
+    
+    elementos.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚙️</div>
+                    <div>Sistema de Viagens</div>
+                    <div style="font-size: 12px; margin-top: 5px; text-align: left; padding: 10px;">
+                        <strong>Para usar o sistema de viagens:</strong><br>
+                        1. Verifique se a tabela 'viagens' existe no MySQL<br>
+                        2. Confirme os endpoints no app.py<br>
+                        3. Recarregue a página<br>
+                        <br>
+                        <em>Endpoints testados:</em><br>
+                        - /api/viagens (GET/POST)<br>
+                        - /api/admin/viagens<br>
+                        - /api/viagens/todas
+                    </div>
+                </div>
+            `;
+        }
+    });
+}
+
+function renderizarViagens(viagens) {
+    console.log('🎨 Renderizando viagens:', viagens);
+    
+    if (!viagens || !Array.isArray(viagens)) {
+        console.error('Dados de viagens inválidos:', viagens);
+        viagens = [];
+    }
+
+    const pendentes = viagens.filter(v => v.status === 'pendente' || v.status === 'Pendente');
+    const emAndamento = viagens.filter(v => v.status === 'em_andamento' || v.status === 'Em Andamento');
+    const concluidas = viagens.filter(v => v.status === 'concluida' || v.status === 'Concluída');
+
+    console.log(`📊 Estatísticas: ${pendentes.length} pendentes, ${emAndamento.length} em andamento, ${concluidas.length} concluídas`);
+
+    renderizarListaViagens('viagens-pendentes-list', pendentes, 'pendente');
+    renderizarListaViagens('viagens-concluidas-list', concluidas, 'concluida');
+    
+    // Para viagens em andamento, vamos mostrar em uma lista separada
+    // mas sem os botões de ação do admin
+    const listaAndamento = document.getElementById('viagens-andamento-list');
+    if (listaAndamento) {
+        if (emAndamento.length === 0) {
+            listaAndamento.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🚗</div>
+                    <div>Nenhuma viagem em andamento</div>
+                    <div style="font-size: 12px; margin-top: 5px;">As viagens em andamento são gerenciadas pelos motoristas</div>
+                </div>
+            `;
+        } else {
+            listaAndamento.innerHTML = emAndamento.map(viagem => {
+                const idViagem = viagem.id_viagem || viagem.id;
+                const nomeCliente = viagem.nome_cliente || viagem.cliente_nome || viagem.nome_cliente || 'Cliente';
+                const origem = viagem.origem || 'Origem não informada';
+                const destino = viagem.destino || 'Destino não informado';
+                const dataViagem = viagem.data_viagem || viagem.data;
+                const valor = viagem.valor || 0;
+                const veiculo = viagem.veiculo_solicitado || viagem.veiculo;
+                const passageiros = viagem.passageiros || 1;
+                const observacoes = viagem.observacoes;
+                const motorista = viagem.nome_motorista || viagem.motorista_nome;
+                const status = viagem.status;
+
+                return `
+                    <div class="data-item">
+                        <div class="item-info">
+                            <div class="item-name">
+                                ${nomeCliente} - Viagem #${idViagem}
+                            </div>
+                            <div class="item-details">
+                                <strong>${origem}</strong> → <strong>${destino}</strong>
+                            </div>
+                            <div class="item-details">
+                                ${formatarData(dataViagem)} • R$ ${parseFloat(valor).toFixed(2)}
+                                ${veiculo ? ` • ${veiculo}` : ''}
+                                ${passageiros > 1 ? ` • ${passageiros} passageiros` : ''}
+                            </div>
+                            ${observacoes ? `<div class="item-details"><em>${observacoes}</em></div>` : ''}
+                            ${motorista ? `<div class="item-details">Motorista: ${motorista}</div>` : ''}
+                        </div>
+                        <div class="item-actions">
+                            <button class="action-btn edit-btn" onclick="concluirViagem(${idViagem})">
+                                ✅ Concluir
+                            </button>
+                        </div>
+                        <div class="item-status status-${normalizarStatus(status)}">
+                            ${obterTextoStatus(status)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+}
+
+function renderizarListaViagens(elementId, viagens, tipo) {
+    const lista = document.getElementById(elementId);
+    
+    if (!lista) {
+        console.error(`Elemento ${elementId} não encontrado`);
+        return;
+    }
+    
+    if (!viagens || viagens.length === 0) {
+        lista.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">🚗</div>
+                <div>Nenhuma viagem ${obterTextoStatus(tipo).toLowerCase()}</div>
+            </div>
+        `;
+        return;
+    }
+
+    lista.innerHTML = viagens.map(viagem => {
+        const idViagem = viagem.id_viagem || viagem.id;
+        const nomeCliente = viagem.nome_cliente || viagem.cliente_nome || viagem.nome_cliente || 'Cliente';
+        const origem = viagem.origem || 'Origem não informada';
+        const destino = viagem.destino || 'Destino não informado';
+        const dataViagem = viagem.data_viagem || viagem.data;
+        const valor = viagem.valor || 0;
+        const veiculo = viagem.veiculo_solicitado || viagem.veiculo;
+        const passageiros = viagem.passageiros || 1;
+        const observacoes = viagem.observacoes;
+        const motorista = viagem.nome_motorista || viagem.motorista_nome;
+        const status = viagem.status;
+
+        return `
+            <div class="data-item">
+                <div class="item-info">
+                    <div class="item-name">
+                        ${nomeCliente} - Viagem #${idViagem}
+                    </div>
+                    <div class="item-details">
+                        <strong>${origem}</strong> → <strong>${destino}</strong>
+                    </div>
+                    <div class="item-details">
+                        ${formatarData(dataViagem)} • R$ ${parseFloat(valor).toFixed(2)}
+                        ${veiculo ? ` • ${veiculo}` : ''}
+                        ${passageiros > 1 ? ` • ${passageiros} passageiros` : ''}
+                    </div>
+                    ${observacoes ? `<div class="item-details"><em>${observacoes}</em></div>` : ''}
+                    ${motorista ? `<div class="item-details">Motorista: ${motorista}</div>` : ''}
+                </div>
+                <div class="item-actions">
+                    ${gerarBotoesAcao(viagem)}
+                </div>
+                <div class="item-status status-${normalizarStatus(status)}">
+                    ${obterTextoStatus(status)}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function normalizarStatus(status) {
+    if (!status) return 'pendente';
+    
+    const statusMap = {
+        'pendente': 'pendente',
+        'Pendente': 'pendente',
+        'aceita': 'aceita', 
+        'Aceita': 'aceita',
+        'em_andamento': 'andamento',
+        'Em Andamento': 'andamento',
+        'concluida': 'concluida',
+        'Concluída': 'concluida',
+        'cancelada': 'cancelada',
+        'Cancelada': 'cancelada',
+        'recusada': 'cancelada',
+        'Recusada': 'cancelada'
+    };
+    
+    return statusMap[status] || 'pendente';
+}
+
+function gerarBotoesAcao(viagem) {
+    const status = viagem.status;
+    const idViagem = viagem.id_viagem || viagem.id;
+
+    // Para todas as viagens, mostra apenas botão de detalhes
+    // Exceto para viagens em andamento que mostram "Concluir"
+    if (status === 'em_andamento' || status === 'Em Andamento') {
+        return `
+            <button class="action-btn edit-btn" onclick="concluirViagem(${idViagem})">
+                ✅ Concluir
+            </button>
+        `;
+    }
+    
+    // Para outras situações, mostra apenas detalhes
+    return `
+        <button class="action-btn edit-btn" onclick="detalhesViagem(${idViagem})">
+            👁️ Detalhes
+        </button>
+    `;
+}
+
+// ========== AÇÕES DE VIAGENS ==========
+async function aceitarViagem(idViagem) {
+    if (!confirm('Deseja aceitar esta viagem?')) return;
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/viagens/${idViagem}/aceitar`, {
+            method: 'PUT'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Viagem aceita com sucesso!');
+            carregarViagens();
+        } else {
+            alert('❌ Erro ao aceitar viagem: ' + (data.error || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao aceitar viagem');
+    }
+}
+
+async function recusarViagem(idViagem) {
+    const motivo = prompt('Informe o motivo da recusa:');
+    if (!motivo) return;
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/viagens/${idViagem}/recusar`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ motivo })
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Viagem recusada com sucesso!');
+            carregarViagens();
+        } else {
+            alert('❌ Erro ao recusar viagem: ' + (data.error || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao recusar viagem');
+    }
+}
+
+async function iniciarViagem(idViagem) {
+    if (!confirm('Deseja iniciar esta viagem?')) return;
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/viagens/${idViagem}/iniciar`, {
+            method: 'PUT'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Viagem iniciada com sucesso!');
+            carregarViagens();
+        } else {
+            alert('❌ Erro ao iniciar viagem: ' + (data.error || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao iniciar viagem');
+    }
+}
+
+async function concluirViagem(idViagem) {
+    if (!confirm('Deseja concluir esta viagem?')) return;
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/viagens/${idViagem}/concluir`, {
+            method: 'PUT'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Viagem concluída com sucesso!');
+            carregarViagens();
+        } else {
+            alert('❌ Erro ao concluir viagem: ' + (data.error || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao concluir viagem');
+    }
+}
+
+async function cancelarViagem(idViagem) {
+    if (!confirm('Deseja cancelar esta viagem?')) return;
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/admin/viagens/${idViagem}/cancelar`, {
+            method: 'PUT'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Viagem cancelada com sucesso!');
+            carregarViagens();
+        } else {
+            alert('❌ Erro ao cancelar viagem: ' + (data.error || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao cancelar viagem');
+    }
+}
+
+function detalhesViagem(idViagem) {
+    const viagem = appState.viagens.find(v => (v.id_viagem === idViagem) || (v.id === idViagem));
+    if (viagem) {
+        const nomeCliente = viagem.nome_cliente || viagem.cliente_nome || 'N/A';
+        const origem = viagem.origem || 'N/A';
+        const destino = viagem.destino || 'N/A';
+        const dataViagem = viagem.data_viagem || viagem.data;
+        const valor = viagem.valor || 0;
+        const observacoes = viagem.observacoes || 'Nenhuma';
+        const status = viagem.status;
+
+        alert(`Detalhes da Viagem #${idViagem}\n\n` +
+              `Cliente: ${nomeCliente}\n` +
+              `Origem: ${origem}\n` +
+              `Destino: ${destino}\n` +
+              `Data: ${formatarData(dataViagem)}\n` +
+              `Valor: R$ ${parseFloat(valor).toFixed(2)}\n` +
+              `Status: ${obterTextoStatus(status)}\n` +
+              `Observações: ${observacoes}`);
+    }
+}
+
+// ========== CRIAÇÃO DE VIAGENS ==========
+async function criarViagem(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const dados = Object.fromEntries(formData);
+    
+    // Validações
+    if (!dados.id_cliente) {
+        alert('❌ Selecione um cliente!');
+        return;
+    }
+    
+    if (!dados.origem || !dados.destino) {
+        alert('❌ Preencha origem e destino!');
+        return;
+    }
+    
+    if (!dados.data_viagem) {
+        alert('❌ Selecione data e hora!');
+        return;
+    }
+    
+    // Converter tipos
+    dados.valor = parseFloat(dados.valor) || 0;
+    dados.passageiros = parseInt(dados.passageiros) || 1;
+    
+    if (!dados.id_motorista) delete dados.id_motorista;
+    if (!dados.veiculo_solicitado) delete dados.veiculo_solicitado;
+    if (!dados.observacoes) delete dados.observacoes;
+    
+    console.log('📤 Criando viagem:', dados);
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/viagens`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dados)
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Erro do servidor:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            alert('✅ Viagem criada com sucesso!');
+            limparFormularioViagem();
+            carregarViagens();
+        } else {
+            alert('❌ Erro ao criar viagem: ' + (resultado.error || 'Erro desconhecido'));
+        }
+    } catch (error) {
+        console.error('Erro ao criar viagem:', error);
+        alert('❌ Erro de conexão ao criar viagem: ' + error.message);
+    }
+}
+
+function limparFormularioViagem() {
+    document.getElementById('formNovaViagem').reset();
+    
+    // Restaurar valores padrão
+    const agora = new Date();
+    agora.setHours(agora.getHours() + 1);
+    document.getElementById('data_viagem').value = agora.toISOString().slice(0, 16);
+    document.getElementById('passageiros_viagem').value = 1;
+}
+
+// ========== FUNÇÕES DE VEÍCULOS (MODAIS) ==========
 function abrirModalVeiculo() {
     console.log('📝 Abrindo modal de veículo...');
     document.getElementById('modalVeiculo').style.display = 'block';
@@ -1620,72 +1889,51 @@ function fecharModalVeiculo() {
     document.getElementById('formVeiculo').reset();
 }
 
-function abrirModalFilial() {
-    document.getElementById('modalFilial').style.display = 'block';
+function abrirModalEditarVeiculo() {
+    document.getElementById('modalEditarVeiculo').style.display = 'block';
 }
 
-function fecharModalFilial() {
-    document.getElementById('modalFilial').style.display = 'none';
-    document.getElementById('formFilial').reset();
+function fecharModalEditarVeiculo() {
+    document.getElementById('modalEditarVeiculo').style.display = 'none';
+    document.getElementById('formEditarVeiculo').reset();
 }
 
-function abrirModalCategoria() {
-    document.getElementById('modalCategoria').style.display = 'block';
-}
-
-function fecharModalCategoria() {
-    document.getElementById('modalCategoria').style.display = 'none';
-    document.getElementById('formCategoria').reset();
-}
-
-function abrirModalFuncionario() {
-    document.getElementById('modalFuncionario').style.display = 'block';
-}
-
-function fecharModalFuncionario() {
-    document.getElementById('modalFuncionario').style.display = 'none';
-    document.getElementById('formFuncionario').reset();
-}
-
-// Carregar opções dos selects
 async function carregarOpcoesModal() {
     try {
-        // Carregar categorias
-        const responseCategorias = await fetch('/api/categorias');
-        const dataCategorias = await responseCategorias.json();
-        
-        const selectCategoria = document.getElementById('id_categoria');
-        if (dataCategorias.success) {
-            selectCategoria.innerHTML = '<option value="">Selecione uma categoria</option>' +
-                dataCategorias.categorias.map(cat => 
-                    `<option value="${cat.id_categoria}">${cat.nome} - R$ ${cat.preco_diaria.toFixed(2)}/dia</option>`
-                ).join('');
+        // Carregar categorias para o modal
+        const responseCategorias = await fetch(`${CONFIG.API_BASE_URL}/categorias`);
+        if (responseCategorias.ok) {
+            const data = await responseCategorias.json();
+            const selectCategoria = document.getElementById('id_categoria');
+            if (data.success && data.categorias) {
+                selectCategoria.innerHTML = '<option value="">Selecione uma categoria</option>' +
+                    data.categorias.map(cat => 
+                        `<option value="${cat.id_categoria}">${cat.nome}</option>`
+                    ).join('');
+            }
         }
         
-        // Carregar filiais
-        const responseFiliais = await fetch('/api/filiais');
-        const dataFiliais = await responseFiliais.json();
-        
-        const selectFilial = document.getElementById('id_filial');
-        if (dataFiliais.success) {
-            selectFilial.innerHTML = '<option value="">Selecione uma filial</option>' +
-                dataFiliais.filiais.map(filial => 
-                    `<option value="${filial.id_filial}">${filial.nome}</option>`
-                ).join('');
+        // Carregar filiais para o modal
+        const responseFiliais = await fetch(`${CONFIG.API_BASE_URL}/filiais`);
+        if (responseFiliais.ok) {
+            const data = await responseFiliais.json();
+            const selectFilial = document.getElementById('id_filial');
+            if (data.success && data.filiais) {
+                selectFilial.innerHTML = '<option value="">Selecione uma filial</option>' +
+                    data.filiais.map(filial => 
+                        `<option value="${filial.id_filial}">${filial.nome}</option>`
+                    ).join('');
+            }
         }
-        
     } catch (error) {
         console.error('Erro ao carregar opções do modal:', error);
     }
 }
 
-// ========== SUBMISSÃO DE FORMULÁRIOS ==========
-
-// Submeter formulário de veículo
-document.getElementById('formVeiculo').addEventListener('submit', async function(e) {
-    e.preventDefault();
+async function cadastrarVeiculo(event) {
+    event.preventDefault();
     
-    const formData = new FormData(this);
+    const formData = new FormData(event.target);
     const dados = Object.fromEntries(formData);
     
     // Converter para números
@@ -1694,155 +1942,200 @@ document.getElementById('formVeiculo').addEventListener('submit', async function
     dados.id_categoria = parseInt(dados.id_categoria);
     dados.id_filial = parseInt(dados.id_filial);
     
-    console.log('📤 Enviando dados do veículo:', dados);
-    
     try {
-        const response = await fetch('/api/veiculos', {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/veiculos`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dados)
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const resultado = await response.json();
         
         if (resultado.success) {
             alert('✅ Veículo cadastrado com sucesso!');
             fecharModalVeiculo();
-            carregarVeiculos(); // Recarregar a lista
-            carregarEstatisticas(); // Atualizar estatísticas
+            carregarVeiculos();
+            carregarEstatisticas();
         } else {
-            alert('❌ Erro ao cadastrar veículo: ' + resultado.error);
+            alert('❌ Erro ao cadastrar veículo: ' + (resultado.error || 'Erro desconhecido'));
         }
-        
     } catch (error) {
         console.error('Erro ao cadastrar veículo:', error);
         alert('❌ Erro de conexão ao cadastrar veículo');
     }
-});
+}
 
-// Submeter formulário de filial
-document.getElementById('formFilial').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const dados = Object.fromEntries(formData);
+async function editarVeiculo(idVeiculo) {
+    console.log('✏️ Editando veículo:', idVeiculo);
     
     try {
-        const response = await fetch('/api/filiais', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const response = await fetch(`${CONFIG.API_BASE_URL}/veiculo/${idVeiculo}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const veiculo = data.veiculo;
+            
+            // Preencher formulário
+            document.getElementById('editar_id_veiculo').value = veiculo.id_veiculo;
+            document.getElementById('editar_placa').value = veiculo.placa;
+            document.getElementById('editar_modelo').value = veiculo.modelo;
+            document.getElementById('editar_ano').value = veiculo.ano;
+            document.getElementById('editar_cor').value = veiculo.cor;
+            document.getElementById('editar_quilometragem').value = veiculo.quilometragem;
+            document.getElementById('editar_status').value = veiculo.status;
+            
+            // Carregar opções dos selects
+            await carregarOpcoesModalEdicao();
+            
+            document.getElementById('editar_id_categoria').value = veiculo.id_categoria;
+            document.getElementById('editar_id_filial').value = veiculo.id_filial;
+            
+            // Abrir modal
+            document.getElementById('modalEditarVeiculo').style.display = 'block';
+        } else {
+            alert('❌ Erro ao carregar dados do veículo');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('❌ Erro ao carregar dados do veículo');
+    }
+}
+
+async function carregarOpcoesModalEdicao() {
+    try {
+        // Carregar categorias
+        const responseCategorias = await fetch(`${CONFIG.API_BASE_URL}/categorias`);
+        if (responseCategorias.ok) {
+            const data = await responseCategorias.json();
+            const selectCategoria = document.getElementById('editar_id_categoria');
+            if (data.success && data.categorias) {
+                selectCategoria.innerHTML = data.categorias.map(cat => 
+                    `<option value="${cat.id_categoria}">${cat.nome}</option>`
+                ).join('');
+            }
+        }
+        
+        // Carregar filiais
+        const responseFiliais = await fetch(`${CONFIG.API_BASE_URL}/filiais`);
+        if (responseFiliais.ok) {
+            const data = await responseFiliais.json();
+            const selectFilial = document.getElementById('editar_id_filial');
+            if (data.success && data.filiais) {
+                selectFilial.innerHTML = data.filiais.map(filial => 
+                    `<option value="${filial.id_filial}">${filial.nome}</option>`
+                ).join('');
+            }
+        }
+    } catch (error) {
+        console.error('Erro ao carregar opções do modal:', error);
+    }
+}
+
+async function editarVeiculoSubmit(event) {
+    event.preventDefault();
+    
+    const formData = new FormData(event.target);
+    const dados = Object.fromEntries(formData);
+    
+    // Converter para tipos apropriados
+    dados.ano = parseInt(dados.ano);
+    dados.quilometragem = parseFloat(dados.quilometragem);
+    dados.id_categoria = parseInt(dados.id_categoria);
+    dados.id_filial = parseInt(dados.id_filial);
+    
+    try {
+        const response = await fetch(`${CONFIG.API_BASE_URL}/veiculos/${dados.id_veiculo}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dados)
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const resultado = await response.json();
         
         if (resultado.success) {
-            alert('✅ Filial cadastrada com sucesso!');
-            fecharModalFilial();
-            carregarFiliais();
-            carregarEstatisticas();
+            alert('✅ Veículo atualizado com sucesso!');
+            fecharModalEditarVeiculo();
+            carregarVeiculos();
         } else {
-            alert('❌ Erro ao cadastrar filial: ' + resultado.error);
+            alert('❌ Erro ao atualizar veículo: ' + (resultado.error || 'Erro desconhecido'));
         }
-        
     } catch (error) {
-        console.error('Erro ao cadastrar filial:', error);
-        alert('❌ Erro de conexão ao cadastrar filial');
+        console.error('Erro ao atualizar veículo:', error);
+        alert('❌ Erro de conexão ao atualizar veículo');
     }
-});
+}
 
-// Submeter formulário de categoria
-document.getElementById('formCategoria').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const dados = Object.fromEntries(formData);
-    dados.preco_diaria = parseFloat(dados.preco_diaria);
+async function excluirVeiculo(idVeiculo, placa) {
+    if (!confirm(`Tem certeza que deseja excluir o veículo ${placa}?`)) return;
     
     try {
-        const response = await fetch('/api/categorias', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dados)
+        const response = await fetch(`${CONFIG.API_BASE_URL}/veiculos/${idVeiculo}`, {
+            method: 'DELETE'
         });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const resultado = await response.json();
         
         if (resultado.success) {
-            alert('✅ Categoria cadastrada com sucesso!');
-            fecharModalCategoria();
-            carregarCategorias();
+            alert('✅ Veículo excluído com sucesso!');
+            carregarVeiculos();
             carregarEstatisticas();
         } else {
-            alert('❌ Erro ao cadastrar categoria: ' + resultado.error);
+            alert('❌ Erro ao excluir veículo: ' + (resultado.error || 'Erro desconhecido'));
         }
-        
     } catch (error) {
-        console.error('Erro ao cadastrar categoria:', error);
-        alert('❌ Erro de conexão ao cadastrar categoria');
+        console.error('Erro:', error);
+        alert('❌ Erro de conexão ao excluir veículo');
     }
-});
-
-// Submeter formulário de funcionário
-document.getElementById('formFuncionario').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const formData = new FormData(this);
-    const dados = Object.fromEntries(formData);
-    
-    // Validar senha
-    if (dados.senha !== dados.confirmar_senha) {
-        alert('❌ As senhas não coincidem!');
-        return;
-    }
-    
-    if (dados.senha.length < 6) {
-        alert('❌ A senha deve ter pelo menos 6 caracteres!');
-        return;
-    }
-    
-    try {
-        const response = await fetch('/api/funcionarios', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dados)
-        });
-        
-        const resultado = await response.json();
-        
-        if (resultado.success) {
-            alert('✅ Funcionário cadastrado com sucesso!');
-            fecharModalFuncionario();
-            carregarFuncionarios();
-            carregarEstatisticas();
-        } else {
-            alert('❌ Erro ao cadastrar funcionário: ' + resultado.error);
-        }
-        
-    } catch (error) {
-        console.error('Erro ao cadastrar funcionário:', error);
-        alert('❌ Erro de conexão ao cadastrar funcionário');
-    }
-});
-
-// Fechar modal ao clicar fora
-window.addEventListener('click', function(e) {
-    if (e.target.classList.contains('modal')) {
-        e.target.style.display = 'none';
-    }
-});
+}
 
 // ========== FUNÇÕES UTILITÁRIAS ==========
+function formatarData(dataString) {
+    if (!dataString) return 'Data não informada';
+    try {
+        const data = new Date(dataString);
+        return data.toLocaleString('pt-BR');
+    } catch (error) {
+        return dataString;
+    }
+}
 
-// Pegar parâmetros da URL
+function obterTextoStatus(status) {
+    if (!status) return 'Pendente';
+    
+    const statusMap = {
+        'pendente': 'Pendente',
+        'Pendente': 'Pendente',
+        'aceita': 'Aceita',
+        'Aceita': 'Aceita', 
+        'em_andamento': 'Em Andamento',
+        'Em Andamento': 'Em Andamento',
+        'concluida': 'Concluída',
+        'Concluída': 'Concluída',
+        'cancelada': 'Cancelada',
+        'Cancelada': 'Cancelada',
+        'recusada': 'Recusada',
+        'Recusada': 'Recusada'
+    };
+    return statusMap[status] || status;
+}
+
 function getUrlParams() {
     const params = new URLSearchParams(window.location.search);
     return {
@@ -1851,64 +2144,83 @@ function getUrlParams() {
     };
 }
 
-// Atualizar a interface com os dados
 function atualizarInterface() {
     const params = getUrlParams();
-    console.log('👤 Dados do usuário:', params);
-    
-    // Atualizar o nome na navbar
-    const userNameElement = document.getElementById('user-name');
-    const userRoleElement = document.getElementById('user-role');
-    
-    if (userNameElement) {
-        userNameElement.textContent = params.nome;
-    }
-    
-    if (userRoleElement) {
-        userRoleElement.textContent = params.cargo.charAt(0).toUpperCase() + params.cargo.slice(1);
-    }
+    document.getElementById('user-name').textContent = params.nome;
+    document.getElementById('user-role').textContent = params.cargo.charAt(0).toUpperCase() + params.cargo.slice(1);
 }
 
-// Sistema de abas
-function mostrarAba(abaId) {
-    // Esconder todas as abas
-    document.querySelectorAll('.tab-content').forEach(aba => {
-        aba.classList.remove('active');
+function exportarRelatorioViagens() {
+    alert('📊 Funcionalidade de exportação em desenvolvimento...');
+}
+
+function mostrarErroCarregamento() {
+    const elementos = [
+        'veiculos-list', 'funcionarios-list', 'filiais-list', 'categorias-list',
+        'viagens-pendentes-list', 'viagens-andamento-list', 'viagens-concluidas-list'
+    ];
+    
+    elementos.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <div>Erro ao carregar dados</div>
+                    <div style="font-size: 12px; margin-top: 5px;">Verifique a conexão com o servidor</div>
+                </div>
+            `;
+        }
     });
+}
+
+function mostrarErroViagensEspecifico() {
+    const elementos = ['viagens-pendentes-list', 'viagens-andamento-list', 'viagens-concluidas-list'];
     
-    // Remover active de todas as tabs
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
+    elementos.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">🔍</div>
+                    <div>Endpoints de Viagens Não Encontrados</div>
+                    <div style="font-size: 12px; margin-top: 5px;">
+                        Verifique se os endpoints estão configurados no app.py
+                    </div>
+                    <button class="btn btn-primary" onclick="testarEndpointsManualmente()" style="margin-top: 10px;">
+                        🔄 Testar Endpoints
+                    </button>
+                </div>
+            `;
+        }
     });
-    
-    // Mostrar aba selecionada
-    document.getElementById(abaId).classList.add('active');
-    
-    // Ativar tab clicada
-    event.target.classList.add('active');
-    
-    // Carregar dados específicos da aba se necessário
-    if (abaId === 'aba-viagens') {
-        carregarViagensMotoristas();
-    }
 }
 
-// Debug das APIs
-console.log('🔄 Testando APIs...');
-
-// Testar cada API individualmente
-async function testarAPIs() {
-    try {
-        const response = await fetch('/api/veiculos');
-        const data = await response.json();
-        console.log('🚗 API Veículos:', data);
-    } catch (error) {
-        console.error('❌ Erro API Veículos:', error);
+// Função para testar endpoints manualmente
+async function testarEndpointsManualmente() {
+    console.log('🧪 Testando endpoints manualmente...');
+    
+    const endpoints = [
+        '/viagens',
+        '/admin/viagens', 
+        '/viagens/todas',
+        '/clientes',
+        '/motoristas'
+    ];
+    
+    for (const endpoint of endpoints) {
+        try {
+            const response = await fetch(`${CONFIG.API_BASE_URL}${endpoint}`);
+            console.log(`${endpoint}: ${response.status} ${response.statusText}`);
+        } catch (error) {
+            console.log(`${endpoint}: ERRO - ${error.message}`);
+        }
     }
+    
+    alert('Verifique o console para ver os resultados dos testes');
 }
+</script>
 
-testarAPIs();
-    </script>
 
 </body>
 </html>
