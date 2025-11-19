@@ -1,0 +1,884 @@
+/* Reset Básico e Definições Globais */
+:root {
+    --brand-green: #65a30d;
+    --brand-green-dark: #4d7c0f;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #11182c;
+    --white: #ffffff;
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--gray-100);
+    color: var(--gray-800);
+    line-height: 1.5;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+a {
+    color: var(--brand-green);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: var(--brand-green-dark);
+}
+
+/* Container Principal */
+.container {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem; /* 24px */
+    padding-right: 1.5rem; /* 24px */
+}
+
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+.section-title {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 800;
+    margin-bottom: 1.5rem; /* 24px */
+}
+
+/* Botões */
+.btn {
+    padding: 0.75rem 1rem; /* 12px 16px */
+    font-weight: 700;
+    border-radius: 0.375rem; /* 6px */
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--brand-green);
+    color: var(--white);
+}
+
+.btn-primary:hover {
+    background-color: var(--brand-green-dark);
+}
+
+.btn-full {
+    width: 100%;
+}
+
+
+/* Caixa de Mensagem */
+#message-box-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none; /* Começa escondido */
+    justify-content: center;
+    align-items: center;
+    z-index: 9998;
+    padding: 1rem;
+}
+#message-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+    max-width: 90%;
+    width: 400px;
+}
+#message-box-text {
+    font-size: 1.125rem; /* 18px */
+    margin-bottom: 1rem;
+    white-space: pre-wrap; /* Para preservar quebras de linha */
+}
+#message-box-close {
+    background-color: var(--brand-green);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+    font-weight: 600;
+}
+#message-box-close:hover {
+    background-color: var(--brand-green-dark);
+}
+
+/* Barra de Navegação */
+.navbar {
+    background-color: var(--white);
+    box-shadow: var(--shadow-md);
+    height: 4rem; /* 64px */
+}
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-text {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 800;
+    margin-left: 0.5rem; /* 8px */
+    color: var(--gray-800);
+}
+.nav-links {
+    display: flex;
+    gap: 1rem; /* 16px */
+}
+.nav-link {
+    color: var(--gray-600);
+    font-weight: 500;
+    padding: 0.5rem 0.75rem; /* 8px 12px */
+    border-radius: 0.375rem; /* 6px */
+}
+.nav-link:hover {
+    color: var(--brand-green);
+    background-color: var(--gray-100);
+    text-decoration: none;
+}
+.login-btn {
+    background-color: #65a30d;
+    color: whitesmoke;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    
+}
+
+.login-btn:hover {
+    background-color: var(--dark-green);
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none; /* Esconde links em telas pequenas */
+    }
+}
+
+/* Conteúdo Principal */
+main.container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Seção de Filtros */
+.filters-section {
+    background-color: var(--white);
+    padding: 1.5rem; /* 24px */
+    border-radius: 0.5rem; /* 8px */
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem; /* 32px */}
+
+.filters-grid {
+    display: flex;
+    gap: 15px; 
+    align-items: flex-end; 
+    flex-wrap: nowrap;
+}
+@media (max-width: 767px) {
+    .filters-grid {
+        /* Permite que os itens quebrem a linha */
+        flex-wrap: wrap; 
+    }
+    .filter-group, .filter-group-btn {
+        /* Faz com que cada item de filtro e o botão ocupem a largura total */
+        width: 100%; 
+        flex-basis: 100%;
+    }
+    /* Adiciona um pequeno espaçamento inferior para separá-los */
+    .filter-group {
+        margin-bottom: 1rem;
+    }
+}
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1; 
+    min-width: 120px; 
+}
+.filter-group-btn {
+    /* Não deixa o botão encolher ou crescer mais que o necessário */
+    flex-shrink: 0; 
+    /* Garante que o botão use a largura necessária */
+    flex-basis: auto;
+}
+
+.filter-button {
+    /* Define uma altura que funcione bem com o select */
+    height: 41.6px; /* Ajustada para bater com o padding do .filter-select */
+    width: 100%;
+}
+.filter-label {
+    display: block;
+    margin-bottom: 0.25rem; /* 4px */
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: var(--gray-700);
+}
+.filter-select {
+    /* Ocupa 100% da largura do seu contêiner (.filter-group) */
+    width: 100%; 
+    padding: 0.65rem 0.75rem; 
+    font-size: 0.875rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 0.375rem;
+    background-color: var(--white);
+    /* ... (restante dos estilos de aparência e ícone do select permanecem iguais) ... */
+    appearance: none; 
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor' aria-hidden='true'%3e%3cpath fill-rule='evenodd' d='M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z' clip-rule='evenodd' /%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem; 
+}
+.filter-select:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 2px var(--brand-green);
+}
+
+/* Grid de Cards de Veículos */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem; /* 24px */
+}
+@media (min-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Card Individual */
+.vehicle-card {
+    background-color: var(--white);
+    border-radius: 0.5rem; /* 8px */
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--gray-200);
+}
+.card-tags {
+    padding: 1rem; /* 16px */
+    border-bottom: 1px solid var(--gray-100);
+}
+.tag {
+    font-size: 0.75rem; /* 12px */
+    font-weight: 600;
+    padding: 0.25rem 0.625rem; /* 4px 10px */
+    border-radius: 9999px; /* Pill shape */
+}
+.tag-green { background-color: #dcfce7; color: #166534; }
+.tag-blue { background-color: #dbeafe; color: #1e40af; }
+.tag-purple { background-color: #f3e8ff; color: #581c87; }
+
+.card-img {
+    width: 100%;
+    height: 12rem; /* 192px */
+    object-fit: cover;
+    object-position: center;
+}
+.card-body {
+    padding: 1.5rem; /* 24px */
+    flex-grow: 1; /* Faz o corpo crescer */
+}
+.card-title {
+    font-size: 1.125rem; /* 18px */
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-bottom: 0.5rem; /* 8px */
+}
+.card-subtitle {
+    font-size: 0.875rem; /* 14px */
+    color: var(--gray-600);
+}
+.card-price-section {
+    padding: 1.5rem; /* 24px */
+    background-color: var(--gray-100);
+    border-top: 1px solid var(--gray-200);
+}
+.price-label {
+    font-size: 0.875rem; /* 14px */
+    color: var(--gray-600);
+}
+.price-value {
+    font-size: 1.875rem; /* 30px */
+    font-weight: 800;
+    color: var(--gray-900);
+    line-height: 1.2;
+}
+.price-unit {
+    font-size: 1rem; /* 16px */
+    font-weight: 400;
+    color: var(--gray-600);
+    margin-left: 0.25rem; /* 4px */
+}
+.card-footer {
+    padding: 1.5rem; /* 24px */
+    padding-top: 0;
+}
+.alugar-btn {
+    margin-bottom: 0.5rem; /* 8px */
+}
+.detalhes-link {
+    display: block;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--white);
+    margin-top: 3rem; /* 48px */
+    padding-top: 2rem; /* 32px */
+    padding-bottom: 2rem; /* 32px */
+    border-top: 1px solid var(--gray-200);
+}
+.footer-container {
+    text-align: center;
+    color: var(--gray-600);}
+
+
+/*
+-------------------------------------
+PÁGINA DE DETALHES DO VEÍCULO
+-------------------------------------
+*/
+
+.page-title {
+    font-size: 2rem; /* 32px */
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Layout principal de 2 colunas */
+.details-layout-grid {
+    display: grid;
+    /* Coluna principal (70%), Coluna lateral (30%) */
+    grid-template-columns: 2fr 1fr; 
+    gap: 2rem; /* Espaço entre as colunas */
+    align-items: start; /* Alinha o topo das colunas */
+}
+
+/* Coluna da Esquerda (Principal) */
+.details-column-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Espaço entre os cards */
+}
+
+/* Estilo base para todos os cards de detalhes */
+.card-detalhe {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+}
+
+.card-titulo {
+    font-size: 1.25rem; /* 20px */
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-bottom: 1.25rem;
+}
+
+/* Card Específico: Header do Carro */
+.card-carro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.carro-info {
+    flex: 1; /* Deixa a informação ocupar o espaço disponível */
+}
+.carro-categoria {
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: var(--gray-600);
+}
+.carro-modelo {
+    font-size: 1.5rem; /* 24px */
+    font-weight: 800;
+    color: var(--gray-900);
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+}
+.carro-features {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas de features */
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+}
+.carro-features .icon {
+    margin-right: 0.25rem;
+}
+.carro-imagem {
+    flex-basis: 200px; /* Largura da imagem */
+}
+.carro-imagem img {
+    width: 100%;
+    border-radius: 0.375rem;
+}
+
+/* Card Específico: Avaliação */
+.card-avaliacao {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.rating-box {
+    background-color: var(--brand-green-dark); /* Verde escuro do tema */
+    color: var(--white);
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    text-align: center;
+}
+.rating-score {
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+}
+.rating-info p {
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+/* Card Específico: Localização */
+.local-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+.info-bloco .label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: 0.25rem;
+}
+.info-bloco .valor {
+    font-weight: 500;
+    color: var(--gray-900);
+}
+.info-bloco .data-hora {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+/* Card Específico: Extras */
+.lista-extras {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.lista-extras li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+}
+.lista-extras li label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.preco-extra {
+    font-weight: 500;
+    color: var(--gray-800);
+    font-size: 0.875rem;
+}
+
+/* Card Específico: Políticas */
+.card-detalhe h4 {
+    font-weight: 700;
+    color: var(--gray-800);
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+}
+.card-detalhe p {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/*
+-------------------------------------
+COLUNA DA DIREITA (PREÇO)
+-------------------------------------
+*/
+.details-column-sidebar {
+    /* Faz a coluna de preço "grudar" no topo ao rolar a página */
+    position: sticky;
+    top: 1.5rem; 
+}
+
+.price-summary-box {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem; /* Espaço entre os elementos */
+}
+
+.preco-diaria-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+.preco-diaria-valor {
+    font-size: 2rem; /* 32px */
+    font-weight: 800;
+    color: var(--gray-900);
+    line-height: 1;
+}
+.info-pagamento {
+    font-weight: 700;
+    color: var(--brand-green-dark); /* Verde escuro */
+    font-size: 0.875rem;
+}
+.info-cancelamento {
+    font-weight: 500;
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+.divider {
+    border: 0;
+    border-top: 1px solid var(--gray-200);
+    margin: 0.5rem 0;
+}
+.price-summary-box h4 {
+    font-weight: 700;
+    color: var(--gray-800);
+}
+.price-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+.price-line.total {
+    font-size: 1.125rem; /* 18px */
+    color: var(--gray-900);
+    font-weight: 700;
+    margin-top: 0.5rem;
+}
+.nota-deposito, .nota-seguranca {
+    font-size: 0.75rem; /* 12px */
+    color: var(--gray-600);
+    text-align: center;
+    line-height: 1.5;
+}
+.nota-seguranca {
+    margin-top: 0.5rem;
+}
+.price-summary-box .btn-primary {
+    margin-top: 0.5rem;
+    padding: 0.875rem; /* Botão um pouco maior */
+    font-size: 1rem;
+}
+
+
+/*
+-------------------------------------
+RESPONSIVIDADE (Telas Pequenas)
+-------------------------------------
+*/
+@media (max-width: 900px) {
+    .details-layout-grid {
+        /* Empilha as colunas em telas menores */
+        grid-template-columns: 1fr; 
+    }
+    .details-column-sidebar {
+        /* Desativa o "sticky" em telas menores */
+        position: static; 
+        margin-top: 1.5rem; /* Adiciona espaço quando empilhado */
+    }
+    .carro-features {
+        /* Garante que as features fiquem legíveis */
+        grid-template-columns: 1fr;
+    }
+    .local-info-grid {
+        /* Empilha os locais */
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .card-carro-header {
+        /* Empilha a imagem e as infos do carro */
+        flex-direction: column-reverse; 
+    }
+    .carro-imagem {
+        flex-basis: auto;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+/*
+-------------------------------------
+PÁGINA DE PAGAMENTO
+-------------------------------------
+*/
+
+.page-subtitle {
+    font-size: 1rem;
+    color: var(--gray-600);
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Layout de 2 colunas */
+.payment-layout-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Coluna principal 66%, sidebar 33% */
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Caixa principal de pagamento */
+.payment-box {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-md);
+    display: flex; /* Cria o layout interno [Abas | Conteúdo] */
+}
+
+/* Abas (Menu da Esquerda) */
+.payment-options-tabs {
+    flex-basis: 200px; /* Largura fixa para o menu de abas */
+    border-right: 1px solid var(--gray-200);
+    padding: 1rem 0;
+    list-style: none;
+}
+
+.payment-options-tabs .tab-link {
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--gray-700);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-left: 3px solid transparent; /* Borda de ativação */
+}
+
+.payment-options-tabs .tab-link:hover {
+    background-color: var(--gray-100);
+}
+
+.payment-options-tabs .tab-link.active {
+    background-color: #f3f9eb; /* Verde bem clarinho */
+    color: var(--brand-green-dark);
+    font-weight: 700;
+    border-left-color: var(--brand-green);
+}
+
+/* Conteúdo das Abas (Direita) */
+.payment-options-content {
+    flex: 1; /* Ocupa o resto do espaço */
+    padding: 1.5rem 2rem;
+}
+
+.payment-tab-content {
+    display: none; /* Esconde todas as abas por padrão */
+}
+.payment-tab-content.active {
+    display: block; /* Mostra apenas a aba ativa */
+}
+
+.payment-options-content h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--gray-800);
+}
+.payment-options-content p {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-top: 0.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Formulário de Pagamento */
+.payment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    margin-bottom: 0.25rem;
+}
+.form-group input,
+.form-group select {
+    padding: 0.75rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+}
+.form-group input:focus {
+    border-color: var(--brand-green);
+    box-shadow: 0 0 0 2px var(--brand-green);
+    outline: none;
+}
+.input-group {
+    display: flex;
+    gap: 1rem;
+}
+.input-group .form-group {
+    flex: 1; /* Faz Vencimento e CVV ocuparem espaço igual */
+}
+#btn-finalizar-pedido {
+    margin-top: 1.5rem;
+    padding: 0.875rem;
+    font-size: 1rem;
+}
+
+/* Sidebar de Resumo */
+.resume-summary-box {
+    background-color: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    position: sticky; /* Fica fixo ao rolar */
+    top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.resume-summary-box h4 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--gray-800);
+}
+.resume-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+}
+.resume-line.total {
+    font-size: 1.125rem;
+    color: var(--gray-900);
+    font-weight: 700;
+}
+.resume-note {
+    font-size: 0.75rem;
+    color: var(--gray-600);
+    text-align: center;
+    margin-top: 0.5rem;
+}
+.divider {
+    border: 0;
+    border-top: 1px solid var(--gray-200);
+    margin: 0.5rem 0;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .payment-layout-grid {
+        grid-template-columns: 1fr; /* Empilha as colunas */
+    }
+    .payment-column-sidebar {
+        /* Inverte a ordem em telas pequenas, colocando o resumo primeiro */
+        order: -1; 
+    }
+    .resume-summary-box {
+        position: static; /* Desativa o "sticky" */
+    }
+}
+@media (max-width: 600px) {
+    .payment-box {
+        flex-direction: column; /* Empilha as abas e o conteúdo */
+    }
+    .payment-options-tabs {
+        flex-basis: auto;
+        display: flex;
+        overflow-x: auto; /* Permite rolar as abas horizontalmente */
+        border-right: 0;
+        border-bottom: 1px solid var(--gray-200);
+    }
+    .payment-options-tabs .tab-link {
+        border-left: 0;
+        border-bottom: 3px solid transparent;
+        justify-content: center;
+        flex-shrink: 0; /* Impede que as abas encolham */
+    }
+    .payment-options-tabs .tab-link.active {
+        border-left-color: transparent;
+        border-bottom-color: var(--brand-green);
+    }
+    .payment-options-content {
+        padding: 1.5rem 1rem;
+    }
+}
+
+.vehicle-card.hidden {
+    display: none;
+}
