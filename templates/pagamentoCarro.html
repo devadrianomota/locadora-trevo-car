@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento - Trevocar</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+
+    <div id="message-box-overlay">
+        <div id="message-box">
+            <p id="message-box-text">Esta é uma mensagem.</p>
+            <button id="message-box-close">Fechar</button>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-text">Trevocar</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Início</a>
+                <a href="#" class="nav-link">Nossos Carros</a>
+                <a href="#" class="nav-link">Agências</a>
+                <a href="#" class="nav-link">Dúvida</a>
+                <a href="#" class="nav-link">Suporte</a>
+                <a href="#" class="nav-link">Funcionários</a>
+                <button class="login-btn">Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <h2 class="page-title">Pagamento</h2>
+        <p class="page-subtitle"><span class="icon">🔒</span> Pagamento seguro e protegido</p>
+
+        <div class="payment-layout-grid">
+
+            <div class="payment-column-main">
+                
+                <div class="payment-box">
+                    
+                    <ul class="payment-options-tabs">
+                        <li class="tab-link active" data-tab="cartao-credito">
+                            <span class="icon">💳</span> Cartão de crédito
+                        </li>
+                        <li class="tab-link" data-tab="pix">
+                            <span class="icon">🅿️</span> PIX
+                        </li>
+                        <li class="tab-link" data-tab="cartao-debito">
+                            <span class="icon">💳</span> Cartão de débito
+                        </li>
+                    </ul>
+                    
+                    <div class="payment-options-content">
+                        
+                        <div id="tab-cartao-credito" class="payment-tab-content active">
+                            <h3>Meu Cartão</h3>
+                            <p>Preencha o número do cartão para visualizar a quantidade de parcelas.</p>
+                            
+                            <form id="payment-form" class="payment-form">
+                                <div class="form-group">
+                                    <label for="card-number">Número do cartão</label>
+                                    <input type="text" id="card-number" placeholder="0000 0000 0000 0000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-name">Nome impresso no cartão</label>
+                                    <input type="text" id="card-name" placeholder="Como no cartão">
+                                </div>
+                                <div class="input-group">
+                                    <div class="form-group">
+                                        <label for="card-expiry">Vencimento (mês/ano)</label>
+                                        <input type="text" id="card-expiry" placeholder="MM/AA">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="card-cvv">CVV</label>
+                                        <input type="text" id="card-cvv" placeholder="123">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="card-installments">Quantidade de parcelas</label>
+                                    <select id="card-installments">
+                                        <option>1x de R$ 172,40 (sem juros)</option>
+                                        <option>2x de R$ 86,20 (sem juros)</option>
+                                        <option>3x de R$ 57,47 (sem juros)</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <div id="tab-pix" class="payment-tab-content">
+                            <h3>Pagamento com PIX</h3>
+                            <p>Um QR Code será gerado ao finalizar o pedido. Você terá 10 minutos para efetuar o pagamento.</p>
+                            <img src="" alt="QR Code PIX" style="margin-top: 1rem;">
+                        </div>
+                        
+                        <div id="tab-cartao-debito" class="payment-tab-content">
+                            <h3>Pagamento com Débito</h3>
+                            <p>Você será redirecionado para o ambiente seguro do seu banco para concluir o pagamento.</p>
+                        </div>
+                        
+                        <button id="btn-finalizar-pedido" class="btn btn-primary btn-full">
+                            Finalizar Pedido
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="payment-column-sidebar">
+                
+                <div class="resume-summary-box">
+                    <h4>Resumo da Compra</h4>
+                    
+                    <div class="resume-line">
+                        <span>Subtotal</span>
+                        <span id="resume-subtotal">R$ 0,00</span>
+                    </div>
+                    <div class="resume-line">
+                        <span>Taxas e Impostos</span>
+                        <span id="resume-taxas">R$ 0,00</span>
+                    </div>
+                    
+                    <hr class="divider">
+                    
+                    <div class="resume-line total">
+                        <strong>Total</strong>
+                        <strong id="resume-total">R$ 0,00</strong>
+                    </div>
+                    
+                    <p class="resume-note">Troca fácil. Troque seus produtos. Reembolso em até 30 dias.</p>
+                </div>
+            </aside>
+            
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <p>&copy; 2025 Trevocar. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+   <script src="script2.js" defer></script>
+    <script src="pagamentoCarro.js" defer></script> </body>
+ </body>
+</html>
